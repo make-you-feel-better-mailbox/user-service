@@ -42,7 +42,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("set Authentication to security context for '{}', uri: {}", authentication.getName(), request.getRequestURI());
             } else if ("application/json".equals(contentType) && jwt == null) {
-                log.info("JWT 토큰이 잘못되었습니다.");
                 throw new TokenValidationException("JWT 토큰이 잘못되었습니다.");
             }
         } catch (ExpiredJwtException e) {

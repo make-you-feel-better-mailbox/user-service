@@ -1,4 +1,4 @@
-package com.onetwo.userservice.repository;
+package com.onetwo.userservice.repository.user;
 
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;

@@ -29,4 +29,10 @@ public class GlobalExceptionHandler {
         log.debug("TokenValidationException", e);
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(NotFoundResourceException.class)
+    public ResponseEntity<String> notFoundResourceException(NotFoundResourceException e) {
+        log.debug("NotFoundResourceException", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }

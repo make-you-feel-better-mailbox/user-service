@@ -17,8 +17,8 @@ public class UserConverter {
     }
 
     public User userDtoToUser(UserDto userDto) {
-        return new User(null, userDto.userId(), userDto.password(), userDto.nickname(), userDto.name(), userDto.email(),
-                userDto.phoneNumber(), null, null);
+        return new User(null, userDto.userId(), null, userDto.nickname(), userDto.name(), userDto.email(),
+                userDto.phoneNumber(), null);
     }
 
     public UserDto userToUserDto(User userDto) {
