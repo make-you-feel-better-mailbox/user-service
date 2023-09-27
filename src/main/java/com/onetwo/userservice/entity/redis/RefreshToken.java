@@ -1,7 +1,7 @@
 package com.onetwo.userservice.entity.redis;
 
-import jakarta.persistence.Id;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
@@ -13,13 +13,13 @@ public class RefreshToken {
     private String ip;
     private String refreshToken;
 
-    private RefreshToken(String userId, String ip, String refreshToken){
+    private RefreshToken(String userId, String ip, String refreshToken) {
         this.userId = userId;
         this.ip = ip;
         this.refreshToken = refreshToken;
     }
 
-    public static RefreshToken createRefreshToken(String userId,String ip, String refreshToken){
+    public static RefreshToken createRefreshToken(String userId, String ip, String refreshToken) {
         return new RefreshToken(userId, ip, refreshToken);
     }
 

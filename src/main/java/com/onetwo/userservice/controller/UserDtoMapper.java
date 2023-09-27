@@ -27,6 +27,7 @@ public class UserDtoMapper {
     public UserDto registerRequestToDto(RegisterUserRequest registerUserRequest) {
         return new UserDto(registerUserRequest.userId(),
                 registerUserRequest.password(),
+                registerUserRequest.birth(),
                 registerUserRequest.nickname(),
                 registerUserRequest.name(),
                 registerUserRequest.email(),

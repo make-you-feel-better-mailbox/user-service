@@ -1,14 +1,16 @@
 package com.onetwo.userservice.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -17,13 +19,15 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @Convert(converter = Jsr310JpaConverters.InstantConverter.class)
+    private Instant createdAt;
 
     @Column(nullable = false)
     private String createUser;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Convert(converter = Jsr310JpaConverters.InstantConverter.class)
+    private Instant updatedAt;
 
     @Column
     private String updateUser;

@@ -1,0 +1,62 @@
+= User Service API Document
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:seclinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+[[common]]
+= 개발 환경 정보
+
+// 표(table)를 구성할떄 아래와 같이 구성하면 된다.
+|===
+|환경|url
+
+|테스트
+|`http://api-dev.hellofunding.co.kr:8010`
+
+|운영서버
+|`http://api.hellofunding.co.kr:8010`
+|===
+//표(table)의 설정 끝.
+
+[[User-Service-API]]
+== 1. User
+
+=== Sign Up User
+
+http-request
+
+include::{snippets}/user/http-request.adoc[]
+
+request-headers
+
+include::{snippets}/user/request-headers.adoc[]
+
+request-fields
+
+include::{snippets}/user/request-fields.adoc[]
+
+request-body
+
+include::{snippets}/user/request-body.adoc[]
+
+curl-request
+
+include::{snippets}/user/curl-request.adoc[]
+
+response-fields
+
+include::{snippets}/user/response-fields.adoc[]
+
+response-body
+
+include::{snippets}/user/response-body.adoc[]
+
+http-responsey
+
+include::{snippets}/user/http-response.adoc[]

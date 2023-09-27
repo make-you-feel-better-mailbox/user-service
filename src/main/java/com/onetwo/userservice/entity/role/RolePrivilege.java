@@ -12,12 +12,12 @@ public class RolePrivilege extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "privilege_id")
     private Privilege privilege;
 
     public RolePrivilege(Role role, Privilege privilege) {

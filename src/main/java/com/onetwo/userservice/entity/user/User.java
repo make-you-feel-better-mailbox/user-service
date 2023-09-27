@@ -3,6 +3,9 @@ package com.onetwo.userservice.entity.user;
 import com.onetwo.userservice.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+
+import java.time.Instant;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
@@ -20,6 +23,10 @@ public class User extends BaseEntity {
 
     @Column(nullable = false, length = 300)
     private String password;
+
+    @Column(nullable = false)
+    @Convert(converter = Jsr310JpaConverters.InstantConverter.class)
+    private Instant birth;
 
     @Column(nullable = false, length = 15)
     private String nickname;
@@ -42,5 +49,9 @@ public class User extends BaseEntity {
 
     public void setEncodePassword(String encodedPassword) {
         this.password = encodedPassword;
+    }
+
+    public boolean isUserWithdraw() {
+        return this.getState();
     }
 }

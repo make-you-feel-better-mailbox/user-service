@@ -10,6 +10,13 @@ spring:
       settings:
         web-allow-others: true
       path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
 
 eureka:
   instance:
@@ -22,5 +29,8 @@ eureka:
 
 jwt:
   secret-key: secret-key-one-two-dear-my-x-it-will-be-change-next-time
-  token-validity-in-sec: 32400 # 1??
-  refresh-token-validity-in-sec: 604800  # ???
+  token-validity-in-sec: 32400
+  refresh-token-validity-in-sec: 604800
+
+access-id: onetwo
+access-key: ontwo12

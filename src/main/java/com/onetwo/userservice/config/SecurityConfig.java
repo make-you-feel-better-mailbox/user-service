@@ -1,13 +1,13 @@
 package com.onetwo.userservice.config;
 
+import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.jwt.JwtAccessDeniedHandler;
 import com.onetwo.userservice.jwt.JwtAuthenticationEntryPoint;
-import com.onetwo.userservice.jwt.JwtTokenFilterConfigurer;
-import com.onetwo.userservice.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,9 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final FilterConfigure filterConfigure;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,7 +34,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable) // token을 사용하는 방식이기 때문에 csrf를 disable
+                .csrf(AbstractHttpConfigurer::disable)
+                // enable h2-console
+                .headers(headers ->
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)     // 세션을 사용하지 않기 때문에 STATELESS로 설정
                 )
@@ -46,14 +50,11 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                                 .requestMatchers("/favicon.ico").permitAll()
-                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/docs/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, GlobalUrl.USER_ROOT).permitAll()
                                 .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
-                // enable h2-console
-                .headers(headers ->
-                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                )
-                .apply(new JwtTokenFilterConfigurer(tokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
+                .apply(filterConfigure); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
 
         return httpSecurity.build();
     }
