@@ -1,5 +1,8 @@
 package com.onetwo.userservice.entity.role;
 
+import java.time.Instant;
+
+import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,5 +21,7 @@ public class Role extends BaseEntity {
 
     public Role(RoleNames roleName) {
         this.roleName = roleName;
+        setCreatedAt(Instant.now());
+        setCreateUser(GlobalStatus.SYSTEM);
     }
 }

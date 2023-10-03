@@ -10,6 +10,7 @@ import com.onetwo.userservice.service.requset.LoginDto;
 import com.onetwo.userservice.service.requset.UserDto;
 import com.onetwo.userservice.service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping(GlobalUrl.USER_ROOT)
-    private ResponseEntity<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
+    private ResponseEntity<RegisterUserResponse> registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
         UserDto userDto = UserDtoMapper.of().registerRequestToDto(registerUserRequest);
         UserDto savedUser = userService.registerUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDtoMapper.of().dtoToRegisterResponse(savedUser));
