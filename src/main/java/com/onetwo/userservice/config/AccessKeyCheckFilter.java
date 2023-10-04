@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 
@@ -26,13 +25,13 @@ public class AccessKeyCheckFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        HttpServletRequest requestToCache = new ContentCachingRequestWrapper(request);
-
-        String requestAccessId = requestToCache.getHeader(GlobalStatus.ACCESS_ID);
-        String requestAccessKey = requestToCache.getHeader(GlobalStatus.ACCESS_KEY);
+        String requestAccessId = request.getHeader(GlobalStatus.ACCESS_ID);
+        String requestAccessKey = request.getHeader(GlobalStatus.ACCESS_KEY);
 
         if (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey))
             throw new BadRequestException("access-id or access-key does not matches");
+
+        log.info("Server Access-id and Access-Key check passed");
 
         filterChain.doFilter(request, response);
     }

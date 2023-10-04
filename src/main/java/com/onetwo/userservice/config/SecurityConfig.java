@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -50,7 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                                 .requestMatchers("/favicon.ico").permitAll()
                                 .requestMatchers("/docs/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, GlobalUrl.USER_ROOT).permitAll()
+                                .requestMatchers(GlobalUrl.USER_ROOT).permitAll()
                                 .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .apply(filterConfigure); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용

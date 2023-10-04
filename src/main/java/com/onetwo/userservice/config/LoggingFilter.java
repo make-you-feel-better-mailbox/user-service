@@ -16,7 +16,6 @@ import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 
@@ -31,7 +30,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         HttpServletRequest requestToCache = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseToCache = new ContentCachingResponseWrapper(response);
 
-        if (isAsyncDispatch(request)) {
+        if (isAsyncDispatch(requestToCache)) {
             filterChain.doFilter(request, response);
         } else {
             doFilterWrapped(requestToCache, responseToCache, filterChain);
@@ -54,13 +53,12 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     private void logRequest(HttpServletRequest request) throws IOException {
         String queryString = request.getQueryString();
-        log.info("Request : {} uri=[{}] request-ip=[{}] header=[{}] content-type=[{}] request body: {}",
+        log.info("Request : {} uri=[{}] request-ip=[{}] header=[{}] content-type=[{}] ",
                 request.getMethod(),
                 request.getRemoteAddr(),
                 queryString == null ? request.getRequestURI() : request.getRequestURI() + queryString,
                 getHeaders(request),
-                request.getContentType(),
-                getRequestBody((ContentCachingRequestWrapper) request)
+                request.getContentType()
         );
 
         logRequestPayload("Request", request.getContentType(), request.getInputStream());
@@ -80,10 +78,10 @@ public class LoggingFilter extends OncePerRequestFilter {
             byte[] content = StreamUtils.copyToByteArray(inputStream);
             if (content.length > 0) {
                 String contentString = new String(content);
-                log.info("{} Request Payload: {}", prefix, contentString.replaceAll(System.getProperty("line.separator"), ""));
+                log.info("{} Payload: {}", prefix, contentString.replaceAll(System.getProperty("line.separator"), ""));
             }
         } else {
-            log.info("{} Request Payload: Binary Content", prefix);
+            log.info("{} Payload: Binary Content", prefix);
         }
     }
 
@@ -135,21 +133,6 @@ public class LoggingFilter extends OncePerRequestFilter {
             headerMap.put(headerName, request.getHeader(headerName));
         }
         return headerMap;
-    }
-
-    private String getRequestBody(ContentCachingRequestWrapper request) {
-        ContentCachingRequestWrapper wrapper = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
-        if (wrapper != null) {
-            byte[] buf = wrapper.getContentAsByteArray();
-            if (buf.length > 0) {
-                try {
-                    return new String(buf, 0, buf.length, wrapper.getCharacterEncoding());
-                } catch (UnsupportedEncodingException e) {
-                    return " - ";
-                }
-            }
-        }
-        return " - ";
     }
 
     private String getResponseBody(final HttpServletResponse response) throws IOException {

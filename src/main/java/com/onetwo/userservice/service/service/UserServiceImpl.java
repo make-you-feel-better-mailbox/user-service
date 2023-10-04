@@ -10,6 +10,7 @@ import com.onetwo.userservice.repository.user.UserRepository;
 import com.onetwo.userservice.service.converter.UserConverter;
 import com.onetwo.userservice.service.requset.LoginDto;
 import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.response.UserIdExistCheckDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,8 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean userIdExistCheck(String userId) {
-        return userRepository.findByUserId(userId).isPresent();
+    public UserIdExistCheckDto userIdExistCheck(String userId) {
+        return new UserIdExistCheckDto(userRepository.findByUserId(userId).isPresent());
     }
 
     @Override

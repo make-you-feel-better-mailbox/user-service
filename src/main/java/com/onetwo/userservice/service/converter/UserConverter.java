@@ -21,7 +21,7 @@ public class UserConverter {
                 userDto.phoneNumber(), null);
     }
 
-    public UserDto userToUserDto(User userDto) {
-        return null;
+    public UserDto userToUserDto(User user) {
+        return new UserDto(user.getUserId(), user.getPassword(), user.getBirth(), user.getNickname(), user.getName(), user.getEmail(), user.getPhoneNumber());
     }
 }

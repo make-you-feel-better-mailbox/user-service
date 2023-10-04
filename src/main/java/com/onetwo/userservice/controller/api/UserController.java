@@ -8,6 +8,7 @@ import com.onetwo.userservice.controller.response.RegisterUserResponse;
 import com.onetwo.userservice.controller.response.TokenResponseDto;
 import com.onetwo.userservice.service.requset.LoginDto;
 import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.response.UserIdExistCheckDto;
 import com.onetwo.userservice.service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,20 +23,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping(GlobalUrl.USER_ROOT + "/{user-id}")
-    private ResponseEntity<Boolean> userIdExistCheck(@PathVariable("user-id") String userId) {
+    @GetMapping(GlobalUrl.USER_ROOT)
+    public ResponseEntity<UserIdExistCheckDto> userIdExistCheck(@RequestParam("user-id") String userId) {
         return ResponseEntity.ok().body(userService.userIdExistCheck(userId));
     }
 
     @PostMapping(GlobalUrl.USER_ROOT)
-    private ResponseEntity<RegisterUserResponse> registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
         UserDto userDto = UserDtoMapper.of().registerRequestToDto(registerUserRequest);
         UserDto savedUser = userService.registerUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDtoMapper.of().dtoToRegisterResponse(savedUser));
     }
 
     @PostMapping(GlobalUrl.USER_ROOT_LOGIN)
-    private ResponseEntity<TokenResponseDto> loginUser(@RequestBody LoginUserRequest loginUserRequest, HttpServletRequest request) {
+    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody LoginUserRequest loginUserRequest, HttpServletRequest request) {
         LoginDto loginDto = UserDtoMapper.of().loginRequestToDto(loginUserRequest);
         TokenResponseDto loginSuccessToken = userService.loginUser(loginDto, request);
         return ResponseEntity.ok().body(loginSuccessToken);
