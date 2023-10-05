@@ -39,6 +39,6 @@ public class UserDtoMapper {
     }
 
     public LoginDto loginRequestToDto(LoginUserRequest loginUserRequest) {
-        return new LoginDto(loginUserRequest.id(), loginUserRequest.pw());
+        return new LoginDto(loginUserRequest.userId(), loginUserRequest.password());
     }
 }

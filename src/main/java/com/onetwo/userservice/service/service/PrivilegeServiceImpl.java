@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     public List<Privilege> getPrivilegeByRole(Role role) {
         List<RolePrivilege> rolePrivileges = rolePrivilegeRepository.findByRole(role);
 
-        if (rolePrivileges == null || rolePrivileges.size() == 0) return null;
+        if (rolePrivileges == null || rolePrivileges.isEmpty()) return Collections.emptyList();
 
         return rolePrivileges.stream().map(RolePrivilege::getPrivilege).toList();
     }

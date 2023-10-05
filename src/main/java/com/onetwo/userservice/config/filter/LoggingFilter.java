@@ -1,4 +1,4 @@
-package com.onetwo.userservice.config;
+package com.onetwo.userservice.config.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,9 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
-import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,13 +25,10 @@ public class LoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         MDC.put("traceId", UUID.randomUUID().toString());
 
-        HttpServletRequest requestToCache = new ContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper responseToCache = new ContentCachingResponseWrapper(response);
-
-        if (isAsyncDispatch(requestToCache)) {
+        if (isAsyncDispatch(request)) {
             filterChain.doFilter(request, response);
         } else {
-            doFilterWrapped(requestToCache, responseToCache, filterChain);
+            doFilterWrapped(new RequestWrapper(request), new ResponseWrapper(response), filterChain);
         }
         MDC.clear();
     }
@@ -66,10 +61,6 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     private void logResponse(ContentCachingResponseWrapper response, long workTime) throws IOException {
         logResponsePayload("Response", response.getContentType(), response.getContentInputStream(), workTime);
-        log.info("Response : header={} body=[{}]",
-                getResponseHeaders(response),
-                getResponseBody(response)
-        );
     }
 
     private void logRequestPayload(String prefix, String contentType, InputStream inputStream) throws IOException {
@@ -114,16 +105,6 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
 
-    private Map<String, Object> getResponseHeaders(HttpServletResponse response) {
-        Map<String, Object> headerMap = new HashMap<>();
-
-        Collection<String> headerArray = response.getHeaderNames();
-
-        headerArray.forEach(headerName -> headerMap.put(headerName, response.getHeader(headerName)));
-
-        return headerMap;
-    }
-
     private Map<String, Object> getHeaders(HttpServletRequest request) {
         Map<String, Object> headerMap = new HashMap<>();
 
@@ -133,19 +114,5 @@ public class LoggingFilter extends OncePerRequestFilter {
             headerMap.put(headerName, request.getHeader(headerName));
         }
         return headerMap;
-    }
-
-    private String getResponseBody(final HttpServletResponse response) throws IOException {
-        String payload = null;
-        ContentCachingResponseWrapper wrapper = WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
-        if (wrapper != null) {
-            wrapper.setCharacterEncoding("UTF-8");
-            byte[] buf = wrapper.getContentAsByteArray();
-            if (buf.length > 0) {
-                payload = new String(buf, 0, buf.length, wrapper.getCharacterEncoding());
-                wrapper.copyBodyToResponse();
-            }
-        }
-        return null == payload ? " - " : payload;
     }
 }

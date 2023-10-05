@@ -1,14 +1,16 @@
 package com.onetwo.userservice.entity.role;
 
-import java.time.Instant;
-
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Role extends BaseEntity {
 
     @Id

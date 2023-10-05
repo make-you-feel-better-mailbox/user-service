@@ -1,14 +1,15 @@
 package com.onetwo.userservice.controller.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
-public record RegisterUserRequest(@NotNull String userId,
-                                  @NotNull String password,
+public record RegisterUserRequest(@NotEmpty String userId,
+                                  @NotEmpty String password,
                                   @NotNull Instant birth,
-                                  @NotNull String nickname,
-                                  @NotNull String name,
-                                  @NotNull String email,
+                                  @NotEmpty String nickname,
+                                  @NotEmpty String name,
+                                  @NotEmpty String email,
                                   String phoneNumber) {
 }

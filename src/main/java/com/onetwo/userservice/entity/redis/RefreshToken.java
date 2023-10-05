@@ -19,7 +19,7 @@ public class RefreshToken {
         this.refreshToken = refreshToken;
     }
 
-    public static RefreshToken createRefreshToken(String userId, String ip, String refreshToken) {
+    public static RefreshToken createRefreshTokenEntity(String userId, String ip, String refreshToken) {
         return new RefreshToken(userId, ip, refreshToken);
     }
 

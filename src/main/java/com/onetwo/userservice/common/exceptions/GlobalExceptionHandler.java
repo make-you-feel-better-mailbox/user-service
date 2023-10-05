@@ -49,4 +49,10 @@ public class GlobalExceptionHandler {
         log.debug("HttpMessageNotReadableException", e);
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<String> resourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        log.debug("ResourceAlreadyExistsException", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }

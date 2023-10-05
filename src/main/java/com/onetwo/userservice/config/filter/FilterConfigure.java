@@ -1,4 +1,4 @@
-package com.onetwo.userservice.config;
+package com.onetwo.userservice.config.filter;
 
 import com.onetwo.userservice.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;

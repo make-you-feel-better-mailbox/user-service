@@ -32,5 +32,5 @@ jwt:
   token-validity-in-sec: 32400
   refresh-token-validity-in-sec: 604800
 
-access-id: onetwo
-access-key: ontwo12
+access-id: server-access-id
+access-key: server-access-key

@@ -2,6 +2,7 @@ package com.onetwo.userservice.service.service;
 
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
+import com.onetwo.userservice.common.exceptions.ResourceAlreadyExistsException;
 import com.onetwo.userservice.controller.response.TokenResponseDto;
 import com.onetwo.userservice.entity.redis.RefreshToken;
 import com.onetwo.userservice.entity.user.User;
@@ -11,7 +12,6 @@ import com.onetwo.userservice.service.converter.UserConverter;
 import com.onetwo.userservice.service.requset.LoginDto;
 import com.onetwo.userservice.service.requset.UserDto;
 import com.onetwo.userservice.service.response.UserIdExistCheckDto;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,12 +36,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserIdExistCheckDto userIdExistCheck(String userId) {
-        return new UserIdExistCheckDto(userRepository.findByUserId(userId).isPresent());
+        return new UserIdExistCheckDto(userIdExist(userId));
     }
 
     @Override
     @Transactional
     public UserDto registerUser(UserDto userDto) {
+        if (userIdExist(userDto.userId())) throw new ResourceAlreadyExistsException("user-id already exist");
+
         User newUser = UserConverter.of().userDtoToUser(userDto);
         newUser.setDefaultState();
         newUser.setEncodePassword(passwordEncoder.encode(userDto.password()));
@@ -53,9 +55,13 @@ public class UserServiceImpl implements UserService {
         return UserConverter.of().userToUserDto(savedUser);
     }
 
+    private boolean userIdExist(String userDto) {
+        return userRepository.findByUserId(userDto).isPresent();
+    }
+
     @Override
     @Transactional(readOnly = true)
-    public TokenResponseDto loginUser(LoginDto loginDto, HttpServletRequest request) {
+    public TokenResponseDto loginUser(LoginDto loginDto, String requestIp) {
         User user = userRepository.findByUserId(loginDto.id())
                 .orElseThrow(() -> new NotFoundResourceException("No Resource user exception"));
 
@@ -68,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
         // refresh token 발급 및 저장
         String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
-        RefreshToken token = RefreshToken.createRefreshToken(user.getUserId(), request.getRemoteAddr(), refreshToken);
+        RefreshToken token = RefreshToken.createRefreshTokenEntity(user.getUserId(), requestIp, refreshToken);
 
         cacheService.saveRefreshToken(token);
 

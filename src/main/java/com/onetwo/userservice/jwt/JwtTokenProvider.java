@@ -3,8 +3,8 @@ package com.onetwo.userservice.jwt;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 @Component
 @Slf4j
-public class JwtTokenProvider implements InitializingBean, TokenProvider {
+public class JwtTokenProvider implements TokenProvider {
 
     private final UserDetailsService userDetailsService;
 
@@ -38,11 +38,10 @@ public class JwtTokenProvider implements InitializingBean, TokenProvider {
 
     private Key key;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {  // init()
+    @PostConstruct
+    public void init() throws Exception {
         String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         key = Keys.hmacShaKeyFor(encodedKey.getBytes());
-        // https://budnamu.tistory.com/entry/JWT 참고
     }
 
     @Override
@@ -53,7 +52,7 @@ public class JwtTokenProvider implements InitializingBean, TokenProvider {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .setIssuedAt(now) // 발행시간
-                .signWith(key, SignatureAlgorithm.HS512) // 암호화
+                .signWith(key, SignatureAlgorithm.HS256) // 암호화
                 .setExpiration(validity) // 만료
                 .compact();
     }
@@ -112,7 +111,7 @@ public class JwtTokenProvider implements InitializingBean, TokenProvider {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .setIssuedAt(now)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(validity)
                 .compact();
     }

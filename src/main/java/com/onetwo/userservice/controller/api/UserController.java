@@ -23,9 +23,16 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping(GlobalUrl.USER_ROOT)
-    public ResponseEntity<UserIdExistCheckDto> userIdExistCheck(@RequestParam("user-id") String userId) {
+    @GetMapping(GlobalUrl.USER_ID + "/{user-id}")
+    public ResponseEntity<UserIdExistCheckDto> userIdExistCheck(@PathVariable("user-id") String userId) {
         return ResponseEntity.ok().body(userService.userIdExistCheck(userId));
+    }
+
+    @GetMapping(GlobalUrl.USER_ROOT)
+    public ResponseEntity<RegisterUserResponse> getUserDetailInfo(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
+        UserDto userDto = UserDtoMapper.of().registerRequestToDto(registerUserRequest);
+        UserDto savedUser = userService.registerUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserDtoMapper.of().dtoToRegisterResponse(savedUser));
     }
 
     @PostMapping(GlobalUrl.USER_ROOT)
@@ -35,10 +42,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDtoMapper.of().dtoToRegisterResponse(savedUser));
     }
 
-    @PostMapping(GlobalUrl.USER_ROOT_LOGIN)
+    @PostMapping(GlobalUrl.USER_LOGIN)
     public ResponseEntity<TokenResponseDto> loginUser(@RequestBody LoginUserRequest loginUserRequest, HttpServletRequest request) {
         LoginDto loginDto = UserDtoMapper.of().loginRequestToDto(loginUserRequest);
-        TokenResponseDto loginSuccessToken = userService.loginUser(loginDto, request);
+        TokenResponseDto loginSuccessToken = userService.loginUser(loginDto, request.getRemoteAddr());
         return ResponseEntity.ok().body(loginSuccessToken);
     }
 }

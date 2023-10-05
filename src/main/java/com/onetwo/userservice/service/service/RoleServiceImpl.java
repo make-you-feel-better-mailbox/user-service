@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> getRolesByUser(User user) {
         List<UserRole> userRoles = userRoleRepository.findByUser(user);
 
-        if (userRoles == null || userRoles.size() == 0) return null;
+        if (userRoles == null || userRoles.isEmpty()) return Collections.emptyList();
 
         return userRoles.stream().map(UserRole::getRole).toList();
     }
