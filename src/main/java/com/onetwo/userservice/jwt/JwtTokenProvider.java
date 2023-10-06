@@ -1,6 +1,8 @@
 package com.onetwo.userservice.jwt;
 
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
+import com.onetwo.userservice.entity.redis.RefreshToken;
+import com.onetwo.userservice.service.service.CacheService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -15,13 +17,14 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 @Slf4j
 public class JwtTokenProvider implements TokenProvider {
 
     private final UserDetailsService userDetailsService;
-
+    private final CacheService cacheService;
     private final String secretKey;
     private final long tokenValidityInMs;
     private final long refreshTokenValidityInMs;
@@ -29,11 +32,13 @@ public class JwtTokenProvider implements TokenProvider {
     public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey,
                             @Value("${jwt.token-validity-in-sec}") long tokenValidity,
                             @Value("${jwt.refresh-token-validity-in-sec}") long refreshTokenValidity,
-                            UserDetailsService userDetailsService) {
+                            UserDetailsService userDetailsService,
+                            CacheService cacheService) {
         this.secretKey = secretKey;
         this.tokenValidityInMs = tokenValidity * 1000;
         this.refreshTokenValidityInMs = refreshTokenValidity * 1000;
         this.userDetailsService = userDetailsService;
+        this.cacheService = cacheService;
     }
 
     private Key key;
@@ -45,25 +50,16 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(String userId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + tokenValidityInMs);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(userId)
                 .setIssuedAt(now) // 발행시간
                 .signWith(key, SignatureAlgorithm.HS256) // 암호화
                 .setExpiration(validity) // 만료
                 .compact();
-    }
-
-    public Date getTokenExpiration(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
     }
 
     /**
@@ -76,14 +72,18 @@ public class JwtTokenProvider implements TokenProvider {
      */
     @Override
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = getClaimsByToken(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+    }
+
+    @Override
+    public Claims getClaimsByToken(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     // 토큰 유효성 검사
@@ -92,24 +92,37 @@ public class JwtTokenProvider implements TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new TokenValidationException("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            throw new TokenValidationException("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            throw new TokenValidationException("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            throw new TokenValidationException("JWT 토큰이 잘못되었습니다.");
+            throw new TokenValidationException(JwtCode.ACCESS_TOKEN_EXPIRED);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.info("JwtException Token Denied : {}", e.getMessage());
+            throw new TokenValidationException(JwtCode.ACCESS_TOKEN_DENIED);
         }
     }
 
     @Override
-    public String createRefreshToken(Authentication authentication) {
+    public boolean refreshTokenValidation(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new TokenValidationException(JwtCode.REFRESH_TOKEN_EXPIRED);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.info("JwtException Token Denied : {}", e.getMessage());
+            throw new TokenValidationException(JwtCode.REFRESH_TOKEN_DENIED);
+        }
+
+        Optional<RefreshToken> refreshToken = cacheService.findRefreshTokenById(getClaimsByToken(token).getSubject());
+
+        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken());
+    }
+
+    @Override
+    public String createRefreshToken(Long uuid) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityInMs);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(uuid.toString())
                 .setIssuedAt(now)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(validity)

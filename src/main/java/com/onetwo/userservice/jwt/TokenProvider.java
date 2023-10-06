@@ -1,14 +1,19 @@
 package com.onetwo.userservice.jwt;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.Authentication;
 
 public interface TokenProvider {
 
-    String createAccessToken(Authentication authentication);
+    String createAccessToken(String userId);
 
-    String createRefreshToken(Authentication authentication);
+    String createRefreshToken(Long uuid);
 
     Authentication getAuthentication(String token);
 
+    Claims getClaimsByToken(String token);
+
     boolean validateToken(String token);
+
+    boolean refreshTokenValidation(String token);
 }

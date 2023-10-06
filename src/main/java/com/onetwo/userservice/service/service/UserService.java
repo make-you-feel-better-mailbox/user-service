@@ -2,13 +2,16 @@ package com.onetwo.userservice.service.service;
 
 import com.onetwo.userservice.controller.response.TokenResponseDto;
 import com.onetwo.userservice.service.requset.LoginDto;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
 import com.onetwo.userservice.service.response.UserIdExistCheckDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 
 public interface UserService {
-    UserDto registerUser(UserDto userDto);
+    UserResponseDto registerUser(UserRegisterDto userRegisterDto);
 
-    TokenResponseDto loginUser(LoginDto loginDto, String requestIp);
+    TokenResponseDto loginUser(LoginDto loginDto);
 
     UserIdExistCheckDto userIdExistCheck(String userId);
+
+    UserResponseDto getUserDetailInfo(String token);
 }

@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.config.SecurityConfig;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 import com.onetwo.userservice.service.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -60,6 +61,7 @@ public class UserControllerValidationTest {
     private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean userState = false;
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -176,9 +178,9 @@ public class UserControllerValidationTest {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 
-        UserDto savedUser = new UserDto(userId, passwordEncoder.encode(password), birth, nickname, name, email, phoneNumber);
+        UserResponseDto savedUser = new UserResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
 
-        when(userService.registerUser(any(UserDto.class))).thenReturn(savedUser);
+        when(userService.registerUser(any(UserRegisterDto.class))).thenReturn(savedUser);
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_ROOT)

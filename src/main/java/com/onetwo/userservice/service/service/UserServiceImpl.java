@@ -10,17 +10,13 @@ import com.onetwo.userservice.jwt.JwtTokenProvider;
 import com.onetwo.userservice.repository.user.UserRepository;
 import com.onetwo.userservice.service.converter.UserConverter;
 import com.onetwo.userservice.service.requset.LoginDto;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
 import com.onetwo.userservice.service.response.UserIdExistCheckDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final MyUserDetailsService myUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final CacheService cacheService;
+    private final UserTokenService userTokenService;
 
     @Override
     @Transactional(readOnly = true)
@@ -40,19 +36,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public UserDto registerUser(UserDto userDto) {
-        if (userIdExist(userDto.userId())) throw new ResourceAlreadyExistsException("user-id already exist");
+    public UserResponseDto getUserDetailInfo(String token) {
+        return null;
+    }
 
-        User newUser = UserConverter.of().userDtoToUser(userDto);
+    @Override
+    @Transactional
+    public UserResponseDto registerUser(UserRegisterDto userRegisterDto) {
+        if (userIdExist(userRegisterDto.userId())) throw new ResourceAlreadyExistsException("user-id already exist");
+
+        User newUser = UserConverter.of().userRequestDtoToUser(userRegisterDto);
         newUser.setDefaultState();
-        newUser.setEncodePassword(passwordEncoder.encode(userDto.password()));
+        newUser.setEncodePassword(passwordEncoder.encode(userRegisterDto.password()));
 
         User savedUser = userRepository.save(newUser);
 
         roleService.createNewUserRole(savedUser);
 
-        return UserConverter.of().userToUserDto(savedUser);
+        return UserConverter.of().userToUserResponseDto(savedUser);
     }
 
     private boolean userIdExist(String userDto) {
@@ -61,25 +62,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public TokenResponseDto loginUser(LoginDto loginDto, String requestIp) {
+    public TokenResponseDto loginUser(LoginDto loginDto) {
         User user = userRepository.findByUserId(loginDto.id())
                 .orElseThrow(() -> new NotFoundResourceException("No Resource user exception"));
 
         if (!passwordEncoder.matches(loginDto.pw(), user.getPassword()))
             throw new BadRequestException("Password does not match");
 
-        Collection<GrantedAuthority> grantedAuthorities = myUserDetailsService.getGrantedAuthoritiesByUser(user);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), grantedAuthorities);
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
 
         // refresh token 발급 및 저장
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
-        RefreshToken token = RefreshToken.createRefreshTokenEntity(user.getUserId(), requestIp, refreshToken);
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUuid());
+        RefreshToken token = RefreshToken.createRefreshTokenEntity(user.getUuid(), accessToken, refreshToken);
 
-        cacheService.saveRefreshToken(token);
+        userTokenService.saveRefreshToken(token);
 
-        String accessToken = jwtTokenProvider.createAccessToken(authentication);
-
-        return new TokenResponseDto(accessToken);
+        return new TokenResponseDto(accessToken, refreshToken);
     }
 }

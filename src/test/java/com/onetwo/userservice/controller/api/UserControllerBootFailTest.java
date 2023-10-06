@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
 import com.onetwo.userservice.service.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +59,7 @@ public class UserControllerBootFailTest {
     @DisplayName("[통합] 회원 회원가입 User Id Already Exist - 실패 테스트")
     void registerUserAlreadyExistFailTest() throws Exception {
         //given
-        userService.registerUser(new UserDto(userId, password, birth, nickname, name, email, phoneNumber));
+        userService.registerUser(new UserRegisterDto(userId, password, birth, nickname, name, email, phoneNumber));
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 
@@ -99,7 +99,7 @@ public class UserControllerBootFailTest {
     @DisplayName("[통합] 회원 로그인 Password Not Matched - 실패 테스트")
     void registerPasswordNotMatchedFailTest() throws Exception {
         //given
-        userService.registerUser(new UserDto(userId, password, birth, nickname, name, email, phoneNumber));
+        userService.registerUser(new UserRegisterDto(userId, password, birth, nickname, name, email, phoneNumber));
 
         String notMatchedPassword = "notMatchedPassword";
 

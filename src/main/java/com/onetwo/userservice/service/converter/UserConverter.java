@@ -1,7 +1,8 @@
 package com.onetwo.userservice.service.converter;
 
 import com.onetwo.userservice.entity.user.User;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 
 public class UserConverter {
     private static UserConverter userConverter;
@@ -16,12 +17,12 @@ public class UserConverter {
         return userConverter;
     }
 
-    public User userDtoToUser(UserDto userDto) {
-        return new User(null, userDto.userId(), null, userDto.birth(), userDto.nickname(), userDto.name(), userDto.email(),
-                userDto.phoneNumber(), null);
+    public User userRequestDtoToUser(UserRegisterDto userRegisterDto) {
+        return new User(null, userRegisterDto.userId(), null, userRegisterDto.birth(), userRegisterDto.nickname(), userRegisterDto.name(), userRegisterDto.email(),
+                userRegisterDto.phoneNumber(), null);
     }
 
-    public UserDto userToUserDto(User user) {
-        return new UserDto(user.getUserId(), user.getPassword(), user.getBirth(), user.getNickname(), user.getName(), user.getEmail(), user.getPhoneNumber());
+    public UserResponseDto userToUserResponseDto(User user) {
+        return new UserResponseDto(user.getUserId(), user.getBirth(), user.getNickname(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getState());
     }
 }

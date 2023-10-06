@@ -9,4 +9,6 @@ public class GlobalUrl {
     public static final String USER_ROOT = "/users";
     public static final String USER_LOGIN = USER_ROOT + "/login";
     public static final String USER_ID = USER_ROOT + "/id";
+    public static final String TOKEN = "/token";
+    public static final String TOKEN_REFRESH = TOKEN + "/refresh";
 }

@@ -7,8 +7,9 @@ import com.onetwo.userservice.controller.request.LoginUserRequest;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
 import com.onetwo.userservice.controller.response.TokenResponseDto;
 import com.onetwo.userservice.service.requset.LoginDto;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
 import com.onetwo.userservice.service.response.UserIdExistCheckDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 import com.onetwo.userservice.service.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -75,12 +76,13 @@ class UserControllerTest {
         String name = "tester";
         String email = "onetwo12@onetwo.com";
         String phoneNumber = "01098006069";
+        boolean userState = false;
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 
-        UserDto savedUser = new UserDto(userId, passwordEncoder.encode(password), birth, nickname, name, email, phoneNumber);
+        UserResponseDto savedUser = new UserResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
 
-        when(userService.registerUser(any(UserDto.class))).thenReturn(savedUser);
+        when(userService.registerUser(any(UserRegisterDto.class))).thenReturn(savedUser);
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_ROOT)
@@ -130,10 +132,17 @@ class UserControllerTest {
                 .setExpiration(validity)
                 .compact();
 
-        LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
-        TokenResponseDto tokenResponseDto = new TokenResponseDto(token);
+        String refreshToken = Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(now)
+                .signWith(Keys.hmacShaKeyFor("secret-key-test-secret-key-it-only-for-test-one-two-test-key".getBytes()), SignatureAlgorithm.HS256)
+                .setExpiration(validity)
+                .compact();
 
-        when(userService.loginUser(any(LoginDto.class), anyString())).thenReturn(tokenResponseDto);
+        LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
+        TokenResponseDto tokenResponseDto = new TokenResponseDto(token, refreshToken);
+
+        when(userService.loginUser(any(LoginDto.class))).thenReturn(tokenResponseDto);
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_LOGIN)

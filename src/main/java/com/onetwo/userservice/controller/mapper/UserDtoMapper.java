@@ -1,21 +1,16 @@
-package com.onetwo.userservice.controller;
+package com.onetwo.userservice.controller.mapper;
 
 import com.onetwo.userservice.controller.request.LoginUserRequest;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
 import com.onetwo.userservice.controller.response.RegisterUserResponse;
+import com.onetwo.userservice.controller.response.UserDetailResponse;
 import com.onetwo.userservice.service.requset.LoginDto;
-import com.onetwo.userservice.service.requset.UserDto;
-import org.modelmapper.ModelMapper;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 
 public class UserDtoMapper {
 
     private static UserDtoMapper userDtoMapper;
-
-    private final ModelMapper modelMapper;
-
-    private UserDtoMapper() {
-        modelMapper = new ModelMapper();
-    }
 
     public static UserDtoMapper of() {
         if (userDtoMapper == null)
@@ -24,8 +19,8 @@ public class UserDtoMapper {
         return userDtoMapper;
     }
 
-    public UserDto registerRequestToDto(RegisterUserRequest registerUserRequest) {
-        return new UserDto(registerUserRequest.userId(),
+    public UserRegisterDto registerRequestToDto(RegisterUserRequest registerUserRequest) {
+        return new UserRegisterDto(registerUserRequest.userId(),
                 registerUserRequest.password(),
                 registerUserRequest.birth(),
                 registerUserRequest.nickname(),
@@ -34,11 +29,21 @@ public class UserDtoMapper {
                 registerUserRequest.phoneNumber());
     }
 
-    public RegisterUserResponse dtoToRegisterResponse(UserDto savedUser) {
+    public RegisterUserResponse dtoToRegisterResponse(UserResponseDto savedUser) {
         return new RegisterUserResponse(savedUser.userId());
     }
 
     public LoginDto loginRequestToDto(LoginUserRequest loginUserRequest) {
         return new LoginDto(loginUserRequest.userId(), loginUserRequest.password());
+    }
+
+    public UserDetailResponse dtoToUserDetailResponse(UserResponseDto userResponseDto) {
+        return new UserDetailResponse(userResponseDto.userId(),
+                userResponseDto.birth(),
+                userResponseDto.nickname(),
+                userResponseDto.name(),
+                userResponseDto.email(),
+                userResponseDto.phoneNumber(),
+                userResponseDto.state());
     }
 }

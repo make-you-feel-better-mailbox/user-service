@@ -7,5 +7,7 @@ import java.util.Optional;
 public interface CacheService {
     void saveRefreshToken(RefreshToken token);
 
-    Optional<RefreshToken> findById(String id);
+    Optional<RefreshToken> findRefreshTokenById(String id);
+
+    Optional<RefreshToken> findRefreshTokenByAccessToken(String accessToken);
 }

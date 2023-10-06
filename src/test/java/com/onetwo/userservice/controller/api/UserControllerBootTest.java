@@ -5,7 +5,7 @@ import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.controller.request.LoginUserRequest;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
-import com.onetwo.userservice.service.requset.UserDto;
+import com.onetwo.userservice.service.requset.UserRegisterDto;
 import com.onetwo.userservice.service.service.CacheService;
 import com.onetwo.userservice.service.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -144,7 +144,7 @@ public class UserControllerBootTest {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
-        userService.registerUser(new UserDto(userId, password, birth, nickname, name, email, phoneNumber));
+        userService.registerUser(new UserRegisterDto(userId, password, birth, nickname, name, email, phoneNumber));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -167,7 +167,8 @@ public class UserControllerBootTest {
                                         fieldWithPath("password").type(JsonFieldType.STRING).description("로그인할 유저의 Password")
                                 ),
                                 responseFields(
-                                        fieldWithPath("accessToken").type(JsonFieldType.STRING).description("유저의 access-token")
+                                        fieldWithPath("accessToken").type(JsonFieldType.STRING).description("유저의 access-token"),
+                                        fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유저의 refresh-token")
                                 )
                         )
                 );
@@ -180,7 +181,7 @@ public class UserControllerBootTest {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
-        userService.registerUser(new UserDto(userId, password, birth, nickname, name, email, phoneNumber));
+        userService.registerUser(new UserRegisterDto(userId, password, birth, nickname, name, email, phoneNumber));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -192,7 +193,7 @@ public class UserControllerBootTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(result -> Assertions.assertTrue(cacheService.findById(userId).isPresent()))
+                .andExpect(result -> Assertions.assertTrue(cacheService.findRefreshTokenById(userId).isPresent()))
                 .andDo(print());
     }
 }
