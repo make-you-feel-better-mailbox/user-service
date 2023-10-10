@@ -17,10 +17,10 @@ endif::[]
 |환경|url
 
 |테스트
-|`http://api-dev.hellofunding.co.kr:8010`
+|`http://127.0.0.1`
 
 |운영서버
-|`http://api.hellofunding.co.kr:8010`
+|`http://127.0.0.1`
 |===
 //표(table)의 설정 끝.
 
@@ -31,35 +31,35 @@ endif::[]
 
 http-request
 
-include::{snippets}/user/http-request.adoc[]
+include::{snippets}/user-sign-up/http-request.adoc[]
 
 request-headers
 
-include::{snippets}/user/request-headers.adoc[]
+include::{snippets}/user-sign-up/request-headers.adoc[]
 
 request-fields
 
-include::{snippets}/user/request-fields.adoc[]
+include::{snippets}/user-sign-up/request-fields.adoc[]
 
 request-body
 
-include::{snippets}/user/request-body.adoc[]
+include::{snippets}/user-sign-up/request-body.adoc[]
 
 curl-request
 
-include::{snippets}/user/curl-request.adoc[]
+include::{snippets}/user-sign-up/curl-request.adoc[]
 
 response-fields
 
-include::{snippets}/user/response-fields.adoc[]
+include::{snippets}/user-sign-up/response-fields.adoc[]
 
 response-body
 
-include::{snippets}/user/response-body.adoc[]
+include::{snippets}/user-sign-up/response-body.adoc[]
 
 http-response
 
-include::{snippets}/user/http-response.adoc[]
+include::{snippets}/user-sign-up/http-response.adoc[]
 
 === User Id Exist Check
 
@@ -107,7 +107,7 @@ include::{snippets}/user-login/request-fields.adoc[]
 
 request-body
 
-include::{snippets}/user/request-body.adoc[]
+include::{snippets}/user-login/request-body.adoc[]
 
 curl-request
 
@@ -124,3 +124,39 @@ include::{snippets}/user-login/response-body.adoc[]
 http-response
 
 include::{snippets}/user-login/http-response.adoc[]
+
+== 2. Token
+
+=== Reissue Access Token
+
+http-request
+
+include::{snippets}/reissue-access-token/http-request.adoc[]
+
+request-headers
+
+include::{snippets}/reissue-access-token/request-headers.adoc[]
+
+request-fields
+
+include::{snippets}/reissue-access-token/request-fields.adoc[]
+
+request-body
+
+include::{snippets}/reissue-access-token/request-body.adoc[]
+
+curl-request
+
+include::{snippets}/reissue-access-token/curl-request.adoc[]
+
+response-fields
+
+include::{snippets}/reissue-access-token/response-fields.adoc[]
+
+response-body
+
+include::{snippets}/reissue-access-token/response-body.adoc[]
+
+http-response
+
+include::{snippets}/reissue-access-token/http-response.adoc[]

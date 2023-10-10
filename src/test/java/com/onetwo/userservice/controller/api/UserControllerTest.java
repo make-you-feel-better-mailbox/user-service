@@ -118,6 +118,7 @@ class UserControllerTest {
     void loginUserSuccessTest() throws Exception {
         //given
         String userId = "newUserId";
+        Long uuid = 1L;
         String password = "password";
 
         long tokenValidityInMs = 1000;
@@ -133,7 +134,7 @@ class UserControllerTest {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setSubject(userId)
+                .setSubject(uuid.toString())
                 .setIssuedAt(now)
                 .signWith(Keys.hmacShaKeyFor("secret-key-test-secret-key-it-only-for-test-one-two-test-key".getBytes()), SignatureAlgorithm.HS256)
                 .setExpiration(validity)

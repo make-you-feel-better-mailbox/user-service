@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public TokenResponseDto loginUser(LoginDto loginDto) {
         User user = userRepository.findByUserId(loginDto.id())
                 .orElseThrow(() -> new NotFoundResourceException("No Resource user exception"));

@@ -5,7 +5,10 @@ import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.controller.request.LoginUserRequest;
 import com.onetwo.userservice.controller.request.RegisterUserRequest;
+import com.onetwo.userservice.entity.user.User;
+import com.onetwo.userservice.repository.user.UserRepository;
 import com.onetwo.userservice.service.requset.UserRegisterDto;
+import com.onetwo.userservice.service.response.UserResponseDto;
 import com.onetwo.userservice.service.service.CacheService;
 import com.onetwo.userservice.service.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -54,6 +57,9 @@ public class UserControllerBootTest {
     @Autowired
     private CacheService cacheService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private final String userId = "newUserId";
     private final String password = "password";
     private final Instant birth = Instant.now();
@@ -87,7 +93,7 @@ public class UserControllerBootTest {
         //then
         resultActions.andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(document("user",
+                .andDo(document("user-sign-up",
                                 requestHeaders(
                                         headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
                                         headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key")
@@ -183,6 +189,8 @@ public class UserControllerBootTest {
 
         userService.registerUser(new UserRegisterDto(userId, password, birth, nickname, name, email, phoneNumber));
 
+        User user = userRepository.findByUserId(userId).get();
+
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_LOGIN)
@@ -193,7 +201,7 @@ public class UserControllerBootTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(result -> Assertions.assertTrue(cacheService.findRefreshTokenById(userId).isPresent()))
+                .andExpect(result -> Assertions.assertTrue(cacheService.findRefreshTokenById(user.getUuid()).isPresent()))
                 .andDo(print());
     }
 }

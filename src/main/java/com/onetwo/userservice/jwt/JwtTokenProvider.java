@@ -110,10 +110,7 @@ public class JwtTokenProvider implements TokenProvider {
             log.info("JwtException Token Denied : {}", e.getMessage());
             throw new TokenValidationException(JwtCode.REFRESH_TOKEN_DENIED);
         }
-
-        Optional<RefreshToken> refreshToken = cacheService.findRefreshTokenById(getClaimsByToken(token).getSubject());
-
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken());
+        return true;
     }
 
     @Override

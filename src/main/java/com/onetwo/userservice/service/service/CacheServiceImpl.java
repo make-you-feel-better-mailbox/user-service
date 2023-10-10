@@ -19,8 +19,8 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Optional<RefreshToken> findRefreshTokenById(String id) {
-        return redisRepository.findById(id);
+    public Optional<RefreshToken> findRefreshTokenById(Long uuid) {
+        return redisRepository.findById(uuid);
     }
 
     @Override

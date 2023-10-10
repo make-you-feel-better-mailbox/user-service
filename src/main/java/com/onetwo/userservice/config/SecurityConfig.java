@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 .requestMatchers("/favicon.ico").permitAll()
                                 .requestMatchers("/docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, GlobalUrl.USER_ID + GlobalUrl.UNDER_ROUTE).permitAll()
-                                .requestMatchers(HttpMethod.POST, GlobalUrl.USER_ROOT).permitAll()
+                                .requestMatchers(HttpMethod.POST, GlobalUrl.USER_ROOT, GlobalUrl.TOKEN_REFRESH).permitAll()
                                 .requestMatchers(GlobalUrl.USER_LOGIN).permitAll()
                                 .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )

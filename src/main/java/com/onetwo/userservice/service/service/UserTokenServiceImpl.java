@@ -12,6 +12,7 @@ import com.onetwo.userservice.service.response.ReissuedTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
+    @Transactional
     public ReissuedTokenDto reissueAccessTokenByRefreshToken(ReissueTokenDto reissueTokenDto) {
         Optional<RefreshToken> optionalRefreshToken = cacheService.findRefreshTokenByAccessToken(reissueTokenDto.accessToken());
 
@@ -42,6 +44,8 @@ public class UserTokenServiceImpl implements UserTokenService {
         User user = userRepository.findById(refreshToken.getUuid()).orElseThrow(() -> new NotFoundResourceException("User does not Exist"));
 
         String reissuedAccessToken = tokenProvider.createAccessToken(user.getUserId());
+
+        refreshToken.setReissueAccessToken(reissuedAccessToken);
 
         return new ReissuedTokenDto(reissuedAccessToken);
     }
