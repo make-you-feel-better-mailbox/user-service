@@ -1,5 +1,6 @@
 package com.onetwo.userservice.common.exceptions;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<String> resourceAlreadyExistsException(ResourceAlreadyExistsException e) {
         log.debug("ResourceAlreadyExistsException", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> constraintViolationException(ConstraintViolationException e) {
+        log.debug("ConstraintViolationException", e);
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

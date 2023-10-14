@@ -1,6 +1,6 @@
 package com.onetwo.userservice.common.exceptions;
 
-import com.onetwo.userservice.jwt.JwtCode;
+import com.onetwo.userservice.common.jwt.JwtCode;
 import lombok.Getter;
 
 @Getter

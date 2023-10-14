@@ -1,0 +1,120 @@
+package com.onetwo.userservice.adapter.in.web.user.api;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
+import com.onetwo.userservice.application.port.in.ReadUserUseCase;
+import com.onetwo.userservice.application.port.in.RegisterUserUseCase;
+import com.onetwo.userservice.application.port.in.UpdateUserUseCase;
+import com.onetwo.userservice.application.port.in.WithdrawUserUseCase;
+import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
+import com.onetwo.userservice.application.service.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.common.GlobalUrl;
+import com.onetwo.userservice.common.config.SecurityConfig;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.time.Instant;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+@WebMvcTest(controllers = UserController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+                        SecurityConfig.class,
+                        OncePerRequestFilter.class
+                })
+        }
+)
+@AutoConfigureRestDocs
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private RegisterUserUseCase registerUserUseCase;
+
+    @MockBean
+    private ReadUserUseCase readUserUseCase;
+
+    @MockBean
+    private UpdateUserUseCase updateUserUseCase;
+
+    @MockBean
+    private WithdrawUserUseCase withdrawUserUseCase;
+
+    @Test
+    @DisplayName("[단위] 회원 회원가입 - 성공 테스트")
+    void registerUserSuccessTest() throws Exception {
+        //given
+        String userId = "newUserId";
+        String password = "password";
+        Instant birth = Instant.now();
+        String nickname = "newNickname";
+        String name = "tester";
+        String email = "onetwo12@onetwo.com";
+        String phoneNumber = "01098006069";
+        boolean userState = false;
+
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+
+        UserResponseDto savedUser = new UserResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
+
+        when(registerUserUseCase.registerUser(any(RegisterUserCommand.class))).thenReturn(savedUser);
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post(GlobalUrl.USER_ROOT)
+                        .content(objectMapper.writeValueAsString(registerUserRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        //then
+        resultActions.andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("[단위] 회원 ID 중복 체크 - 성공 테스트")
+    void userIdExistCheckSuccessTest() throws Exception {
+        //given
+        String userId = "newUserId";
+
+        UserIdExistCheckDto userIdExistCheckDto = new UserIdExistCheckDto(false);
+
+        when(readUserUseCase.userIdExistCheck(anyString())).thenReturn(userIdExistCheckDto);
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get(GlobalUrl.USER_ID + "/" + userId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
+    }
+}
