@@ -1,7 +1,7 @@
 package com.onetwo.userservice.application.port.out.user;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 
 public interface CreateUserPort {
-    User createNewUser(User newUser);
+    UserEntity createNewUser(UserEntity newUser);
 }

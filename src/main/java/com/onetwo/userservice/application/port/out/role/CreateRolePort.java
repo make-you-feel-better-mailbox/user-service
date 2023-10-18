@@ -1,12 +1,7 @@
 package com.onetwo.userservice.application.port.out.role;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.role.Role;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleNames;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
+import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleEntity;
 
 public interface CreateRolePort {
-
-    void createNewUserRole(User savedUser);
-
-    Role createRoleIfNotFound(RoleNames roleAdmin);
+    void saveNewRole(RoleEntity role);
 }

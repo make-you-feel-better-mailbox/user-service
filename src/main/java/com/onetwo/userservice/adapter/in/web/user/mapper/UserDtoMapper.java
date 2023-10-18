@@ -8,10 +8,10 @@ import com.onetwo.userservice.adapter.in.web.user.response.RegisterUserResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.UpdateUserResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.UserDetailResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.WithdrawResponse;
-import com.onetwo.userservice.application.port.in.command.LoginUserCommand;
-import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.in.command.UpdateUserCommand;
-import com.onetwo.userservice.application.port.in.command.WithdrawUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
 import com.onetwo.userservice.application.service.response.UserResponseDto;
 
 public class UserDtoMapper {

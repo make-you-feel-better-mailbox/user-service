@@ -2,10 +2,10 @@ package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
-import com.onetwo.userservice.application.port.in.RegisterUserUseCase;
-import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
@@ -114,7 +114,7 @@ class LoginControllerBootFailTest {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
 
-        User user = userRepository.findByUserId(userId).get();
+        UserEntity user = userRepository.findByUserId(userId).get();
         user.userWithdraw();
         userRepository.save(user);
 

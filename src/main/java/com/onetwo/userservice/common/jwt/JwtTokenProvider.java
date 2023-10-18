@@ -1,6 +1,5 @@
 package com.onetwo.userservice.common.jwt;
 
-import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -22,7 +21,6 @@ import java.util.Date;
 public class JwtTokenProvider implements TokenProvider {
 
     private final UserDetailsService userDetailsService;
-    private final CreateRefreshTokenPort createRefreshTokenPort;
     private final String secretKey;
     private final long tokenValidityInMs;
     private final long refreshTokenValidityInMs;
@@ -30,13 +28,11 @@ public class JwtTokenProvider implements TokenProvider {
     public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey,
                             @Value("${jwt.token-validity-in-sec}") long tokenValidity,
                             @Value("${jwt.refresh-token-validity-in-sec}") long refreshTokenValidity,
-                            UserDetailsService userDetailsService,
-                            CreateRefreshTokenPort createRefreshTokenPort) {
+                            UserDetailsService userDetailsService) {
         this.secretKey = secretKey;
         this.tokenValidityInMs = tokenValidity * 1000;
         this.refreshTokenValidityInMs = refreshTokenValidity * 1000;
         this.userDetailsService = userDetailsService;
-        this.createRefreshTokenPort = createRefreshTokenPort;
     }
 
     private Key key;

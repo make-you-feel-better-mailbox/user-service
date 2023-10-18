@@ -2,11 +2,11 @@ package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.application.port.in.ReadUserUseCase;
-import com.onetwo.userservice.application.port.in.RegisterUserUseCase;
-import com.onetwo.userservice.application.port.in.UpdateUserUseCase;
-import com.onetwo.userservice.application.port.in.WithdrawUserUseCase;
-import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
+import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
+import com.onetwo.userservice.application.port.in.user.usecase.UpdateUserUseCase;
+import com.onetwo.userservice.application.port.in.user.usecase.WithdrawUserUseCase;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.service.response.UserIdExistCheckDto;
 import com.onetwo.userservice.application.service.response.UserResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;

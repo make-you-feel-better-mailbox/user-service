@@ -1,13 +1,13 @@
 package com.onetwo.userservice.application.service.service;
 
 import com.onetwo.userservice.adapter.in.web.user.response.TokenResponse;
-import com.onetwo.userservice.adapter.out.persistence.entity.redis.RefreshToken;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
-import com.onetwo.userservice.application.port.in.*;
-import com.onetwo.userservice.application.port.in.command.LoginUserCommand;
-import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.in.command.UpdateUserCommand;
-import com.onetwo.userservice.application.port.in.command.WithdrawUserCommand;
+import com.onetwo.userservice.adapter.out.persistence.entity.token.RefreshTokenEntity;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.*;
 import com.onetwo.userservice.application.port.out.role.CreateRolePort;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
@@ -44,7 +44,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional(readOnly = true)
     public UserResponseDto getUserDetailInfo(String userId) {
-        User user = checkUserExistAndGetUserByUserId(userId);
+        UserEntity user = checkUserExistAndGetUserByUserId(userId);
 
         return UserConverter.of().userToUserResponseDto(user);
     }
@@ -52,7 +52,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional
     public UserResponseDto withdrawUser(WithdrawUserCommand withdrawDto) {
-        User user = checkUserExistAndGetUserByUserId(withdrawDto.getUserId());
+        UserEntity user = checkUserExistAndGetUserByUserId(withdrawDto.getUserId());
 
         checkUserPasswordMatched(withdrawDto.getPassword(), user);
 
@@ -66,7 +66,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional
     public UserResponseDto updateUser(String userId, UpdateUserCommand updateUserCommand) {
-        User user = checkUserExistAndGetUserByUserId(userId);
+        UserEntity user = checkUserExistAndGetUserByUserId(userId);
 
         checkUserWithdraw(user);
 
@@ -81,13 +81,13 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         if (userIdExist(registerUserCommand.getUserId()))
             throw new ResourceAlreadyExistsException("user-id already exist");
 
-        User newUser = UserConverter.of().userRequestDtoToUser(registerUserCommand);
+        UserEntity newUser = UserConverter.of().userRequestDtoToUser(registerUserCommand);
         newUser.setDefaultState();
         newUser.setEncodePassword(passwordEncoder.encode(registerUserCommand.getPassword()));
 
-        User savedUser = createUserPort.createNewUser(newUser);
+        UserEntity savedUser = createUserPort.createNewUser(newUser);
 
-        createRolePort.createNewUserRole(savedUser);
+        // createRolePort.createNewUserRole(savedUser); Event publisher로 대체 예정
 
         return UserConverter.of().userToUserResponseDto(savedUser);
     }
@@ -99,7 +99,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional
     public TokenResponse loginUser(LoginUserCommand loginUserCommand) {
-        User user = checkUserExistAndGetUserByUserId(loginUserCommand.getId());
+        UserEntity user = checkUserExistAndGetUserByUserId(loginUserCommand.getId());
 
         checkUserWithdraw(user);
 
@@ -109,23 +109,23 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         // refresh token 발급 및 저장
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getUuid());
-        RefreshToken token = RefreshToken.createRefreshTokenEntity(user.getUuid(), accessToken, refreshToken);
+        RefreshTokenEntity token = RefreshTokenEntity.createRefreshTokenEntity(user.getUuid(), accessToken, refreshToken);
 
         createRefreshTokenPort.saveRefreshToken(token);
 
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    private void checkUserWithdraw(User user) {
+    private void checkUserWithdraw(UserEntity user) {
         if (user.isUserWithdraw()) throw new BadRequestException("User already withdraw");
     }
 
-    private void checkUserPasswordMatched(String requestPassword, User user) {
+    private void checkUserPasswordMatched(String requestPassword, UserEntity user) {
         if (!passwordEncoder.matches(requestPassword, user.getPassword()))
             throw new BadRequestException("Password does not match");
     }
 
-    private User checkUserExistAndGetUserByUserId(String userId) {
+    private UserEntity checkUserExistAndGetUserByUserId(String userId) {
         return readUserPort.findByUserId(userId).orElseThrow(() -> new NotFoundResourceException("user-id does not exist"));
     }
 }

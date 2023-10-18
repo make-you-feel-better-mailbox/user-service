@@ -1,11 +1,12 @@
 package com.onetwo.userservice.common.config;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.role.Privilege;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.PrivilegeNames;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.Role;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleNames;
-import com.onetwo.userservice.application.port.out.role.CreatePrivilegePort;
-import com.onetwo.userservice.application.port.out.role.CreateRolePort;
+import com.onetwo.userservice.adapter.out.persistence.entity.role.PrivilegeEntity;
+import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleEntity;
+import com.onetwo.userservice.application.port.in.role.usecase.CreatePrivilegeUseCase;
+import com.onetwo.userservice.application.port.in.role.usecase.CreateRoleUseCase;
+import com.onetwo.userservice.application.port.in.role.usecase.MappingRoleUseCase;
+import com.onetwo.userservice.domain.role.PrivilegeNames;
+import com.onetwo.userservice.domain.role.RoleNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -20,27 +21,28 @@ import java.util.List;
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     boolean alreadySetup = false;
-    private final CreateRolePort createRolePort;
-    private final CreatePrivilegePort createPrivilegePort;
+    private final CreateRoleUseCase createRoleUseCase;
+    private final CreatePrivilegeUseCase createPrivilegeUseCase;
+    private final MappingRoleUseCase mappingRoleUseCase;
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) return;
 
-        Privilege readPrivilege
-                = createPrivilegePort.createPrivilegeIfNotFound(PrivilegeNames.READ_PRIVILEGE);
-        Privilege writePrivilege
-                = createPrivilegePort.createPrivilegeIfNotFound(PrivilegeNames.WRITE_PRIVILEGE);
+        PrivilegeEntity readPrivilege
+                = createPrivilegeUseCase.createPrivilegeIfNotFound(PrivilegeNames.READ_PRIVILEGE);
+        PrivilegeEntity writePrivilege
+                = createPrivilegeUseCase.createPrivilegeIfNotFound(PrivilegeNames.WRITE_PRIVILEGE);
 
-        List<Privilege> adminPrivilege = Arrays.asList(readPrivilege, writePrivilege);
-        List<Privilege> userPrivilege = Arrays.asList(readPrivilege);
+        List<PrivilegeEntity> adminPrivilege = Arrays.asList(readPrivilege, writePrivilege);
+        List<PrivilegeEntity> userPrivilege = Arrays.asList(readPrivilege);
 
-        Role adminRole = createRolePort.createRoleIfNotFound(RoleNames.ROLE_ADMIN);
-        Role userRole = createRolePort.createRoleIfNotFound(RoleNames.ROLE_USER);
+        RoleEntity adminRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_ADMIN);
+        RoleEntity userRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_USER);
 
-        createPrivilegePort.mappingRoleAndPrivilege(adminRole, adminPrivilege);
-        createPrivilegePort.mappingRoleAndPrivilege(userRole, userPrivilege);
+        mappingRoleUseCase.mappingRoleAndPrivilege(adminRole, adminPrivilege);
+        mappingRoleUseCase.mappingRoleAndPrivilege(userRole, userPrivilege);
 
         alreadySetup = true;
     }

@@ -1,12 +1,13 @@
 package com.onetwo.userservice.application.service.service;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.redis.RefreshToken;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
-import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
-import com.onetwo.userservice.application.port.in.ReissueAccessTokenUseCase;
-import com.onetwo.userservice.application.port.in.command.ReissueTokenCommand;
+import com.onetwo.userservice.adapter.out.persistence.entity.token.RefreshTokenEntity;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.application.port.in.token.usecase.ReissueAccessTokenUseCase;
+import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
+import com.onetwo.userservice.application.port.out.token.UpdateRefreshTokenPort;
+import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.response.ReissuedTokenDto;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
@@ -23,31 +24,34 @@ import java.util.Optional;
 public class ReissueAccessTokenService implements ReissueAccessTokenUseCase {
 
     private final CreateRefreshTokenPort createRefreshTokenPort;
+    private final UpdateRefreshTokenPort updateRefreshTokenPort;
     private final ReadRefreshTokenPort readRefreshTokenPort;
     private final TokenProvider tokenProvider;
-    private final UserRepository userRepository;
+    private final ReadUserPort readUserPort;
 
     @Override
-    public void saveRefreshToken(RefreshToken token) {
+    public void saveRefreshToken(RefreshTokenEntity token) {
         createRefreshTokenPort.saveRefreshToken(token);
     }
 
     @Override
     @Transactional
     public ReissuedTokenDto reissueAccessTokenByRefreshToken(ReissueTokenCommand reissueTokenCommand) {
-        Optional<RefreshToken> optionalRefreshToken = readRefreshTokenPort.findRefreshTokenByAccessToken(reissueTokenCommand.getAccessToken());
+        Optional<RefreshTokenEntity> optionalRefreshToken = readRefreshTokenPort.findRefreshTokenByAccessToken(reissueTokenCommand.getAccessToken());
 
         if (optionalRefreshToken.isEmpty()) throw new TokenValidationException(JwtCode.REFRESH_TOKEN_EXPIRED);
 
-        RefreshToken refreshToken = optionalRefreshToken.get();
+        RefreshTokenEntity refreshToken = optionalRefreshToken.get();
 
         tokenProvider.refreshTokenValidation(refreshToken.getRefreshToken());
 
-        User user = userRepository.findById(refreshToken.getUuid()).orElseThrow(() -> new NotFoundResourceException("User does not Exist"));
+        UserEntity user = readUserPort.findById(refreshToken.getUuid()).orElseThrow(() -> new NotFoundResourceException("User does not Exist"));
 
         String reissuedAccessToken = tokenProvider.createAccessToken(user.getUserId());
 
         refreshToken.setReissueAccessToken(reissuedAccessToken);
+
+        updateRefreshTokenPort.updateRefreshToken(refreshToken);
 
         return new ReissuedTokenDto(reissuedAccessToken);
     }

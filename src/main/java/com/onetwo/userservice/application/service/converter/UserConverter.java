@@ -1,7 +1,7 @@
 package com.onetwo.userservice.application.service.converter;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
-import com.onetwo.userservice.application.port.in.command.RegisterUserCommand;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.service.response.UserResponseDto;
 
 public class UserConverter {
@@ -17,8 +17,8 @@ public class UserConverter {
         return userConverter;
     }
 
-    public User userRequestDtoToUser(RegisterUserCommand registerUserCommand) {
-        return new User(null, registerUserCommand.getUserId(),
+    public UserEntity userRequestDtoToUser(RegisterUserCommand registerUserCommand) {
+        return new UserEntity(null, registerUserCommand.getUserId(),
                 null,
                 registerUserCommand.getBirth(),
                 registerUserCommand.getNickname(),
@@ -27,7 +27,7 @@ public class UserConverter {
                 registerUserCommand.getPhoneNumber(), null);
     }
 
-    public UserResponseDto userToUserResponseDto(User user) {
+    public UserResponseDto userToUserResponseDto(UserEntity user) {
         return new UserResponseDto(user.getUserId(),
                 user.getBirth(),
                 user.getNickname(),

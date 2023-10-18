@@ -1,8 +1,8 @@
 package com.onetwo.userservice.adapter.out.persistence.entity.role;
 
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,13 +20,13 @@ public class UserRole extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
-    private Role role;
+    private RoleEntity role;
 
-    public UserRole(User user, Role role) {
+    public UserRole(UserEntity user, RoleEntity role) {
         this.user = user;
         this.role = role;
         setCreateUser(GlobalStatus.SYSTEM);

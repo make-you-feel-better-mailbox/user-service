@@ -1,7 +1,7 @@
 package com.onetwo.userservice.adapter.in.web.token.mapper;
 
 import com.onetwo.userservice.adapter.in.web.token.request.ReissueTokenRequest;
-import com.onetwo.userservice.application.port.in.command.ReissueTokenCommand;
+import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
 
 public class TokenDtoMapper {
 
