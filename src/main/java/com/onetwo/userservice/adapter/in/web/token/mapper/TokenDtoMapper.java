@@ -1,20 +1,18 @@
 package com.onetwo.userservice.adapter.in.web.token.mapper;
 
 import com.onetwo.userservice.adapter.in.web.token.request.ReissueTokenRequest;
+import com.onetwo.userservice.adapter.in.web.user.response.TokenResponse;
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
+import com.onetwo.userservice.application.service.response.ReissuedTokenDto;
+import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
+import com.onetwo.userservice.application.service.response.TokenResponseDto;
 
-public class TokenDtoMapper {
+public interface TokenDtoMapper {
 
-    private static TokenDtoMapper tokenDtoMapper;
 
-    public static TokenDtoMapper of() {
-        if (tokenDtoMapper == null)
-            tokenDtoMapper = new TokenDtoMapper();
+    TokenResponse tokenDtoToTokenResponse(TokenResponseDto tokenResponseDto);
 
-        return tokenDtoMapper;
-    }
+    ReissueTokenCommand reissueTokenRequestToCommand(ReissueTokenRequest reissueTokenRequest);
 
-    public ReissueTokenCommand reissueTokenRequestToCommand(ReissueTokenRequest reissueTokenRequest) {
-        return new ReissueTokenCommand(reissueTokenRequest.accessToken(), reissueTokenRequest.refreshToken());
-    }
+    ReissuedTokenDto dtoToReissuedTokenDto(ReissuedTokenResponseDto reissuedTokenDto);
 }

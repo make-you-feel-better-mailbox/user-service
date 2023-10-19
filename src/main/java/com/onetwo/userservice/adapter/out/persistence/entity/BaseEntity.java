@@ -1,12 +1,12 @@
 package com.onetwo.userservice.adapter.out.persistence.entity;
 
+import com.onetwo.userservice.domain.BaseDomain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -34,4 +34,11 @@ public class BaseEntity {
 
     @Column
     private String updateUser;
+
+    public void setMetaDataByDomain(BaseDomain domain) {
+        this.setCreateUser(domain.getCreateUser());
+        this.setCreatedAt(domain.getCreatedAt());
+        this.setUpdateUser(domain.getUpdateUser());
+        this.setUpdatedAt(domain.getUpdatedAt());
+    }
 }

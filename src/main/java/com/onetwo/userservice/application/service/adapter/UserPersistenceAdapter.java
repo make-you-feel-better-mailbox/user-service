@@ -4,6 +4,8 @@ import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
+import com.onetwo.userservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,22 +13,47 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements ReadUserPort, CreateUserPort {
+public class UserPersistenceAdapter implements ReadUserPort, CreateUserPort, UpdateUserPort {
 
     private final UserRepository userRepository;
 
     @Override
-    public Optional<UserEntity> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
+    public Optional<User> findByUserId(String userId) {
+        Optional<UserEntity> userEntity = userRepository.findByUserId(userId);
+
+        return checkOptionalUserEntityAndConvertToOptionalDomain(userEntity);
     }
 
     @Override
-    public Optional<UserEntity> findById(Long uuid) {
-        return userRepository.findById(uuid);
+    public Optional<User> findById(Long uuid) {
+        Optional<UserEntity> userEntity = userRepository.findById(uuid);
+
+        return checkOptionalUserEntityAndConvertToOptionalDomain(userEntity);
     }
 
     @Override
-    public UserEntity createNewUser(UserEntity newUser) {
-        return userRepository.save(newUser);
+    public User registerNewUser(User requestRegisterUser) {
+        UserEntity newUser = UserEntity.domainToEntity(requestRegisterUser);
+
+        UserEntity savedUserEntity = userRepository.save(newUser);
+
+        return User.entityToDomain(savedUserEntity);
+    }
+
+    private Optional<User> checkOptionalUserEntityAndConvertToOptionalDomain(Optional<UserEntity> userEntity) {
+        if (userEntity.isPresent()) {
+            User user = User.entityToDomain(userEntity.get());
+
+            return Optional.of(user);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void updateUser(User user) {
+        UserEntity userEntity = UserEntity.domainToEntity(user);
+
+        userRepository.save(userEntity);
     }
 }

@@ -1,10 +1,10 @@
 package com.onetwo.userservice.application.port.in.role.usecase;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.domain.role.Role;
+import com.onetwo.userservice.domain.user.User;
 
 import java.util.List;
 
 public interface ReadRoleUseCase {
-    List<RoleEntity> getRolesByUser(UserEntity user);
+    List<Role> getRolesByUser(User user);
 }

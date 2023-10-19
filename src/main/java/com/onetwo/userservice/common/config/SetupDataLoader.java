@@ -1,11 +1,11 @@
 package com.onetwo.userservice.common.config;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.role.PrivilegeEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleEntity;
 import com.onetwo.userservice.application.port.in.role.usecase.CreatePrivilegeUseCase;
 import com.onetwo.userservice.application.port.in.role.usecase.CreateRoleUseCase;
 import com.onetwo.userservice.application.port.in.role.usecase.MappingRoleUseCase;
+import com.onetwo.userservice.domain.role.Privilege;
 import com.onetwo.userservice.domain.role.PrivilegeNames;
+import com.onetwo.userservice.domain.role.Role;
 import com.onetwo.userservice.domain.role.RoleNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -30,16 +30,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) return;
 
-        PrivilegeEntity readPrivilege
+        Privilege readPrivilege
                 = createPrivilegeUseCase.createPrivilegeIfNotFound(PrivilegeNames.READ_PRIVILEGE);
-        PrivilegeEntity writePrivilege
+        Privilege writePrivilege
                 = createPrivilegeUseCase.createPrivilegeIfNotFound(PrivilegeNames.WRITE_PRIVILEGE);
 
-        List<PrivilegeEntity> adminPrivilege = Arrays.asList(readPrivilege, writePrivilege);
-        List<PrivilegeEntity> userPrivilege = Arrays.asList(readPrivilege);
+        List<Privilege> adminPrivilege = Arrays.asList(readPrivilege, writePrivilege);
+        List<Privilege> userPrivilege = Arrays.asList(readPrivilege);
 
-        RoleEntity adminRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_ADMIN);
-        RoleEntity userRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_USER);
+        Role adminRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_ADMIN);
+        Role userRole = createRoleUseCase.createRoleIfNotFound(RoleNames.ROLE_USER);
 
         mappingRoleUseCase.mappingRoleAndPrivilege(adminRole, adminPrivilege);
         mappingRoleUseCase.mappingRoleAndPrivilege(userRole, userPrivilege);

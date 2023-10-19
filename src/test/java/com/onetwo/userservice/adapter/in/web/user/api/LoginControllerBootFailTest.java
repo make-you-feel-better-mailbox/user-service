@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
-import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
+import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,9 +115,13 @@ class LoginControllerBootFailTest {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
 
-        UserEntity user = userRepository.findByUserId(userId).get();
+        UserEntity userEntity = userRepository.findByUserId(userId).get();
+
+        User user = User.entityToDomain(userEntity);
         user.userWithdraw();
-        userRepository.save(user);
+        userEntity = UserEntity.domainToEntity(user);
+
+        userRepository.save(userEntity);
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 

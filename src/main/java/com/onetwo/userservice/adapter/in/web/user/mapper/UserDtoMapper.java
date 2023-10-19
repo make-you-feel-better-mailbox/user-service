@@ -12,70 +12,26 @@ import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
-import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.application.service.response.UserDetailResponseDto;
+import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.service.response.UserUpdateResponseDto;
+import com.onetwo.userservice.application.service.response.UserWithdrawResponseDto;
 
-public class UserDtoMapper {
+public interface UserDtoMapper {
 
-    private static UserDtoMapper userDtoMapper;
+    RegisterUserCommand registerRequestToCommand(RegisterUserRequest registerUserRequest);
 
-    public static UserDtoMapper of() {
-        if (userDtoMapper == null)
-            userDtoMapper = new UserDtoMapper();
+    RegisterUserResponse dtoToRegisterResponse(UserRegisterResponseDto savedUser);
 
-        return userDtoMapper;
-    }
+    LoginUserCommand loginRequestToCommand(LoginUserRequest loginUserRequest);
 
-    public RegisterUserCommand registerRequestToCommand(RegisterUserRequest registerUserRequest) {
-        return new RegisterUserCommand(registerUserRequest.userId(),
-                registerUserRequest.password(),
-                registerUserRequest.birth(),
-                registerUserRequest.nickname(),
-                registerUserRequest.name(),
-                registerUserRequest.email(),
-                registerUserRequest.phoneNumber());
-    }
+    UserDetailResponse dtoToUserDetailResponse(UserDetailResponseDto userDetailResponseDto);
 
-    public RegisterUserResponse dtoToRegisterResponse(UserResponseDto savedUser) {
-        return new RegisterUserResponse(savedUser.userId());
-    }
+    WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest);
 
-    public LoginUserCommand loginRequestToCommand(LoginUserRequest loginUserRequest) {
-        return new LoginUserCommand(loginUserRequest.userId(), loginUserRequest.password());
-    }
+    WithdrawResponse dtoToWithdrawResponse(UserWithdrawResponseDto userWithdrawResponseDto);
 
-    public UserDetailResponse dtoToUserDetailResponse(UserResponseDto userResponseDto) {
-        return new UserDetailResponse(userResponseDto.userId(),
-                userResponseDto.birth(),
-                userResponseDto.nickname(),
-                userResponseDto.name(),
-                userResponseDto.email(),
-                userResponseDto.phoneNumber(),
-                userResponseDto.state());
-    }
+    UpdateUserCommand updateRequestToCommand(UpdateUserRequest updateUserRequest);
 
-    public WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest) {
-        return new WithdrawUserCommand(withdrawUserRequest.userId(), withdrawUserRequest.password());
-    }
-
-    public WithdrawResponse dtoToWithdrawResponse(UserResponseDto userResponseDto) {
-        return new WithdrawResponse(userResponseDto.state());
-    }
-
-    public UpdateUserCommand updateRequestToCommand(UpdateUserRequest updateUserRequest) {
-        return new UpdateUserCommand(updateUserRequest.birth(),
-                updateUserRequest.nickname(),
-                updateUserRequest.name(),
-                updateUserRequest.email(),
-                updateUserRequest.phoneNumber());
-    }
-
-    public UpdateUserResponse dtoToUpdateResponse(UserResponseDto userResponseDto) {
-        return new UpdateUserResponse(userResponseDto.userId(),
-                userResponseDto.birth(),
-                userResponseDto.nickname(),
-                userResponseDto.name(),
-                userResponseDto.email(),
-                userResponseDto.phoneNumber(),
-                userResponseDto.state());
-    }
+    UpdateUserResponse dtoToUpdateResponse(UserUpdateResponseDto userUpdateResponseDto);
 }

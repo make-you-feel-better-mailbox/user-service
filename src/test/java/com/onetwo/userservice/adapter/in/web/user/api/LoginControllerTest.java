@@ -1,10 +1,12 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetwo.userservice.adapter.in.web.token.mapper.TokenDtoMapper;
+import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.response.TokenResponse;
-import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
+import com.onetwo.userservice.application.service.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import io.jsonwebtoken.Jwts;
@@ -57,6 +59,12 @@ class LoginControllerTest {
     @MockBean
     private LoginUseCase loginUseCase;
 
+    @MockBean
+    private UserDtoMapper userDtoMapper;
+
+    @MockBean
+    private TokenDtoMapper tokenDtoMapper;
+
     @Test
     @DisplayName("[단위] 회원 로그인 - 성공 테스트")
     void loginUserSuccessTest() throws Exception {
@@ -85,7 +93,7 @@ class LoginControllerTest {
                 .compact();
 
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
-        TokenResponse tokenResponse = new TokenResponse(token, refreshToken);
+        TokenResponseDto tokenResponse = new TokenResponseDto(token, refreshToken);
 
         when(loginUseCase.loginUser(any(LoginUserCommand.class))).thenReturn(tokenResponse);
         //when

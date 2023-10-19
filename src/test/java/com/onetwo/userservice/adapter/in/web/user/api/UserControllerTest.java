@@ -1,14 +1,15 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.UpdateUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.WithdrawUserUseCase;
-import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.service.response.UserIdExistCheckDto;
-import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -70,22 +71,24 @@ class UserControllerTest {
     @MockBean
     private WithdrawUserUseCase withdrawUserUseCase;
 
+    @MockBean
+    private UserDtoMapper userDtoMapper;
+
+    private final String userId = "newUserId";
+    private final String password = "password";
+    private final Instant birth = Instant.now();
+    private final String nickname = "newNickname";
+    private final String name = "tester";
+    private final String email = "onetwo12@onetwo.com";
+    private final String phoneNumber = "01098006069";
+
     @Test
     @DisplayName("[단위] 회원 회원가입 - 성공 테스트")
     void registerUserSuccessTest() throws Exception {
         //given
-        String userId = "newUserId";
-        String password = "password";
-        Instant birth = Instant.now();
-        String nickname = "newNickname";
-        String name = "tester";
-        String email = "onetwo12@onetwo.com";
-        String phoneNumber = "01098006069";
-        boolean userState = false;
-
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 
-        UserResponseDto savedUser = new UserResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
+        UserRegisterResponseDto savedUser = new UserRegisterResponseDto(userId);
 
         when(registerUserUseCase.registerUser(any(RegisterUserCommand.class))).thenReturn(savedUser);
         //when
@@ -103,8 +106,6 @@ class UserControllerTest {
     @DisplayName("[단위] 회원 ID 중복 체크 - 성공 테스트")
     void userIdExistCheckSuccessTest() throws Exception {
         //given
-        String userId = "newUserId";
-
         UserIdExistCheckDto userIdExistCheckDto = new UserIdExistCheckDto(false);
 
         when(readUserUseCase.userIdExistCheck(anyString())).thenReturn(userIdExistCheckDto);

@@ -1,8 +1,8 @@
 package com.onetwo.userservice.application.port.out.token;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.token.RefreshTokenEntity;
+import com.onetwo.userservice.domain.token.RefreshToken;
 
 public interface UpdateRefreshTokenPort {
 
-    void updateRefreshToken(RefreshTokenEntity token);
+    void updateRefreshToken(RefreshToken token);
 }

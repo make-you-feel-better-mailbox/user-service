@@ -1,9 +1,10 @@
 package com.onetwo.userservice.adapter.in.web.token.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetwo.userservice.application.port.in.token.usecase.ReissueAccessTokenUseCase;
+import com.onetwo.userservice.adapter.in.web.token.mapper.TokenDtoMapper;
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
-import com.onetwo.userservice.application.service.response.ReissuedTokenDto;
+import com.onetwo.userservice.application.port.in.token.usecase.ReissueAccessTokenUseCase;
+import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import io.jsonwebtoken.Jwts;
@@ -49,6 +50,9 @@ class ReissueTokenControllerTest {
     @MockBean
     private ReissueAccessTokenUseCase reissueAccessTokenUseCase;
 
+    @MockBean
+    private TokenDtoMapper tokenDtoMapper;
+
     private final String userId = "newUserId";
     private final Long uuid = 1L;
 
@@ -78,7 +82,7 @@ class ReissueTokenControllerTest {
 
         ReissueTokenCommand reissueTokenCommand = new ReissueTokenCommand(accessToken, refreshToken);
 
-        ReissuedTokenDto reissuedTokenDto = new ReissuedTokenDto(accessToken);
+        ReissuedTokenResponseDto reissuedTokenDto = new ReissuedTokenResponseDto(accessToken);
 
         when(reissueAccessTokenUseCase.reissueAccessTokenByRefreshToken(reissueTokenCommand)).thenReturn(reissuedTokenDto);
         //when

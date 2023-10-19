@@ -8,22 +8,21 @@ import com.onetwo.userservice.adapter.in.web.user.response.RegisterUserResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.UpdateUserResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.UserDetailResponse;
 import com.onetwo.userservice.adapter.in.web.user.response.WithdrawResponse;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.UpdateUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.WithdrawUserUseCase;
-import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
-import com.onetwo.userservice.application.service.response.UserIdExistCheckDto;
-import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.application.service.response.*;
 import com.onetwo.userservice.common.GlobalUrl;
+import com.onetwo.userservice.domain.user.MyUserDetail;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +33,7 @@ public class UserController {
     private final RegisterUserUseCase registerUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final WithdrawUserUseCase withdrawUserUseCase;
+    private final UserDtoMapper userDtoMapper;
 
 
     @GetMapping(GlobalUrl.USER_ID + "/{user-id}")
@@ -42,31 +42,32 @@ public class UserController {
     }
 
     @GetMapping(GlobalUrl.USER_ROOT)
-    public ResponseEntity<UserDetailResponse> getUserDetailInfo(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<UserDetailResponse> getUserDetailInfo(@AuthenticationPrincipal MyUserDetail userDetails) {
         String userId = userDetails.getUsername();
-        UserResponseDto userResponseDto = readUserUseCase.getUserDetailInfo(userId);
-        return ResponseEntity.ok().body(UserDtoMapper.of().dtoToUserDetailResponse(userResponseDto));
+        UserDetailResponseDto userDetailResponseDto = readUserUseCase.getUserDetailInfo(userId);
+        return ResponseEntity.ok().body(userDtoMapper.dtoToUserDetailResponse(userDetailResponseDto));
     }
 
     @PostMapping(GlobalUrl.USER_ROOT)
     public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
-        RegisterUserCommand registerUserCommand = UserDtoMapper.of().registerRequestToCommand(registerUserRequest);
-        UserResponseDto savedUser = registerUserUseCase.registerUser(registerUserCommand);
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserDtoMapper.of().dtoToRegisterResponse(savedUser));
+        RegisterUserCommand registerUserCommand = userDtoMapper.registerRequestToCommand(registerUserRequest);
+        UserRegisterResponseDto userRegisterResponseDto = registerUserUseCase.registerUser(registerUserCommand);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDtoMapper.dtoToRegisterResponse(userRegisterResponseDto));
     }
 
     @PutMapping(GlobalUrl.USER_ROOT)
-    public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest, @AuthenticationPrincipal MyUserDetail userDetails) {
         String userId = userDetails.getUsername();
-        UpdateUserCommand updateUserCommand = UserDtoMapper.of().updateRequestToCommand(updateUserRequest);
-        UserResponseDto userResponseDto = updateUserUseCase.updateUser(userId, updateUserCommand);
-        return ResponseEntity.ok().body(UserDtoMapper.of().dtoToUpdateResponse(userResponseDto));
+        UpdateUserCommand updateUserCommand = userDtoMapper.updateRequestToCommand(updateUserRequest);
+        UserUpdateResponseDto userUpdateResponseDto = updateUserUseCase.updateUser(userId, updateUserCommand);
+        return ResponseEntity.ok().body(userDtoMapper.dtoToUpdateResponse(userUpdateResponseDto));
     }
 
     @DeleteMapping(GlobalUrl.USER_ROOT)
-    public ResponseEntity<WithdrawResponse> withdrawUser(@RequestBody @Valid WithdrawUserRequest withdrawUserRequest) {
-        WithdrawUserCommand withdrawDto = UserDtoMapper.of().withdrawRequestToCommand(withdrawUserRequest);
-        UserResponseDto userResponseDto = withdrawUserUseCase.withdrawUser(withdrawDto);
-        return ResponseEntity.ok().body(UserDtoMapper.of().dtoToWithdrawResponse(userResponseDto));
+    public ResponseEntity<WithdrawResponse> withdrawUser(@RequestBody @Valid WithdrawUserRequest withdrawUserRequest, @AuthenticationPrincipal MyUserDetail userDetails) {
+        String userId = userDetails.getUsername();
+        WithdrawUserCommand withdrawDto = userDtoMapper.withdrawRequestToCommand(withdrawUserRequest);
+        UserWithdrawResponseDto userWithdrawResponseDto = withdrawUserUseCase.withdrawUser(withdrawDto, userId);
+        return ResponseEntity.ok().body(userDtoMapper.dtoToWithdrawResponse(userWithdrawResponseDto));
     }
 }

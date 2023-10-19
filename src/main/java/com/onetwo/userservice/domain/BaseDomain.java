@@ -1,5 +1,6 @@
 package com.onetwo.userservice.domain;
 
+import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -29,5 +30,12 @@ public class BaseDomain {
 
     protected void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
+    }
+
+    protected void setMetaDataByEntity(BaseEntity entity) {
+        this.setCreateUser(entity.getCreateUser());
+        this.setCreatedAt(entity.getCreatedAt());
+        this.setUpdateUser(entity.getUpdateUser());
+        this.setUpdatedAt(entity.getUpdatedAt());
     }
 }

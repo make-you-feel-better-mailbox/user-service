@@ -1,9 +1,10 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
@@ -53,6 +54,9 @@ class UserControllerValidationTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private UserDtoMapper userDtoMapper;
 
     private final String userId = "newUserId";
     private final String password = "password";
@@ -178,7 +182,7 @@ class UserControllerValidationTest {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
 
-        UserResponseDto savedUser = new UserResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
+        UserRegisterResponseDto savedUser = new UserRegisterResponseDto(userId);
 
         when(userService.registerUser(any(RegisterUserCommand.class))).thenReturn(savedUser);
         //when

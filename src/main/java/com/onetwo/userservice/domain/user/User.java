@@ -1,59 +1,83 @@
 package com.onetwo.userservice.domain.user;
 
-import com.onetwo.userservice.adapter.out.persistence.repository.converter.BooleanNumberConverter;
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
 import com.onetwo.userservice.domain.BaseDomain;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.Collection;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
-@Entity
-@Table(name = "users")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class User extends BaseDomain {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class User extends BaseDomain implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uuid;
 
-    @Column(nullable = false, unique = true)
     private String userId;
 
-    @Column(nullable = false, length = 300)
     private String password;
 
-    @Column(nullable = false)
-    @Convert(converter = Jsr310JpaConverters.InstantConverter.class)
     private Instant birth;
 
-    @Column(nullable = false, length = 15)
     private String nickname;
 
-    @Column(nullable = false, length = 200)
     private String name;
 
-    @Column(length = 123)
     private String email;
 
-    @Column(length = 20)
     private String phoneNumber;
 
-    @Column(nullable = false, length = 1)
-    @Convert(converter = BooleanNumberConverter.class)
     private Boolean state;
 
-    public void setDefaultState() {
+    public static User createNewUserByCommand(RegisterUserCommand registerUserCommand, String encoredPassword) {
+        User newUser = new User(
+                null,
+                registerUserCommand.getUserId(),
+                encoredPassword,
+                registerUserCommand.getBirth(),
+                registerUserCommand.getNickname(),
+                registerUserCommand.getName(),
+                registerUserCommand.getEmail(),
+                registerUserCommand.getPhoneNumber(),
+                null
+        );
+
+        newUser.setDefaultState();
+
+        return newUser;
+    }
+
+    public static User entityToDomain(UserEntity userEntity) {
+        User user = new User(
+                userEntity.getUuid(),
+                userEntity.getUserId(),
+                userEntity.getPassword(),
+                userEntity.getBirth(),
+                userEntity.getNickname(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                userEntity.getPhoneNumber(),
+                userEntity.getState()
+        );
+
+        user.setMetaDataByEntity(userEntity);
+
+        return user;
+    }
+
+    private void setDefaultState() {
         this.state = false;
         setCreatedAt(Instant.now());
         setCreateUser(this.userId);
     }
 
-    public void setEncodePassword(String encodedPassword) {
+    public void updateEncodePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
@@ -71,5 +95,35 @@ public class User extends BaseDomain {
         this.name = updateUserCommand.getName();
         this.email = updateUserCommand.getEmail();
         this.phoneNumber = updateUserCommand.getPhoneNumber();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

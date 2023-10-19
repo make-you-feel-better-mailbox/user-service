@@ -1,18 +1,16 @@
 package com.onetwo.userservice.adapter.out.persistence.entity.role;
 
+import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.common.GlobalStatus;
-import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class UserRole extends BaseEntity {
+public class UserRoleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +24,16 @@ public class UserRole extends BaseEntity {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
-    public UserRole(UserEntity user, RoleEntity role) {
+    private UserRoleEntity(Long id, UserEntity user, RoleEntity role) {
+        this.id = id;
         this.user = user;
         this.role = role;
-        setCreateUser(GlobalStatus.SYSTEM);
-        setCreatedAt(Instant.now());
+    }
+
+    public static UserRoleEntity createUserRole(UserEntity user, RoleEntity role) {
+        UserRoleEntity userRoleEntity = new UserRoleEntity(null, user, role);
+        userRoleEntity.setCreatedAt(Instant.now());
+        userRoleEntity.setCreateUser(GlobalStatus.SYSTEM);
+        return userRoleEntity;
     }
 }

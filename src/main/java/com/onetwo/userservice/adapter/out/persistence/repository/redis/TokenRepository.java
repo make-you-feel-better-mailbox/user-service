@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface RedisRepository extends CrudRepository<RefreshTokenEntity, Long> {
+public interface TokenRepository extends CrudRepository<RefreshTokenEntity, Long> {
     Optional<RefreshTokenEntity> findByAccessToken(String accessToken);
 }

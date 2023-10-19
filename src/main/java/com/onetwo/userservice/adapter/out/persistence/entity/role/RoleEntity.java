@@ -1,17 +1,13 @@
 package com.onetwo.userservice.adapter.out.persistence.entity.role;
 
-import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
+import com.onetwo.userservice.domain.role.Role;
 import com.onetwo.userservice.domain.role.RoleNames;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.Instant;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class RoleEntity extends BaseEntity {
 
     @Id
@@ -22,9 +18,14 @@ public class RoleEntity extends BaseEntity {
     @Column(nullable = false)
     private RoleNames roleName;
 
-    public RoleEntity(RoleNames roleName) {
+    private RoleEntity(Long id, RoleNames roleName) {
+        this.id = id;
         this.roleName = roleName;
-        setCreatedAt(Instant.now());
-        setCreateUser(GlobalStatus.SYSTEM);
+    }
+
+    public static RoleEntity domainToEntity(Role role) {
+        RoleEntity roleEntity = new RoleEntity(role.getId(), role.getRoleName());
+        roleEntity.setMetaDataByDomain(role);
+        return roleEntity;
     }
 }

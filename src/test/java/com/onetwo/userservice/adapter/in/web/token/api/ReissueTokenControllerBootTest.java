@@ -2,11 +2,11 @@ package com.onetwo.userservice.adapter.in.web.token.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.token.request.ReissueTokenRequest;
-import com.onetwo.userservice.adapter.in.web.user.response.TokenResponse;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
+import com.onetwo.userservice.application.service.response.TokenResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
@@ -80,7 +80,7 @@ class ReissueTokenControllerBootTest {
 
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 
-        TokenResponse tokenResponse = userService.loginUser(loginUserCommand);
+        TokenResponseDto tokenResponse = userService.loginUser(loginUserCommand);
 
         ReissueTokenRequest reissueTokenRequest = new ReissueTokenRequest(tokenResponse.accessToken(), tokenResponse.refreshToken());
 

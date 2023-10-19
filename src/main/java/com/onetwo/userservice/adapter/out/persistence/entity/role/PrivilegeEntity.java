@@ -1,17 +1,13 @@
 package com.onetwo.userservice.adapter.out.persistence.entity.role;
 
-import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.adapter.out.persistence.entity.BaseEntity;
+import com.onetwo.userservice.domain.role.Privilege;
 import com.onetwo.userservice.domain.role.PrivilegeNames;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.Instant;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class PrivilegeEntity extends BaseEntity {
 
     @Id
@@ -22,9 +18,14 @@ public class PrivilegeEntity extends BaseEntity {
     @Column(nullable = false)
     private PrivilegeNames privilegeName;
 
-    public PrivilegeEntity(PrivilegeNames privilegeName) {
+    public PrivilegeEntity(Long id, PrivilegeNames privilegeName) {
+        this.id = id;
         this.privilegeName = privilegeName;
-        setCreatedAt(Instant.now());
-        setCreateUser(GlobalStatus.SYSTEM);
+    }
+
+    public static PrivilegeEntity domainToEntity(Privilege privilege) {
+        PrivilegeEntity privilegeEntity = new PrivilegeEntity(privilege.getId(), privilege.getPrivilegeName());
+        privilegeEntity.setMetaDataByDomain(privilege);
+        return privilegeEntity;
     }
 }

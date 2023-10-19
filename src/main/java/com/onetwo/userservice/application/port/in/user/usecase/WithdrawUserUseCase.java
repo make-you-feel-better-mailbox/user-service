@@ -1,9 +1,9 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
-import com.onetwo.userservice.application.service.response.UserResponseDto;
+import com.onetwo.userservice.application.service.response.UserWithdrawResponseDto;
 
 public interface WithdrawUserUseCase {
 
-    UserResponseDto withdrawUser(WithdrawUserCommand withdrawDto);
+    UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawDto, String userId);
 }

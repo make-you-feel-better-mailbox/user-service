@@ -1,17 +1,12 @@
 package com.onetwo.userservice.application.service.service;
 
-import com.onetwo.userservice.adapter.out.persistence.entity.role.PrivilegeEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RoleEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.RolePrivilegeEntity;
-import com.onetwo.userservice.adapter.out.persistence.entity.role.UserRole;
-import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
-import com.onetwo.userservice.adapter.out.persistence.repository.role.RolePrivilegeRepository;
 import com.onetwo.userservice.application.port.in.role.usecase.CreateRoleUseCase;
 import com.onetwo.userservice.application.port.in.role.usecase.MappingRoleUseCase;
 import com.onetwo.userservice.application.port.in.role.usecase.ReadRoleUseCase;
 import com.onetwo.userservice.application.port.out.role.CreateRolePort;
 import com.onetwo.userservice.application.port.out.role.ReadRolePort;
-import com.onetwo.userservice.domain.role.RoleNames;
+import com.onetwo.userservice.domain.role.*;
+import com.onetwo.userservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,35 +21,30 @@ public class RoleService implements ReadRoleUseCase, CreateRoleUseCase, MappingR
 
     private final ReadRolePort readRolePort;
     private final CreateRolePort createRolePort;
-    private final RolePrivilegeRepository rolePrivilegeRepository;
 
     @Override
     @Transactional
-    public RoleEntity createRoleIfNotFound(RoleNames roleName) {
-        Optional<RoleEntity> optionalRole = readRolePort.findRoleByRoleName(roleName);
-
-        RoleEntity role;
+    public Role createRoleIfNotFound(RoleNames roleName) {
+        Optional<Role> optionalRole = readRolePort.findRoleByRoleName(roleName);
 
         if (optionalRole.isEmpty()) {
-            role = new RoleEntity(roleName);
-            createRolePort.saveNewRole(role);
-        } else role = optionalRole.get();
-
-        return role;
+            Role newRole = Role.createRoleByRoleName(roleName);
+            return createRolePort.saveNewRole(newRole);
+        } else return optionalRole.get();
     }
 
     @Override
-    public void mappingRoleAndPrivilege(RoleEntity adminRole, List<PrivilegeEntity> adminPrivilege) {
-        adminPrivilege.forEach(privilege -> {
-            Optional<RolePrivilegeEntity> optionalRolePrivilege = readRolePort.findRolePrivilegeByRoleAndPrivilege(adminRole, privilege);
+    public void mappingRoleAndPrivilege(Role role, List<Privilege> privileges) {
+        privileges.forEach(privilege -> {
+            Optional<RolePrivilege> optionalRolePrivilege = readRolePort.findRolePrivilegeByRoleAndPrivilege(role, privilege);
             if (optionalRolePrivilege.isEmpty()) {
-                rolePrivilegeRepository.save(new RolePrivilegeEntity(adminRole, privilege));
+                createRolePort.saveNewRolePrivilege(RolePrivilege.createRolePrivilege(role, privilege));
             }
         });
     }
 
     @Override
-    public List<RoleEntity> getRolesByUser(UserEntity user) {
+    public List<Role> getRolesByUser(User user) {
         List<UserRole> userRoles = readRolePort.findUserRoleByUser(user);
 
         if (userRoles == null || userRoles.isEmpty()) return Collections.emptyList();
