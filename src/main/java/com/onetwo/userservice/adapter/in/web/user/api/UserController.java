@@ -58,8 +58,8 @@ public class UserController {
     @PutMapping(GlobalUrl.USER_ROOT)
     public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest, @AuthenticationPrincipal MyUserDetail userDetails) {
         String userId = userDetails.getUsername();
-        UpdateUserCommand updateUserCommand = userDtoMapper.updateRequestToCommand(updateUserRequest);
-        UserUpdateResponseDto userUpdateResponseDto = updateUserUseCase.updateUser(userId, updateUserCommand);
+        UpdateUserCommand updateUserCommand = userDtoMapper.updateRequestToCommand(userId, updateUserRequest);
+        UserUpdateResponseDto userUpdateResponseDto = updateUserUseCase.updateUser(updateUserCommand);
         return ResponseEntity.ok().body(userDtoMapper.dtoToUpdateResponse(userUpdateResponseDto));
     }
 

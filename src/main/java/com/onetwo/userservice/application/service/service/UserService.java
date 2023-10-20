@@ -1,14 +1,14 @@
 package com.onetwo.userservice.application.service.service;
 
-import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.*;
 import com.onetwo.userservice.application.port.in.user.usecase.*;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
+import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
+import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
+import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.service.response.*;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
@@ -22,17 +22,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserUseCase, UpdateUserUseCase, WithdrawUserUseCase {
+public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserUseCase, UpdateUserUseCase, WithdrawUserUseCase, LogoutUseCase {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final CreateRefreshTokenPort createRefreshTokenPort;
+    private final DeleteRefreshTokenPort deleteRefreshTokenPort;
+    private final ReadRefreshTokenPort readRefreshTokenPort;
     private final ReadUserPort readUserPort;
     private final CreateUserPort createUserPort;
     private final UpdateUserPort updateUserPort;
     private final UserUseCaseConverter userUseCaseConverter;
+    private final TokenUseCaseConverter tokenUseCaseConverter;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -44,7 +50,6 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Transactional(readOnly = true)
     public UserDetailResponseDto getUserDetailInfo(String userId) {
         User user = checkUserExistAndGetUserByUserId(userId);
-
         return userUseCaseConverter.userToUserDetailResponseDto(user);
     }
 
@@ -68,8 +73,8 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
     @Override
     @Transactional
-    public UserUpdateResponseDto updateUser(String userId, UpdateUserCommand updateUserCommand) {
-        User user = checkUserExistAndGetUserByUserId(userId);
+    public UserUpdateResponseDto updateUser(UpdateUserCommand updateUserCommand) {
+        User user = checkUserExistAndGetUserByUserId(updateUserCommand.getUserId());
 
         checkUserWithdraw(user);
 
@@ -116,7 +121,21 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         createRefreshTokenPort.saveRefreshToken(token);
 
-        return new TokenResponseDto(accessToken, refreshToken);
+        return tokenUseCaseConverter.tokenToTokenResponseDto(token);
+    }
+
+    @Override
+    @Transactional
+    public LogoutResponseDto logoutUser(LogoutUserCommand logoutUserCommand) {
+        User user = checkUserExistAndGetUserByUserId(logoutUserCommand.getUserId());
+
+        Optional<RefreshToken> refreshToken = readRefreshTokenPort.findRefreshTokenById(user.getUuid());
+
+        refreshToken.ifPresent(deleteRefreshTokenPort::deleteRefreshToken);
+
+        boolean refreshTokenNotExist = readRefreshTokenPort.findRefreshTokenById(user.getUuid()).isEmpty();
+
+        return tokenUseCaseConverter.resultToLogoutResponseDto(refreshTokenNotExist);
     }
 
     private void checkUserWithdraw(User user) {

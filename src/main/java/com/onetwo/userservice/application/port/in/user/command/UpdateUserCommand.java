@@ -10,6 +10,8 @@ import java.time.Instant;
 @Getter
 public final class UpdateUserCommand extends SelfValidating<UpdateUserCommand> {
 
+    @NotEmpty
+    private final String userId;
     @NotNull
     private final Instant birth;
 
@@ -24,7 +26,8 @@ public final class UpdateUserCommand extends SelfValidating<UpdateUserCommand> {
 
     private final String phoneNumber;
 
-    public UpdateUserCommand(Instant birth, String nickname, String name, String email, String phoneNumber) {
+    public UpdateUserCommand(String userId, Instant birth, String nickname, String name, String email, String phoneNumber) {
+        this.userId = userId;
         this.birth = birth;
         this.nickname = nickname;
         this.name = name;

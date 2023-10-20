@@ -5,5 +5,5 @@ import com.onetwo.userservice.application.service.response.UserUpdateResponseDto
 
 public interface UpdateUserUseCase {
 
-    UserUpdateResponseDto updateUser(String userId, UpdateUserCommand updateUserCommand);
+    UserUpdateResponseDto updateUser(UpdateUserCommand updateUserCommand);
 }

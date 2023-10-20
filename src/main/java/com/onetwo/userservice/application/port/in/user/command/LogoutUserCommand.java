@@ -5,16 +5,13 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 @Getter
-public final class WithdrawUserCommand extends SelfValidating<WithdrawUserCommand> {
+public class LogoutUserCommand extends SelfValidating<LogoutUserCommand> {
 
     @NotEmpty
     private final String userId;
-    @NotEmpty
-    private final String password;
 
-    public WithdrawUserCommand(String userId, String password) {
+    public LogoutUserCommand(String userId) {
         this.userId = userId;
-        this.password = password;
         this.validateSelf();
     }
 }

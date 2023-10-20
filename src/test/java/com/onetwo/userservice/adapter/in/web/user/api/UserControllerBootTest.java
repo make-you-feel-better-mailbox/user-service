@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class UserControllerBootTest {
+class UserControllerBootTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -294,6 +294,45 @@ public class UserControllerBootTest {
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("변경된 유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("변경된 유저의 휴대폰 번호"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("[통합] 회원 로그아웃 - 성공 테스트")
+    void logoutUserSuccessTest() throws Exception {
+        //given
+        LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
+
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+
+        TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
+
+        HttpHeaders userWithdrawRequestHeader = new HttpHeaders();
+        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_TOKEN, tokenResponse.accessToken());
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                delete(GlobalUrl.USER_LOGIN)
+                        .headers(userWithdrawRequestHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user-logout",
+                                requestHeaders(
+                                        headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
+                                        headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key"),
+                                        headerWithName(GlobalStatus.ACCESS_TOKEN).description("유저의 access-token")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isLogoutSuccess").type(JsonFieldType.BOOLEAN).description("로그아웃 성공 여부")
                                 )
                         )
                 );

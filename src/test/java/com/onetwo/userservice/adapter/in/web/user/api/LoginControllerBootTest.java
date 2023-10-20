@@ -3,8 +3,8 @@ package com.onetwo.userservice.adapter.in.web.user.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
-import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.common.GlobalStatus;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class LoginControllerBootTest {
+class LoginControllerBootTest {
 
     @Autowired
     private MockMvc mockMvc;

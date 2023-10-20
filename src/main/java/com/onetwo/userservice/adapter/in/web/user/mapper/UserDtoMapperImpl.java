@@ -4,18 +4,9 @@ import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
 import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
 import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.response.RegisterUserResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.UpdateUserResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.UserDetailResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.WithdrawResponse;
-import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
-import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
-import com.onetwo.userservice.application.service.response.UserDetailResponseDto;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
-import com.onetwo.userservice.application.service.response.UserUpdateResponseDto;
-import com.onetwo.userservice.application.service.response.UserWithdrawResponseDto;
+import com.onetwo.userservice.adapter.in.web.user.response.*;
+import com.onetwo.userservice.application.port.in.user.command.*;
+import com.onetwo.userservice.application.service.response.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -64,8 +55,9 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     }
 
     @Override
-    public UpdateUserCommand updateRequestToCommand(UpdateUserRequest updateUserRequest) {
-        return new UpdateUserCommand(updateUserRequest.birth(),
+    public UpdateUserCommand updateRequestToCommand(String userId, UpdateUserRequest updateUserRequest) {
+        return new UpdateUserCommand(userId,
+                updateUserRequest.birth(),
                 updateUserRequest.nickname(),
                 updateUserRequest.name(),
                 updateUserRequest.email(),
@@ -81,6 +73,16 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 userResponseDto.email(),
                 userResponseDto.phoneNumber(),
                 userResponseDto.state());
+    }
+
+    @Override
+    public LogoutUserCommand logoutRequestToCommand(String userId) {
+        return new LogoutUserCommand(userId);
+    }
+
+    @Override
+    public LogoutResponse dtoToLogoutResponse(LogoutResponseDto logoutResponseDto) {
+        return new LogoutResponse(logoutResponseDto.isLogoutSuccess());
     }
 
 }
