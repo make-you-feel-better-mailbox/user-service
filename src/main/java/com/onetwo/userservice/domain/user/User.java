@@ -1,0 +1,129 @@
+package com.onetwo.userservice.domain.user;
+
+import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
+import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.domain.BaseDomain;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.Instant;
+import java.util.Collection;
+
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class User extends BaseDomain implements UserDetails {
+
+    private Long uuid;
+
+    private String userId;
+
+    private String password;
+
+    private Instant birth;
+
+    private String nickname;
+
+    private String name;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private Boolean state;
+
+    public static User createNewUserByCommand(RegisterUserCommand registerUserCommand, String encoredPassword) {
+        User newUser = new User(
+                null,
+                registerUserCommand.getUserId(),
+                encoredPassword,
+                registerUserCommand.getBirth(),
+                registerUserCommand.getNickname(),
+                registerUserCommand.getName(),
+                registerUserCommand.getEmail(),
+                registerUserCommand.getPhoneNumber(),
+                null
+        );
+
+        newUser.setDefaultState();
+
+        return newUser;
+    }
+
+    public static User entityToDomain(UserEntity userEntity) {
+        User user = new User(
+                userEntity.getUuid(),
+                userEntity.getUserId(),
+                userEntity.getPassword(),
+                userEntity.getBirth(),
+                userEntity.getNickname(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                userEntity.getPhoneNumber(),
+                userEntity.getState()
+        );
+
+        user.setMetaDataByEntity(userEntity);
+
+        return user;
+    }
+
+    private void setDefaultState() {
+        this.state = false;
+        setCreatedAt(Instant.now());
+        setCreateUser(this.userId);
+    }
+
+    public void updateEncodePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public boolean isUserWithdraw() {
+        return this.getState();
+    }
+
+    public void userWithdraw() {
+        this.state = true;
+    }
+
+    public void updateUserInfo(UpdateUserCommand updateUserCommand) {
+        this.birth = updateUserCommand.getBirth();
+        this.nickname = updateUserCommand.getNickname();
+        this.name = updateUserCommand.getName();
+        this.email = updateUserCommand.getEmail();
+        this.phoneNumber = updateUserCommand.getPhoneNumber();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
