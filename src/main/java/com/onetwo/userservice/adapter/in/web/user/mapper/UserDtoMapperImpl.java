@@ -45,8 +45,8 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     }
 
     @Override
-    public WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest) {
-        return new WithdrawUserCommand(withdrawUserRequest.userId(), withdrawUserRequest.password());
+    public WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest, String requestUserId) {
+        return new WithdrawUserCommand(withdrawUserRequest.userId(), withdrawUserRequest.password(), requestUserId);
     }
 
     @Override

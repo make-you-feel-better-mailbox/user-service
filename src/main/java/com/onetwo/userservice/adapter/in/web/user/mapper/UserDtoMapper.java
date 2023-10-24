@@ -18,7 +18,7 @@ public interface UserDtoMapper {
 
     UserDetailResponse dtoToUserDetailResponse(UserDetailResponseDto userDetailResponseDto);
 
-    WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest);
+    WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest, String requestUserId);
 
     WithdrawResponse dtoToWithdrawResponse(UserWithdrawResponseDto userWithdrawResponseDto);
 

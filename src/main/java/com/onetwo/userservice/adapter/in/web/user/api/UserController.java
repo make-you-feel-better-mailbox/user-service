@@ -65,9 +65,9 @@ public class UserController {
 
     @DeleteMapping(GlobalUrl.USER_ROOT)
     public ResponseEntity<WithdrawResponse> withdrawUser(@RequestBody @Valid WithdrawUserRequest withdrawUserRequest, @AuthenticationPrincipal MyUserDetail userDetails) {
-        String userId = userDetails.getUsername();
-        WithdrawUserCommand withdrawDto = userDtoMapper.withdrawRequestToCommand(withdrawUserRequest);
-        UserWithdrawResponseDto userWithdrawResponseDto = withdrawUserUseCase.withdrawUser(withdrawDto, userId);
+        String requestUserId = userDetails.getUsername();
+        WithdrawUserCommand withdrawDto = userDtoMapper.withdrawRequestToCommand(withdrawUserRequest, requestUserId);
+        UserWithdrawResponseDto userWithdrawResponseDto = withdrawUserUseCase.withdrawUser(withdrawDto);
         return ResponseEntity.ok().body(userDtoMapper.dtoToWithdrawResponse(userWithdrawResponseDto));
     }
 }

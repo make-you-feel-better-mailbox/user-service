@@ -1,9 +1,6 @@
 package com.onetwo.userservice.application.service.converter;
 
-import com.onetwo.userservice.application.service.response.UserDetailResponseDto;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
-import com.onetwo.userservice.application.service.response.UserUpdateResponseDto;
-import com.onetwo.userservice.application.service.response.UserWithdrawResponseDto;
+import com.onetwo.userservice.application.service.response.*;
 import com.onetwo.userservice.domain.user.User;
 import org.springframework.stereotype.Component;
 
@@ -43,5 +40,10 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     @Override
     public UserRegisterResponseDto userToUserRegisterResponseDto(User savedUser) {
         return new UserRegisterResponseDto(savedUser.getUserId());
+    }
+
+    @Override
+    public UserIdExistCheckDto toUserIdExistCheckDto(Boolean isUserIdExist) {
+        return new UserIdExistCheckDto(isUserIdExist);
     }
 }
