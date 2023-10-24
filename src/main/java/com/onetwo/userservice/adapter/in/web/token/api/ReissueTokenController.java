@@ -22,6 +22,12 @@ public class ReissueTokenController {
     private final ReissueAccessTokenUseCase reissueAccessTokenUseCase;
     private final TokenDtoMapper tokenDtoMapper;
 
+    /**
+     * Reissue Access token inbound adapter
+     *
+     * @param reissueTokenRequest Access token and Refresh token
+     * @return Reissued Access token
+     */
     @PostMapping(GlobalUrl.TOKEN_REFRESH)
     public ResponseEntity<ReissuedTokenDto> reissueAccessTokenByRefreshToken(@RequestBody @Valid ReissueTokenRequest reissueTokenRequest) {
         ReissueTokenCommand reissueTokenCommand = tokenDtoMapper.reissueTokenRequestToCommand(reissueTokenRequest);
