@@ -5,8 +5,10 @@ import com.onetwo.userservice.domain.role.Role;
 import com.onetwo.userservice.domain.role.RoleNames;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 @Getter
 public class RoleEntity extends BaseEntity {
 

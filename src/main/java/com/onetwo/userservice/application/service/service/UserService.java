@@ -2,6 +2,7 @@ package com.onetwo.userservice.application.service.service;
 
 import com.onetwo.userservice.application.port.in.user.command.*;
 import com.onetwo.userservice.application.port.in.user.usecase.*;
+import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublisherPort;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
@@ -38,6 +39,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     private final UpdateUserPort updateUserPort;
     private final UserUseCaseConverter userUseCaseConverter;
     private final TokenUseCaseConverter tokenUseCaseConverter;
+    private final UserRegisterEventPublisherPort userRegisterEventPublisherPort;
 
 
     /**
@@ -99,7 +101,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     /**
      * Check is request user id different with user id
      *
-     * @param withdrawUserCommand
+     * @param withdrawUserCommand request withdraw userid and requester id
      * @return Boolean about is different
      */
     private boolean isRequestUserIdDifferentWithUserId(WithdrawUserCommand withdrawUserCommand) {
@@ -145,7 +147,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         User savedUser = createUserPort.registerNewUser(newUser);
 
-        // createRolePort.createNewUserRole(savedUser); Event publisher로 대체 예정
+        userRegisterEventPublisherPort.publishEvent(savedUser);
 
         return userUseCaseConverter.userToUserRegisterResponseDto(savedUser);
     }
@@ -153,7 +155,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     /**
      * Check user id exist in persistence
      *
-     * @param userId
+     * @param userId check user id
      * @return boolean about user id exist in persistence
      */
     private boolean userIdExist(String userId) {
@@ -216,7 +218,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     /**
      * Check user withdraw. if user withdrew, then throw exception
      *
-     * @param user
+     * @param user withdraw check user
      */
     private void checkUserWithdraw(User user) {
         if (user.isUserWithdraw()) throw new BadRequestException("User already withdraw");
@@ -225,8 +227,8 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     /**
      * Check user password is matched, if is not throw exception
      *
-     * @param requestPassword
-     * @param user
+     * @param requestPassword request password
+     * @param user            user password
      */
     private void checkUserPasswordMatched(String requestPassword, User user) {
         if (!passwordEncoder.matches(requestPassword, user.getPassword()))
@@ -237,8 +239,8 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
      * Check user exist in persistence.
      * if exist then return user, if is not exist then throw exception
      *
-     * @param userId
-     * @return
+     * @param userId check and get user id
+     * @return return user when user exist and if not throw exception
      */
     private User checkUserExistAndGetUserByUserId(String userId) {
         return readUserPort.findByUserId(userId).orElseThrow(() -> new NotFoundResourceException("user-id does not exist"));
