@@ -4,5 +4,12 @@ import com.onetwo.userservice.domain.role.Privilege;
 import com.onetwo.userservice.domain.role.PrivilegeNames;
 
 public interface CreatePrivilegeUseCase {
-    Privilege createPrivilegeIfNotFound(PrivilegeNames readPrivilege);
+    /**
+     * Create privilege if not found use case,
+     * Save privilege if not found on persistence
+     *
+     * @param privilegeName privilegeName
+     * @return saved privilege
+     */
+    Privilege createPrivilegeIfNotFound(PrivilegeNames privilegeName);
 }

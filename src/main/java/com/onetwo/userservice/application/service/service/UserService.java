@@ -40,12 +40,27 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     private final TokenUseCaseConverter tokenUseCaseConverter;
 
 
+    /**
+     * User id exist check use case,
+     * user id is unique, so check before register user
+     *
+     * @param userId userId
+     * @return Boolean about user id already exist
+     */
     @Override
     @Transactional(readOnly = true)
     public UserIdExistCheckDto userIdExistCheck(String userId) {
-        return new UserIdExistCheckDto(userIdExist(userId));
+        Boolean isUserIdExist = userIdExist(userId);
+
+        return userUseCaseConverter.toUserIdExistCheckDto(isUserIdExist);
     }
 
+    /**
+     * Get about user detail information use case
+     *
+     * @param userId userId
+     * @return Detail Information about User
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetailResponseDto getUserDetailInfo(String userId) {
@@ -53,10 +68,20 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return userUseCaseConverter.userToUserDetailResponseDto(user);
     }
 
+    /**
+     * Withdraw user use case,
+     * Check user exist and request user is same with withdraw user,
+     * user can withdraw only him self
+     * if withdraw success user state ganna change true
+     *
+     * @param withdrawDto request userId and requester Id
+     * @return Boolean about withdraw success
+     */
     @Override
     @Transactional
-    public UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawDto, String userId) {
-        if (!userId.equals(withdrawDto.getUserId())) throw new BadRequestException("withdraw can only user self");
+    public UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawDto) {
+        if (isRequestUserIdDifferentWithUserId(withdrawDto))
+            throw new BadRequestException("withdraw can only user self");
 
         User user = checkUserExistAndGetUserByUserId(withdrawDto.getUserId());
 
@@ -71,6 +96,23 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return userUseCaseConverter.userToUserWithdrawResponseDto(user);
     }
 
+    /**
+     * Check is request user id different with user id
+     *
+     * @param withdrawUserCommand
+     * @return Boolean about is different
+     */
+    private boolean isRequestUserIdDifferentWithUserId(WithdrawUserCommand withdrawUserCommand) {
+        return !withdrawUserCommand.getRequestUserId().equals(withdrawUserCommand.getUserId());
+    }
+
+    /**
+     * Update user use case,
+     * Check user exist and update about user information
+     *
+     * @param updateUserCommand update user information with userId
+     * @return Updated user information
+     */
     @Override
     @Transactional
     public UserUpdateResponseDto updateUser(UpdateUserCommand updateUserCommand) {
@@ -85,6 +127,14 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return userUseCaseConverter.userToUserUpdateResponseDto(user);
     }
 
+    /**
+     * Register user use case,
+     * Check user id already exist, if exist throw exception.
+     * Also encode password and register user
+     *
+     * @param registerUserCommand request register user information
+     * @return Register Succeed User Id
+     */
     @Override
     @Transactional
     public UserRegisterResponseDto registerUser(RegisterUserCommand registerUserCommand) {
@@ -100,10 +150,26 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return userUseCaseConverter.userToUserRegisterResponseDto(savedUser);
     }
 
+    /**
+     * Check user id exist in persistence
+     *
+     * @param userId
+     * @return boolean about user id exist in persistence
+     */
     private boolean userIdExist(String userId) {
         return readUserPort.findByUserId(userId).isPresent();
     }
 
+    /**
+     * User login use case,
+     * Check user exist and state
+     * also check id and password matches
+     * if pass all check then issue Access token and Refresh token
+     * also save Refresh token to cache and return Refresh token and Access token
+     *
+     * @param loginUserCommand userId and password
+     * @return Refresh Token And Access Token
+     */
     @Override
     @Transactional
     public TokenResponseDto loginUser(LoginUserCommand loginUserCommand) {
@@ -111,7 +177,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         checkUserWithdraw(user);
 
-        checkUserPasswordMatched(loginUserCommand.getPw(), user);
+        checkUserPasswordMatched(loginUserCommand.getPassword(), user);
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
 
@@ -124,6 +190,15 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return tokenUseCaseConverter.tokenToTokenResponseDto(token);
     }
 
+    /**
+     * User logout use case,
+     * Check user exist and delete if Refresh Token exist
+     * After that check Refresh token exist in cache
+     * if does not exist, it's mean logout succeed
+     *
+     * @param logoutUserCommand userId
+     * @return Boolean about logout success
+     */
     @Override
     @Transactional
     public LogoutResponseDto logoutUser(LogoutUserCommand logoutUserCommand) {
@@ -138,15 +213,33 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
         return tokenUseCaseConverter.resultToLogoutResponseDto(refreshTokenNotExist);
     }
 
+    /**
+     * Check user withdraw. if user withdrew, then throw exception
+     *
+     * @param user
+     */
     private void checkUserWithdraw(User user) {
         if (user.isUserWithdraw()) throw new BadRequestException("User already withdraw");
     }
 
+    /**
+     * Check user password is matched, if is not throw exception
+     *
+     * @param requestPassword
+     * @param user
+     */
     private void checkUserPasswordMatched(String requestPassword, User user) {
         if (!passwordEncoder.matches(requestPassword, user.getPassword()))
             throw new BadRequestException("Password does not match");
     }
 
+    /**
+     * Check user exist in persistence.
+     * if exist then return user, if is not exist then throw exception
+     *
+     * @param userId
+     * @return
+     */
     private User checkUserExistAndGetUserByUserId(String userId) {
         return readUserPort.findByUserId(userId).orElseThrow(() -> new NotFoundResourceException("user-id does not exist"));
     }

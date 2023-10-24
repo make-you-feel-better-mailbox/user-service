@@ -10,11 +10,11 @@ public final class LoginUserCommand extends SelfValidating<LoginUserCommand> {
     @NotEmpty
     private final String id;
     @NotEmpty
-    private final String pw;
+    private final String password;
 
-    public LoginUserCommand(String id, String pw) {
+    public LoginUserCommand(String id, String password) {
         this.id = id;
-        this.pw = pw;
+        this.password = password;
         this.validateSelf();
     }
 }

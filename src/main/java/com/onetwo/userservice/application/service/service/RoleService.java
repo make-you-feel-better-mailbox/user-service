@@ -22,6 +22,13 @@ public class RoleService implements ReadRoleUseCase, CreateRoleUseCase, MappingR
     private final ReadRolePort readRolePort;
     private final CreateRolePort createRolePort;
 
+    /**
+     * Create role if not found use case,
+     * Save role if not found on persistence
+     *
+     * @param roleName roleName
+     * @return saved role
+     */
     @Override
     @Transactional
     public Role createRoleIfNotFound(RoleNames roleName) {
@@ -33,6 +40,13 @@ public class RoleService implements ReadRoleUseCase, CreateRoleUseCase, MappingR
         } else return optionalRole.get();
     }
 
+    /**
+     * Mapping role and privilege use case,
+     * on persistence 1:M (one-to-many) mapping
+     *
+     * @param role       role
+     * @param privileges List of privilege
+     */
     @Override
     public void mappingRoleAndPrivilege(Role role, List<Privilege> privileges) {
         privileges.forEach(privilege -> {
@@ -43,6 +57,13 @@ public class RoleService implements ReadRoleUseCase, CreateRoleUseCase, MappingR
         });
     }
 
+    /**
+     * Get roles by user use case,
+     * Find user's roles on persistence
+     *
+     * @param user user domain
+     * @return List of user's roles
+     */
     @Override
     public List<Role> getRolesByUser(User user) {
         List<UserRole> userRoles = readRolePort.findUserRoleByUser(user);

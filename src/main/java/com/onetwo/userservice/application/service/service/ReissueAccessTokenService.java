@@ -27,6 +27,14 @@ public class ReissueAccessTokenService implements ReissueAccessTokenUseCase {
     private final TokenProvider tokenProvider;
     private final ReadUserPort readUserPort;
 
+    /**
+     * Reissue Access token use case,
+     * Find Refresh token in cache and check validation Refresh token,
+     * And reissue Access token by Refresh token and update Access token in Refresh token domain
+     *
+     * @param reissueTokenCommand
+     * @return Reissued Access token
+     */
     @Override
     @Transactional
     public ReissuedTokenResponseDto reissueAccessTokenByRefreshToken(ReissueTokenCommand reissueTokenCommand) {

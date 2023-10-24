@@ -5,5 +5,13 @@ import com.onetwo.userservice.application.service.response.UserRegisterResponseD
 
 public interface RegisterUserUseCase {
 
+    /**
+     * Register user use case,
+     * Check user id already exist, if exist throw exception.
+     * Also encode password and register user
+     *
+     * @param registerUserCommand request register user information
+     * @return Register Succeed User Id
+     */
     UserRegisterResponseDto registerUser(RegisterUserCommand registerUserCommand);
 }

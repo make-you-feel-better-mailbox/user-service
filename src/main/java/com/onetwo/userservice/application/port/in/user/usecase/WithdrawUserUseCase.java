@@ -11,7 +11,7 @@ public interface WithdrawUserUseCase {
      * user can withdraw only him self
      * if withdraw success user state ganna change true
      *
-     * @param withdrawUserCommand
+     * @param withdrawUserCommand request userId and requester Id
      * @return Boolean about withdraw success
      */
     UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawUserCommand);
