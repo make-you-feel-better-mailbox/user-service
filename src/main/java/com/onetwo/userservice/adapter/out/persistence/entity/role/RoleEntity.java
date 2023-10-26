@@ -20,7 +20,7 @@ public class RoleEntity extends BaseEntity {
     @Column(nullable = false)
     private RoleNames roleName;
 
-    private RoleEntity(Long id, RoleNames roleName) {
+    public RoleEntity(Long id, RoleNames roleName) {
         this.id = id;
         this.roleName = roleName;
     }

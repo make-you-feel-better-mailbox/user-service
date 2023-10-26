@@ -53,12 +53,12 @@ class ReissueTokenControllerTest {
     @MockBean
     private TokenDtoMapper tokenDtoMapper;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final Long uuid = 1L;
 
 
     @Test
-    @DisplayName("[단위] Access Token 재발급 - 성공 테스트")
+    @DisplayName("[단위][Web Adapter] Access Token 재발급 - 성공 테스트")
     void reissueAccessTokenByRefreshTokenSuccessTest() throws Exception {
         //given
         long tokenValidityInMs = 1000;

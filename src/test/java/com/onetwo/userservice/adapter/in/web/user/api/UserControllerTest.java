@@ -74,7 +74,7 @@ class UserControllerTest {
     @MockBean
     private UserDtoMapper userDtoMapper;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -83,7 +83,7 @@ class UserControllerTest {
     private final String phoneNumber = "01098006069";
 
     @Test
-    @DisplayName("[단위] 회원 회원가입 - 성공 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 - 성공 테스트")
     void registerUserSuccessTest() throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -103,7 +103,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[단위] 회원 ID 중복 체크 - 성공 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 ID 중복 체크 - 성공 테스트")
     void userIdExistCheckSuccessTest() throws Exception {
         //given
         UserIdExistCheckDto userIdExistCheckDto = new UserIdExistCheckDto(false);

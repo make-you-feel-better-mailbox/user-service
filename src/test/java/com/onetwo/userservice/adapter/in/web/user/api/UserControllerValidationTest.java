@@ -58,7 +58,7 @@ class UserControllerValidationTest {
     @MockBean
     private UserDtoMapper userDtoMapper;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -69,7 +69,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 userId - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 userId - 실패 테스트")
     void registerUserValidationUserIdFailTest(String userId) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -87,7 +87,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 password - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 password - 실패 테스트")
     void registerUserValidationPasswordFailTest(String password) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -105,7 +105,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 birth - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 birth - 실패 테스트")
     void registerUserValidationBirthFailTest(Instant birth) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -123,7 +123,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 nickname - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 nickname - 실패 테스트")
     void registerUserValidationNicknameFailTest(String nickname) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -141,7 +141,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 name - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 name - 실패 테스트")
     void registerUserValidationNameFailTest(String name) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -159,7 +159,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 email - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 email - 실패 테스트")
     void registerUserValidationEmailFailTest(String email) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -177,7 +177,7 @@ class UserControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] 회원 회원가입 유효성검사 phoneNumber null - 성공 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 회원가입 유효성검사 phoneNumber null - 성공 테스트")
     void registerUserValidationPhoneNumberNullSuccessTest(String phoneNumber) throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);

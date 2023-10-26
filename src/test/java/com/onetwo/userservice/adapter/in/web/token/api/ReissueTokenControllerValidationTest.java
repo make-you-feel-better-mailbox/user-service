@@ -56,12 +56,12 @@ class ReissueTokenControllerValidationTest {
     @MockBean
     private TokenDtoMapper tokenDtoMapper;
 
-    private String userId = "newUserId";
+    private String userId = "12OneTwo12";
 
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] Access Token 재발급 accessToken 유효성 검사 - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] Access Token 재발급 accessToken 유효성 검사 - 실패 테스트")
     void reissueAccessTokenAccessTokenValidationFailTest(String accessToken) throws Exception {
         //given
         long tokenValidityInMs = 1000;
@@ -95,7 +95,7 @@ class ReissueTokenControllerValidationTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("[단위] Access Token 재발급 refreshToken 유효성 검사 - 실패 테스트")
+    @DisplayName("[단위][Web Adapter] Access Token 재발급 refreshToken 유효성 검사 - 실패 테스트")
     void reissueAccessTokenRefreshTokenValidationFailTest(String refreshToken) throws Exception {
         //given
         long tokenValidityInMs = 1000;

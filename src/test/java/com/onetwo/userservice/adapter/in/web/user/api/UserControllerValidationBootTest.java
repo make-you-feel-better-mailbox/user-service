@@ -46,7 +46,7 @@ class UserControllerValidationBootTest {
     @Autowired
     private RegisterUserUseCase registerUserUseCase;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -65,7 +65,7 @@ class UserControllerValidationBootTest {
     @ParameterizedTest
     @NullSource
     @WithMockUser(username = userId)
-    @DisplayName("[통합] 회원 수정 유효성검사 birth - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 birth - 실패 테스트")
     void updateUserValidationBirthFailTest(Instant birth) throws Exception {
         //given
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
@@ -85,7 +85,7 @@ class UserControllerValidationBootTest {
     @ParameterizedTest
     @NullAndEmptySource
     @WithMockUser(username = userId)
-    @DisplayName("[통합] 회원 수정 유효성검사 nickname - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 nickname - 실패 테스트")
     void updateUserValidationNicknameFailTest(String nickname) throws Exception {
         //given
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
@@ -105,7 +105,7 @@ class UserControllerValidationBootTest {
     @ParameterizedTest
     @NullAndEmptySource
     @WithMockUser(username = userId)
-    @DisplayName("[통합] 회원 수정 유효성검사 name - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 name - 실패 테스트")
     void updateUserValidationNameFailTest(String name) throws Exception {
         //given
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
@@ -125,7 +125,7 @@ class UserControllerValidationBootTest {
     @ParameterizedTest
     @NullAndEmptySource
     @WithMockUser(username = userId)
-    @DisplayName("[통합] 회원 수정 유효성검사 email - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 email - 실패 테스트")
     void updateUserValidationEmailFailTest(String email) throws Exception {
         //given
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
@@ -145,7 +145,7 @@ class UserControllerValidationBootTest {
     @NullAndEmptySource
     @Transactional
     @WithMockUser(username = userId)
-    @DisplayName("[통합] 회원 수정 유효성검사 phoneNumber null - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 phoneNumber null - 성공 테스트")
     void updateUserValidationPhoneNumberNullSuccessTest(String phoneNumber) throws Exception {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, this.phoneNumber));

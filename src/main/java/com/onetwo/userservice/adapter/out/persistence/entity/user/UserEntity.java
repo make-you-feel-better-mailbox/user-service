@@ -49,7 +49,7 @@ public class UserEntity extends BaseEntity {
     @Convert(converter = BooleanNumberConverter.class)
     private Boolean state;
 
-    private UserEntity(Long uuid, String userId, String password, Instant birth, String nickname, String name, String email, String phoneNumber, Boolean state) {
+    public UserEntity(Long uuid, String userId, String password, Instant birth, String nickname, String name, String email, String phoneNumber, Boolean state) {
         this.uuid = uuid;
         this.userId = userId;
         this.password = password;

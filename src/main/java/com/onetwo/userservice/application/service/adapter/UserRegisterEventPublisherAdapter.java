@@ -13,6 +13,11 @@ public class UserRegisterEventPublisherAdapter implements UserRegisterEventPubli
 
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * Publish event when user registered
+     *
+     * @param savedUser registered user
+     */
     @Override
     public void publishEvent(User savedUser) {
         RegisterUserEvent registerUserEvent = new RegisterUserEvent(savedUser.getUserId());

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerBootFailTest {
+class UserControllerBootFailTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +50,7 @@ public class UserControllerBootFailTest {
     @Autowired
     private LoginUseCase loginUseCase;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -68,7 +68,7 @@ public class UserControllerBootFailTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 회원가입 User Id Already Exist - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 회원가입 User Id Already Exist - 실패 테스트")
     void registerUserAlreadyExistFailTest() throws Exception {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
@@ -89,7 +89,7 @@ public class UserControllerBootFailTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 탈퇴 타회원 탈퇴요청 실패 - 실패 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 탈퇴 타회원 탈퇴요청 실패 - 실패 테스트")
     void withdrawUserWrongUserRequestFailTest() throws Exception {
         //given
         String otherUserId = "otherUserId";

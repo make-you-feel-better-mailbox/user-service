@@ -52,8 +52,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional(readOnly = true)
     public UserIdExistCheckDto userIdExistCheck(String userId) {
-        Boolean isUserIdExist = userIdExist(userId);
-
+        Boolean isUserIdExist = isUserIdExist(userId);
         return userUseCaseConverter.toUserIdExistCheckDto(isUserIdExist);
     }
 
@@ -140,7 +139,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     @Override
     @Transactional
     public UserRegisterResponseDto registerUser(RegisterUserCommand registerUserCommand) {
-        if (userIdExist(registerUserCommand.getUserId()))
+        if (isUserIdExist(registerUserCommand.getUserId()))
             throw new ResourceAlreadyExistsException("user-id already exist");
 
         User newUser = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(registerUserCommand.getPassword()));
@@ -158,7 +157,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
      * @param userId check user id
      * @return boolean about user id exist in persistence
      */
-    private boolean userIdExist(String userId) {
+    private boolean isUserIdExist(String userId) {
         return readUserPort.findByUserId(userId).isPresent();
     }
 

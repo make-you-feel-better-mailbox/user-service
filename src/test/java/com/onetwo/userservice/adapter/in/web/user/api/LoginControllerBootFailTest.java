@@ -1,7 +1,7 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
@@ -50,7 +50,7 @@ class LoginControllerBootFailTest {
     @Autowired
     private UserRepository userRepository;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -68,16 +68,16 @@ class LoginControllerBootFailTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그인 Id 미존재 - 실패 테스트")
-    void registerUserDoesNotExistFailTest() throws Exception {
+    @DisplayName("[통합][Web Adapter] 회원 로그인 Id 미존재 - 실패 테스트")
+    void loginUserDoesNotExistFailTest() throws Exception {
         //given
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+        LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerUserRequest))
+                        .content(objectMapper.writeValueAsString(loginUserRequest))
                         .headers(httpHeaders)
                         .accept(MediaType.APPLICATION_JSON));
         //then
@@ -87,20 +87,20 @@ class LoginControllerBootFailTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그인 Password Not Matched - 실패 테스트")
-    void registerPasswordNotMatchedFailTest() throws Exception {
+    @DisplayName("[통합][Web Adapter] 회원 로그인 Password Not Matched - 실패 테스트")
+    void loginPasswordNotMatchedFailTest() throws Exception {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
 
         String notMatchedPassword = "notMatchedPassword";
 
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, notMatchedPassword, birth, nickname, name, email, phoneNumber);
+        LoginUserRequest loginUserRequest = new LoginUserRequest(userId, notMatchedPassword);
 
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerUserRequest))
+                        .content(objectMapper.writeValueAsString(loginUserRequest))
                         .headers(httpHeaders)
                         .accept(MediaType.APPLICATION_JSON));
         //then
@@ -110,8 +110,8 @@ class LoginControllerBootFailTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그인 User Withdraw - 실패 테스트")
-    void registerUserWithdrawFailTest() throws Exception {
+    @DisplayName("[통합][Web Adapter] 회원 로그인 User Withdraw - 실패 테스트")
+    void loginUserWithdrawFailTest() throws Exception {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
 
@@ -123,13 +123,13 @@ class LoginControllerBootFailTest {
 
         userRepository.save(userEntity);
 
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+        LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
         //when
         ResultActions resultActions = mockMvc.perform(
                 post(GlobalUrl.USER_LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerUserRequest))
+                        .content(objectMapper.writeValueAsString(loginUserRequest))
                         .headers(httpHeaders)
                         .accept(MediaType.APPLICATION_JSON));
         //then

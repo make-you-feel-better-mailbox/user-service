@@ -92,7 +92,7 @@ public class RoleService implements ReadRoleUseCase, CreateRoleUseCase, MappingR
     @Override
     @Transactional
     public void createDefaultUserRole(CreateDefaultUserRoleCommand createDefaultUserRoleCommand) {
-        User user = readUserPort.findByUserId(createDefaultUserRoleCommand.userId()).orElseThrow(() -> new NotFoundResourceException("user does not exist"));
+        User user = readUserPort.findByUserId(createDefaultUserRoleCommand.getUserId()).orElseThrow(() -> new NotFoundResourceException("user does not exist"));
         Optional<Role> optionalRole = readRolePort.findRoleByRoleName(RoleNames.ROLE_USER);
 
         Role role;

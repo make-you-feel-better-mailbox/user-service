@@ -70,10 +70,10 @@ class LoginControllerTest {
     private LogoutUseCase logoutUseCase;
 
     @Test
-    @DisplayName("[단위] 회원 로그인 - 성공 테스트")
+    @DisplayName("[단위][Web Adapter] 회원 로그인 - 성공 테스트")
     void loginUserSuccessTest() throws Exception {
         //given
-        String userId = "newUserId";
+        String userId = "12OneTwo12";
         Long uuid = 1L;
         String password = "password";
 

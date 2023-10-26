@@ -37,7 +37,7 @@ class UserRegisterEventListenerTest {
     @Autowired
     private ReadRolePort readRolePort;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -47,8 +47,8 @@ class UserRegisterEventListenerTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] Create default user role when register user - 성공 테스트")
-    void createDefaultUserRoleSuccess() {
+    @DisplayName("[통합][Event Adapter] Create default user role when register user - 성공 테스트")
+    void createDefaultUserRoleSuccessTest() {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
 
         registerUserUseCase.registerUser(registerUserCommand);
