@@ -1,10 +1,7 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
@@ -294,6 +291,55 @@ class UserControllerBootTest {
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("변경된 유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("변경된 유저의 휴대폰 번호"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("[통합][Web Adapter] 회원 비밀번호 수정 - 성공 테스트")
+    void updateUserPasswordSuccessTest() throws Exception {
+        //given
+        LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
+
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+
+        TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
+
+        String newPassword = "newPassword";
+
+        UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, newPassword, newPassword);
+
+        HttpHeaders updateUserRequestHeader = new HttpHeaders();
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_TOKEN, tokenResponse.accessToken());
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                put(GlobalUrl.USER_PW)
+                        .headers(updateUserRequestHeader)
+                        .content(objectMapper.writeValueAsString(updateUserPasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user-password-update",
+                                requestHeaders(
+                                        headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
+                                        headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key"),
+                                        headerWithName(GlobalStatus.ACCESS_TOKEN).description("유저의 access-token")
+                                ),
+                                requestFields(
+                                        fieldWithPath("currentPassword").type(JsonFieldType.STRING).description("변경할 유저의 기존 Password"),
+                                        fieldWithPath("newPassword").type(JsonFieldType.STRING).description("유저의 변경할 Password"),
+                                        fieldWithPath("newPasswordCheck").type(JsonFieldType.STRING).description("유저의 변경할 Password (newPassword 와 동일한 값으로 보내야 함)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("비밀번호 변경 성공 유무 ( True: 성공, False: 실패 )")
                                 )
                         )
                 );

@@ -46,4 +46,9 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserIdExistCheckDto toUserIdExistCheckDto(Boolean isUserIdExist) {
         return new UserIdExistCheckDto(isUserIdExist);
     }
+
+    @Override
+    public UserUpdatePasswordResponseDto toUserUpdatePasswordResponseDto(boolean userPasswordUpdated) {
+        return new UserUpdatePasswordResponseDto(userPasswordUpdated);
+    }
 }

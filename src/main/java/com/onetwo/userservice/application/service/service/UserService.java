@@ -129,6 +129,47 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     }
 
     /**
+     * Update user password Use case,
+     * Check user exist and check current password, new password, new password check
+     *
+     * @param updateUserPasswordCommand request update password information
+     * @return Boolean about update success
+     */
+    @Override
+    @Transactional
+    public UserUpdatePasswordResponseDto updatePassword(UpdateUserPasswordCommand updateUserPasswordCommand) {
+        User user = checkUserExistAndGetUserByUserId(updateUserPasswordCommand.getUserId());
+
+        checkUserWithdraw(user);
+
+        checkUserPasswordMatched(updateUserPasswordCommand.getCurrentPassword(), user);
+
+        if (isNewPasswordNotEqualsWithNewPasswordCheck(updateUserPasswordCommand))
+            throw new BadRequestException("new password does not same with new password check");
+
+        if (isPasswordMatches(updateUserPasswordCommand.getNewPassword(), user))
+            throw new BadRequestException("new password same with current password");
+
+        user.updateEncodePassword(passwordEncoder.encode(updateUserPasswordCommand.getNewPassword()));
+
+        updateUserPort.updateUser(user);
+
+        boolean userPasswordUpdated = !isPasswordMatches(updateUserPasswordCommand.getCurrentPassword(), user);
+
+        return userUseCaseConverter.toUserUpdatePasswordResponseDto(userPasswordUpdated);
+    }
+
+    /**
+     * check new password is matched with new password check
+     *
+     * @param updateUserPasswordCommand request update password information
+     * @return Boolean about is equals
+     */
+    private boolean isNewPasswordNotEqualsWithNewPasswordCheck(UpdateUserPasswordCommand updateUserPasswordCommand) {
+        return !updateUserPasswordCommand.getNewPassword().equals(updateUserPasswordCommand.getNewPasswordCheck());
+    }
+
+    /**
      * Register user use case,
      * Check user id already exist, if exist throw exception.
      * Also encode password and register user
@@ -224,14 +265,25 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     }
 
     /**
-     * Check user password is matched, if is not throw exception
+     * Check user password is matched and if is not throw exception
      *
      * @param requestPassword request password
-     * @param user            user password
+     * @param user            user
      */
     private void checkUserPasswordMatched(String requestPassword, User user) {
-        if (!passwordEncoder.matches(requestPassword, user.getPassword()))
+        if (!isPasswordMatches(requestPassword, user))
             throw new BadRequestException("Password does not match");
+    }
+
+    /**
+     * check user password is matched
+     *
+     * @param requestPassword request password
+     * @param user            user
+     * @return boolean about password matches
+     */
+    private boolean isPasswordMatches(String requestPassword, User user) {
+        return passwordEncoder.matches(requestPassword, user.getPassword());
     }
 
     /**

@@ -2,14 +2,13 @@ package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserPasswordRequest;
 import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
 import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.response.RegisterUserResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.UpdateUserResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.UserDetailResponse;
-import com.onetwo.userservice.adapter.in.web.user.response.WithdrawResponse;
+import com.onetwo.userservice.adapter.in.web.user.response.*;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.in.user.command.UpdateUserPasswordCommand;
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
@@ -100,5 +99,20 @@ public class UserController {
         WithdrawUserCommand withdrawDto = userDtoMapper.withdrawRequestToCommand(withdrawUserRequest, requestUserId);
         UserWithdrawResponseDto userWithdrawResponseDto = withdrawUserUseCase.withdrawUser(withdrawDto);
         return ResponseEntity.ok().body(userDtoMapper.dtoToWithdrawResponse(userWithdrawResponseDto));
+    }
+
+    /**
+     * Update user password inbound adapter
+     *
+     * @param updateUserPasswordRequest request update password information
+     * @param userDetails               user authentication information
+     * @return Boolean about update success
+     */
+    @PutMapping(GlobalUrl.USER_PW)
+    public ResponseEntity<UpdateUserPasswordResponse> updatePassword(@RequestBody @Valid UpdateUserPasswordRequest updateUserPasswordRequest, @AuthenticationPrincipal MyUserDetail userDetails) {
+        String userId = userDetails.getUsername();
+        UpdateUserPasswordCommand updateUserPasswordCommand = userDtoMapper.updatePasswordRequestToCommand(userId, updateUserPasswordRequest);
+        UserUpdatePasswordResponseDto userUpdatePasswordResponseDto = updateUserUseCase.updatePassword(updateUserPasswordCommand);
+        return ResponseEntity.ok().body(userDtoMapper.dtoToUpdatePasswordResponse(userUpdatePasswordResponseDto));
     }
 }
