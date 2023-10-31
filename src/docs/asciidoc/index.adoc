@@ -223,6 +223,40 @@ http-response
 
 include::{snippets}/user-update/http-response.adoc[]
 
+=== User Password Update
+
+http-request
+
+include::{snippets}/user-password-update/http-request.adoc[]
+
+request-headers
+
+include::{snippets}/user-password-update/request-headers.adoc[]
+
+request-fields
+
+include::{snippets}/user-password-update/request-fields.adoc[]
+
+request-body
+
+include::{snippets}/user-password-update/request-body.adoc[]
+
+curl-request
+
+include::{snippets}/user-password-update/curl-request.adoc[]
+
+response-fields
+
+include::{snippets}/user-password-update/response-fields.adoc[]
+
+response-body
+
+include::{snippets}/user-password-update/response-body.adoc[]
+
+http-response
+
+include::{snippets}/user-password-update/http-response.adoc[]
+
 == 2. Token
 
 === Reissue Access Token
