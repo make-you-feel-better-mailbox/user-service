@@ -6,7 +6,7 @@ import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.service.response.LogoutResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.LogoutResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.token.RefreshToken;

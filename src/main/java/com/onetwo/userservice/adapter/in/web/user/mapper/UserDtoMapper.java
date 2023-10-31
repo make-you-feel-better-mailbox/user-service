@@ -3,7 +3,7 @@ package com.onetwo.userservice.adapter.in.web.user.mapper;
 import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.adapter.in.web.user.response.*;
 import com.onetwo.userservice.application.port.in.user.command.*;
-import com.onetwo.userservice.application.service.response.*;
+import com.onetwo.userservice.application.port.in.user.response.*;
 
 public interface UserDtoMapper {
 

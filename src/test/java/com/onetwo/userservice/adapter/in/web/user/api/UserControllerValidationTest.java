@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;

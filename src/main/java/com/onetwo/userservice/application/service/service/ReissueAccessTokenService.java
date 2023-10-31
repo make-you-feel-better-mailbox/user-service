@@ -6,7 +6,7 @@ import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.UpdateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import com.onetwo.userservice.common.jwt.JwtCode;

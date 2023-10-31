@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.token.mapper.TokenDtoMapper;
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
 import com.onetwo.userservice.application.port.in.token.usecase.ReissueAccessTokenUseCase;
-import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import io.jsonwebtoken.Jwts;

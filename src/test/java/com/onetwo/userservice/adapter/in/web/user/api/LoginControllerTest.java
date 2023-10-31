@@ -7,7 +7,7 @@ import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.LogoutUseCase;
-import com.onetwo.userservice.application.service.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import io.jsonwebtoken.Jwts;

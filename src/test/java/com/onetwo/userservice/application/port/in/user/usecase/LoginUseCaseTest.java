@@ -5,7 +5,7 @@ import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.service.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;

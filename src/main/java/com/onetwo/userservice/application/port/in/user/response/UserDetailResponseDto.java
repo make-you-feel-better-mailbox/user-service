@@ -1,4 +1,4 @@
-package com.onetwo.userservice.application.service.response;
+package com.onetwo.userservice.application.port.in.user.response;
 
 import java.time.Instant;
 

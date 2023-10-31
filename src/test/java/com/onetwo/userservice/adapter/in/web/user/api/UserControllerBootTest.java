@@ -9,7 +9,7 @@ import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCa
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
-import com.onetwo.userservice.application.service.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.domain.user.User;

@@ -1,7 +1,7 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
-import com.onetwo.userservice.application.service.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 
 public interface LoginUseCase {
 
