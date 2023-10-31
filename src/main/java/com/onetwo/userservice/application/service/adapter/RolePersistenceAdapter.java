@@ -9,7 +9,9 @@ import com.onetwo.userservice.adapter.out.persistence.repository.role.RolePrivil
 import com.onetwo.userservice.adapter.out.persistence.repository.role.RoleRepository;
 import com.onetwo.userservice.adapter.out.persistence.repository.role.UserRoleRepository;
 import com.onetwo.userservice.application.port.out.role.CreateRolePort;
+import com.onetwo.userservice.application.port.out.role.CreateUserRolePort;
 import com.onetwo.userservice.application.port.out.role.ReadRolePort;
+import com.onetwo.userservice.application.port.out.role.ReadUserRolePort;
 import com.onetwo.userservice.domain.role.*;
 import com.onetwo.userservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RolePersistenceAdapter implements CreateRolePort, ReadRolePort {
+public class RolePersistenceAdapter implements CreateRolePort, ReadRolePort, CreateUserRolePort, ReadUserRolePort {
 
     private final RoleRepository roleRepository;
     private final RolePrivilegeRepository rolePrivilegeRepository;
@@ -77,5 +79,28 @@ public class RolePersistenceAdapter implements CreateRolePort, ReadRolePort {
         List<UserRoleEntity> userRoleEntityList = userRoleRepository.findByUser(userEntity);
 
         return userRoleEntityList.stream().map(UserRole::entityToDomain).toList();
+    }
+
+    @Override
+    public void saveNewUserRole(UserRole userRole) {
+        UserEntity userEntity = UserEntity.domainToEntity(userRole.getUser());
+        RoleEntity roleEntity = RoleEntity.domainToEntity(userRole.getRole());
+        UserRoleEntity userRoleEntity = new UserRoleEntity(userEntity, roleEntity);
+        userRoleRepository.save(userRoleEntity);
+    }
+
+    @Override
+    public Optional<UserRole> findByUserAndRole(User user, Role role) {
+        UserEntity userEntity = UserEntity.domainToEntity(user);
+        RoleEntity roleEntity = RoleEntity.domainToEntity(role);
+
+        Optional<UserRoleEntity> userRoleEntity = userRoleRepository.findByUserAndRole(userEntity, roleEntity);
+
+        if (userRoleEntity.isPresent()) {
+            UserRole userRole = UserRole.entityToDomain(userRoleEntity.get());
+            return Optional.of(userRole);
+        }
+
+        return Optional.empty();
     }
 }

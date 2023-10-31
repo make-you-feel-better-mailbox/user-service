@@ -1,10 +1,7 @@
 package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
@@ -70,7 +67,7 @@ class UserControllerBootTest {
     @Autowired
     private ReadUserPort readUserPort;
 
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -88,7 +85,7 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 회원가입 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 회원가입 - 성공 테스트")
     void registerUserSuccessTest() throws Exception {
         //given
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
@@ -125,7 +122,7 @@ class UserControllerBootTest {
     }
 
     @Test
-    @DisplayName("[통합] 회원 ID 중복 체크 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 ID 존재여부 확인 - 성공 테스트")
     void userIdExistCheckSuccessTest() throws Exception {
         //given
         String userId = this.userId;
@@ -155,7 +152,7 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 상세정보 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 상세정보 - 성공 테스트")
     void getUserDetailInfoSuccessTest() throws Exception {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
@@ -200,7 +197,7 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 탈퇴 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 탈퇴 - 성공 테스트")
     void withdrawUserSuccessTest() throws Exception {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
@@ -246,7 +243,7 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 수정 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 수정 - 성공 테스트")
     void updateUserSuccessTest() throws Exception {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
@@ -301,8 +298,8 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그아웃 - 성공 테스트")
-    void logoutUserSuccessTest() throws Exception {
+    @DisplayName("[통합][Web Adapter] 회원 비밀번호 수정 - 성공 테스트")
+    void updateUserPasswordSuccessTest() throws Exception {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
@@ -310,29 +307,39 @@ class UserControllerBootTest {
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
-        HttpHeaders userWithdrawRequestHeader = new HttpHeaders();
-        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
-        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
-        userWithdrawRequestHeader.add(GlobalStatus.ACCESS_TOKEN, tokenResponse.accessToken());
+        String newPassword = "newPassword";
+
+        UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, newPassword, newPassword);
+
+        HttpHeaders updateUserRequestHeader = new HttpHeaders();
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+        updateUserRequestHeader.add(GlobalStatus.ACCESS_TOKEN, tokenResponse.accessToken());
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                delete(GlobalUrl.USER_LOGIN)
-                        .headers(userWithdrawRequestHeader)
+                put(GlobalUrl.USER_PW)
+                        .headers(updateUserRequestHeader)
+                        .content(objectMapper.writeValueAsString(updateUserPasswordRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("user-logout",
+                .andDo(document("user-password-update",
                                 requestHeaders(
                                         headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
                                         headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key"),
                                         headerWithName(GlobalStatus.ACCESS_TOKEN).description("유저의 access-token")
                                 ),
+                                requestFields(
+                                        fieldWithPath("currentPassword").type(JsonFieldType.STRING).description("변경할 유저의 기존 Password"),
+                                        fieldWithPath("newPassword").type(JsonFieldType.STRING).description("유저의 변경할 Password"),
+                                        fieldWithPath("newPasswordCheck").type(JsonFieldType.STRING).description("유저의 변경할 Password (newPassword 와 동일한 값으로 보내야 함)")
+                                ),
                                 responseFields(
-                                        fieldWithPath("isLogoutSuccess").type(JsonFieldType.BOOLEAN).description("로그아웃 성공 여부")
+                                        fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("비밀번호 변경 성공 유무 ( True: 성공, False: 실패 )")
                                 )
                         )
                 );
@@ -340,7 +347,7 @@ class UserControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그인 Refresh Token Saved - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 로그인 Refresh Token Saved - 성공 테스트")
     void loginUserRefreshTokenSavedSuccessTest() throws Exception {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);

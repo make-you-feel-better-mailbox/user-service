@@ -5,6 +5,7 @@ import com.onetwo.userservice.application.port.in.token.usecase.ReissueAccessTok
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.UpdateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
 import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
@@ -26,7 +27,16 @@ public class ReissueAccessTokenService implements ReissueAccessTokenUseCase {
     private final ReadRefreshTokenPort readRefreshTokenPort;
     private final TokenProvider tokenProvider;
     private final ReadUserPort readUserPort;
+    private final TokenUseCaseConverter tokenUseCaseConverter;
 
+    /**
+     * Reissue Access token use case,
+     * Find Refresh token in cache and check validation Refresh token,
+     * And reissue Access token by Refresh token and update Access token in Refresh token domain
+     *
+     * @param reissueTokenCommand
+     * @return Reissued Access token
+     */
     @Override
     @Transactional
     public ReissuedTokenResponseDto reissueAccessTokenByRefreshToken(ReissueTokenCommand reissueTokenCommand) {
@@ -46,6 +56,6 @@ public class ReissueAccessTokenService implements ReissueAccessTokenUseCase {
 
         updateRefreshTokenPort.updateRefreshToken(refreshToken);
 
-        return new ReissuedTokenResponseDto(reissuedAccessToken);
+        return tokenUseCaseConverter.reissuedTokenToReissuedTokenResponseDto(reissuedAccessToken);
     }
 }

@@ -5,5 +5,14 @@ import com.onetwo.userservice.application.service.response.UserWithdrawResponseD
 
 public interface WithdrawUserUseCase {
 
-    UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawDto, String userId);
+    /**
+     * Withdraw user use case,
+     * Check user exist and request user is same with withdraw user,
+     * user can withdraw only him self
+     * if withdraw success user state ganna change true
+     *
+     * @param withdrawUserCommand request userId and requester Id
+     * @return Boolean about withdraw success
+     */
+    UserWithdrawResponseDto withdrawUser(WithdrawUserCommand withdrawUserCommand);
 }

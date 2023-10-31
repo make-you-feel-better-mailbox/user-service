@@ -1,9 +1,6 @@
 package com.onetwo.userservice.adapter.in.web.user.mapper;
 
-import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.adapter.in.web.user.response.*;
 import com.onetwo.userservice.application.port.in.user.command.*;
 import com.onetwo.userservice.application.service.response.*;
@@ -18,7 +15,7 @@ public interface UserDtoMapper {
 
     UserDetailResponse dtoToUserDetailResponse(UserDetailResponseDto userDetailResponseDto);
 
-    WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest);
+    WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest, String requestUserId);
 
     WithdrawResponse dtoToWithdrawResponse(UserWithdrawResponseDto userWithdrawResponseDto);
 
@@ -29,4 +26,8 @@ public interface UserDtoMapper {
     LogoutUserCommand logoutRequestToCommand(String userId);
 
     LogoutResponse dtoToLogoutResponse(LogoutResponseDto logoutResponseDto);
+
+    UpdateUserPasswordResponse dtoToUpdatePasswordResponse(UserUpdatePasswordResponseDto userUpdatePasswordResponseDto);
+
+    UpdateUserPasswordCommand updatePasswordRequestToCommand(String userId, UpdateUserPasswordRequest updateUserPasswordRequest);
 }

@@ -1,9 +1,6 @@
 package com.onetwo.userservice.adapter.in.web.user.mapper;
 
-import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.UpdateUserRequest;
-import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
+import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.adapter.in.web.user.response.*;
 import com.onetwo.userservice.application.port.in.user.command.*;
 import com.onetwo.userservice.application.service.response.*;
@@ -45,8 +42,8 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     }
 
     @Override
-    public WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest) {
-        return new WithdrawUserCommand(withdrawUserRequest.userId(), withdrawUserRequest.password());
+    public WithdrawUserCommand withdrawRequestToCommand(WithdrawUserRequest withdrawUserRequest, String requestUserId) {
+        return new WithdrawUserCommand(withdrawUserRequest.userId(), withdrawUserRequest.password(), requestUserId);
     }
 
     @Override
@@ -83,6 +80,19 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     @Override
     public LogoutResponse dtoToLogoutResponse(LogoutResponseDto logoutResponseDto) {
         return new LogoutResponse(logoutResponseDto.isLogoutSuccess());
+    }
+
+    @Override
+    public UpdateUserPasswordResponse dtoToUpdatePasswordResponse(UserUpdatePasswordResponseDto userUpdatePasswordResponseDto) {
+        return new UpdateUserPasswordResponse(userUpdatePasswordResponseDto.isSuccess());
+    }
+
+    @Override
+    public UpdateUserPasswordCommand updatePasswordRequestToCommand(String userId, UpdateUserPasswordRequest updateUserPasswordRequest) {
+        return new UpdateUserPasswordCommand(userId,
+                updateUserPasswordRequest.currentPassword(),
+                updateUserPasswordRequest.newPassword(),
+                updateUserPasswordRequest.newPasswordCheck());
     }
 
 }

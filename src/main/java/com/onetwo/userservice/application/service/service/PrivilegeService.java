@@ -23,6 +23,13 @@ public class PrivilegeService implements CreatePrivilegeUseCase, ReadPrivilegeUs
     private final ReadPrivilegePort readPrivilegePort;
     private final CreatePrivilegePort createPrivilegePort;
 
+    /**
+     * Create privilege if not found use case,
+     * Save privilege if not found on persistence
+     *
+     * @param privilegeName privilegeName
+     * @return saved privilege
+     */
     @Override
     @Transactional
     public Privilege createPrivilegeIfNotFound(PrivilegeNames privilegeName) {
@@ -34,6 +41,13 @@ public class PrivilegeService implements CreatePrivilegeUseCase, ReadPrivilegeUs
         } else return optionalPrivilege.get();
     }
 
+    /**
+     * Get privilege by role use case,
+     * Find privilege by role on persistence
+     *
+     * @param role role
+     * @return List of privilege
+     */
     @Override
     public List<Privilege> getPrivilegeByRole(Role role) {
         List<RolePrivilege> rolePrivileges = readPrivilegePort.findRolePrivilegeByRole(role);

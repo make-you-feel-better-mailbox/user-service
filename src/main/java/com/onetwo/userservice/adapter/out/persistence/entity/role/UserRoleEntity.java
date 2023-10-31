@@ -24,16 +24,10 @@ public class UserRoleEntity extends BaseEntity {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
-    private UserRoleEntity(Long id, UserEntity user, RoleEntity role) {
-        this.id = id;
-        this.user = user;
-        this.role = role;
-    }
-
-    public static UserRoleEntity createUserRole(UserEntity user, RoleEntity role) {
-        UserRoleEntity userRoleEntity = new UserRoleEntity(null, user, role);
-        userRoleEntity.setCreatedAt(Instant.now());
-        userRoleEntity.setCreateUser(GlobalStatus.SYSTEM);
-        return userRoleEntity;
+    public UserRoleEntity(UserEntity userEntity, RoleEntity roleEntity) {
+        this.user = userEntity;
+        this.role = roleEntity;
+        setCreatedAt(Instant.now());
+        setCreateUser(GlobalStatus.SYSTEM);
     }
 }

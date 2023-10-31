@@ -31,6 +31,12 @@ public class LoginController {
     private final UserDtoMapper userDtoMapper;
     private final TokenDtoMapper tokenDtoMapper;
 
+    /**
+     * Login user inbound adapter
+     *
+     * @param loginUserRequest userId and password
+     * @return Access token and Refresh token
+     */
     @PostMapping(GlobalUrl.USER_LOGIN)
     public ResponseEntity<TokenResponse> loginUser(@RequestBody @Valid LoginUserRequest loginUserRequest) {
         LoginUserCommand loginUserCommand = userDtoMapper.loginRequestToCommand(loginUserRequest);
@@ -38,6 +44,12 @@ public class LoginController {
         return ResponseEntity.ok().body(tokenDtoMapper.tokenDtoToTokenResponse(tokenResponseDto));
     }
 
+    /**
+     * Login out inbound adapter
+     *
+     * @param userDetails user authentication information
+     * @return Access token and Refresh token
+     */
     @DeleteMapping(GlobalUrl.USER_LOGIN)
     public ResponseEntity<LogoutResponse> logoutUser(@AuthenticationPrincipal MyUserDetail userDetails) {
         String userId = userDetails.getUsername();

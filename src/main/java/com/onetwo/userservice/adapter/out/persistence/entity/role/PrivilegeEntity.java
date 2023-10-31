@@ -5,9 +5,11 @@ import com.onetwo.userservice.domain.role.Privilege;
 import com.onetwo.userservice.domain.role.PrivilegeNames;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class PrivilegeEntity extends BaseEntity {
 
     @Id
@@ -18,7 +20,7 @@ public class PrivilegeEntity extends BaseEntity {
     @Column(nullable = false)
     private PrivilegeNames privilegeName;
 
-    public PrivilegeEntity(Long id, PrivilegeNames privilegeName) {
+    private PrivilegeEntity(Long id, PrivilegeNames privilegeName) {
         this.id = id;
         this.privilegeName = privilegeName;
     }

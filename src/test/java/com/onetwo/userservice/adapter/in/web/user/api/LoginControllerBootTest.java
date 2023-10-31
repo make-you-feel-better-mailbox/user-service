@@ -2,11 +2,11 @@ package com.onetwo.userservice.adapter.in.web.user.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
-import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
+import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
-import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
-import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
+import com.onetwo.userservice.application.service.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +29,7 @@ import java.time.Instant;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,15 +50,9 @@ class LoginControllerBootTest {
     private RegisterUserUseCase registerUserUseCase;
 
     @Autowired
-    private CreateRefreshTokenPort createRefreshTokenPort;
+    private LoginUseCase loginUseCase;
 
-    @Autowired
-    private ReadRefreshTokenPort readRefreshTokenPort;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private final String userId = "newUserId";
+    private final String userId = "12OneTwo12";
     private final String password = "password";
     private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
@@ -75,7 +70,7 @@ class LoginControllerBootTest {
 
     @Test
     @Transactional
-    @DisplayName("[통합] 회원 로그인 - 성공 테스트")
+    @DisplayName("[통합][Web Adapter] 회원 로그인 - 성공 테스트")
     void loginUserSuccessTest() throws Exception {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
@@ -105,6 +100,45 @@ class LoginControllerBootTest {
                                 responseFields(
                                         fieldWithPath("accessToken").type(JsonFieldType.STRING).description("유저의 access-token"),
                                         fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유저의 refresh-token")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("[통합][Web Adapter] 회원 로그아웃 - 성공 테스트")
+    void logoutUserSuccessTest() throws Exception {
+        //given
+        LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
+
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+
+        TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
+
+        HttpHeaders logoutRequestHeader = new HttpHeaders();
+        logoutRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        logoutRequestHeader.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+        logoutRequestHeader.add(GlobalStatus.ACCESS_TOKEN, tokenResponse.accessToken());
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                delete(GlobalUrl.USER_LOGIN)
+                        .headers(logoutRequestHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user-logout",
+                                requestHeaders(
+                                        headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
+                                        headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key"),
+                                        headerWithName(GlobalStatus.ACCESS_TOKEN).description("유저의 access-token")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isLogoutSuccess").type(JsonFieldType.BOOLEAN).description("로그아웃 성공 여부")
                                 )
                         )
                 );
