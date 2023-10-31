@@ -5,7 +5,7 @@ import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublis
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.ResourceAlreadyExistsException;
 import com.onetwo.userservice.domain.user.User;

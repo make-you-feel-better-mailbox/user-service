@@ -6,8 +6,8 @@ import com.onetwo.userservice.application.port.in.user.command.RegisterUserComma
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
-import com.onetwo.userservice.application.service.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import com.onetwo.userservice.domain.token.RefreshToken;
 import com.onetwo.userservice.domain.user.User;

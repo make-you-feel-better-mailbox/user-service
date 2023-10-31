@@ -1,7 +1,7 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 
 public interface RegisterUserUseCase {
 

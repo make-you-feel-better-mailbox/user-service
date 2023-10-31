@@ -5,7 +5,7 @@ import com.onetwo.userservice.application.port.in.user.command.WithdrawUserComma
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
-import com.onetwo.userservice.application.service.response.UserWithdrawResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserWithdrawResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;

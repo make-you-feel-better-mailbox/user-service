@@ -6,8 +6,8 @@ import com.onetwo.userservice.application.port.in.user.command.UpdateUserPasswor
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
-import com.onetwo.userservice.application.service.response.UserUpdatePasswordResponseDto;
-import com.onetwo.userservice.application.service.response.UserUpdateResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserUpdatePasswordResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserUpdateResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;

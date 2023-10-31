@@ -2,8 +2,8 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.service.response.UserDetailResponseDto;
-import com.onetwo.userservice.application.service.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

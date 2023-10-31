@@ -1,7 +1,7 @@
 package com.onetwo.userservice.application.port.in.token.usecase;
 
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
-import com.onetwo.userservice.application.service.response.ReissuedTokenResponseDto;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 
 public interface ReissueAccessTokenUseCase {
 
