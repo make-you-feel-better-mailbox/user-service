@@ -2,7 +2,7 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.service.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 import com.onetwo.userservice.common.exceptions.ResourceAlreadyExistsException;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;

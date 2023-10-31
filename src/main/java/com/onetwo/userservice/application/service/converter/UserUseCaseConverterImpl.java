@@ -1,6 +1,6 @@
 package com.onetwo.userservice.application.service.converter;
 
-import com.onetwo.userservice.application.service.response.*;
+import com.onetwo.userservice.application.port.in.user.response.*;
 import com.onetwo.userservice.domain.user.User;
 import org.springframework.stereotype.Component;
 

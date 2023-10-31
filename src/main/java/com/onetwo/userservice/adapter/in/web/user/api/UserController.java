@@ -10,11 +10,11 @@ import com.onetwo.userservice.application.port.in.user.command.RegisterUserComma
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserPasswordCommand;
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.*;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.UpdateUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.WithdrawUserUseCase;
-import com.onetwo.userservice.application.service.response.*;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.domain.user.MyUserDetail;
 import jakarta.validation.Valid;

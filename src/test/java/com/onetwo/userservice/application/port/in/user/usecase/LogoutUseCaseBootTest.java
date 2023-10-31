@@ -4,7 +4,7 @@ import com.onetwo.userservice.application.port.in.user.command.LogoutUserCommand
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
-import com.onetwo.userservice.application.service.response.LogoutResponseDto;
+import com.onetwo.userservice.application.port.in.user.response.LogoutResponseDto;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
