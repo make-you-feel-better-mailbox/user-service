@@ -1,11 +1,11 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublisherPort;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.port.out.user.ReadUserPort;
-import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
+import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublisherPort;
+import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
+import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.ResourceAlreadyExistsException;
 import com.onetwo.userservice.domain.user.User;
@@ -38,7 +38,7 @@ class RegisterUserUseCaseTest {
     private ReadUserPort readUserPort;
 
     @Mock
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -65,7 +65,7 @@ class RegisterUserUseCaseTest {
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.empty());
         given(passwordEncoder.encode(anyString())).willReturn(encodedPassword);
-        given(createUserPort.registerNewUser(any(User.class))).willReturn(savedUser);
+        given(registerUserPort.registerNewUser(any(User.class))).willReturn(savedUser);
         given(userUseCaseConverter.userToUserRegisterResponseDto(any(User.class))).willReturn(userRegisterResponseDto);
 
         //when

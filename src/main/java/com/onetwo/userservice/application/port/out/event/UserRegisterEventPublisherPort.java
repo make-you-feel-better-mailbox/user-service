@@ -9,5 +9,5 @@ public interface UserRegisterEventPublisherPort {
      *
      * @param savedUser registered user
      */
-    void publishEvent(User savedUser);
+    void publishRegisterUserEvent(User savedUser);
 }

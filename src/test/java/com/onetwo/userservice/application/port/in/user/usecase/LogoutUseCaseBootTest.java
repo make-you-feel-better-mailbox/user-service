@@ -2,9 +2,9 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.LogoutUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.port.in.user.response.LogoutResponseDto;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
+import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +25,7 @@ class LogoutUseCaseBootTest {
     private LogoutUseCase logoutUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     @Autowired
     private UpdateUserPort updateUserPort;
@@ -49,7 +49,7 @@ class LogoutUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         //when
         LogoutResponseDto result = logoutUseCase.logoutUser(logoutUserCommand);

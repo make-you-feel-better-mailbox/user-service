@@ -1,13 +1,13 @@
 package com.onetwo.userservice.application.port.in.token.usecase;
 
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
-import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import com.onetwo.userservice.domain.token.RefreshToken;
 import com.onetwo.userservice.domain.user.User;
@@ -29,7 +29,7 @@ class ReissueAccessTokenUseCaseBootTest {
     private ReissueAccessTokenUseCase reissueAccessTokenUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     @Autowired
     private LoginUseCase loginUseCase;
@@ -58,7 +58,7 @@ class ReissueAccessTokenUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
         TokenResponseDto tokenResponseDto = loginUseCase.loginUser(loginUserCommand);

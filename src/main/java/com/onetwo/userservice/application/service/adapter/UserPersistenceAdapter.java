@@ -2,8 +2,8 @@ package com.onetwo.userservice.application.service.adapter;
 
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements ReadUserPort, CreateUserPort, UpdateUserPort {
+public class UserPersistenceAdapter implements ReadUserPort, RegisterUserPort, UpdateUserPort {
 
     private final UserRepository userRepository;
 

@@ -30,7 +30,7 @@ public class User extends BaseDomain {
 
     private String phoneNumber;
 
-    private Boolean state;
+    private boolean state;
 
     public static User createNewUserByCommand(RegisterUserCommand registerUserCommand, String encoredPassword) {
         User newUser = new User(
@@ -42,7 +42,7 @@ public class User extends BaseDomain {
                 registerUserCommand.getName(),
                 registerUserCommand.getEmail(),
                 registerUserCommand.getPhoneNumber(),
-                null
+                false
         );
 
         newUser.setDefaultState();
@@ -79,7 +79,7 @@ public class User extends BaseDomain {
     }
 
     public boolean isUserWithdraw() {
-        return this.getState();
+        return this.state;
     }
 
     public void userWithdraw() {

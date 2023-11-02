@@ -1,9 +1,9 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
 import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ class ReadUserUseCaseBootTest {
     private ReadUserUseCase readUserUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
@@ -49,7 +49,7 @@ class ReadUserUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         //when
         UserDetailResponseDto result = readUserUseCase.getUserDetailInfo(userId);

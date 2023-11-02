@@ -2,9 +2,9 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.port.in.user.response.UserWithdrawResponseDto;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
+import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.user.User;
@@ -26,7 +26,7 @@ class WithdrawUserUseCaseBootTest {
     private WithdrawUserUseCase withdrawUserUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     @Autowired
     private UpdateUserPort updateUserPort;
@@ -49,7 +49,7 @@ class WithdrawUserUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         WithdrawUserCommand withdrawUserCommand = new WithdrawUserCommand(userId, password, userId);
 
@@ -90,7 +90,7 @@ class WithdrawUserUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(incorrectPassword));
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         WithdrawUserCommand withdrawUserCommand = new WithdrawUserCommand(userId, password, userId);
 
@@ -105,7 +105,7 @@ class WithdrawUserUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
-        User savedUser = createUserPort.registerNewUser(user);
+        User savedUser = registerUserPort.registerNewUser(user);
         savedUser.userWithdraw();
         updateUserPort.updateUser(savedUser);
 
