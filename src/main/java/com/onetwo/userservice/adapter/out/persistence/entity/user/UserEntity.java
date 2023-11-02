@@ -71,7 +71,7 @@ public class UserEntity extends BaseEntity {
                 user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getState()
+                user.isState()
         );
 
         userEntity.setMetaDataByDomain(user);

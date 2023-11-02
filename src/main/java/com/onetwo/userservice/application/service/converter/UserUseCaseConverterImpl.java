@@ -15,13 +15,13 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
                 user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getState()
+                user.isState()
         );
     }
 
     @Override
     public UserWithdrawResponseDto userToUserWithdrawResponseDto(User user) {
-        return new UserWithdrawResponseDto(user.getState());
+        return new UserWithdrawResponseDto(user.isState());
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
                 user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getState()
+                user.isState()
         );
     }
 

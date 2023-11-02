@@ -2,7 +2,7 @@ package com.onetwo.userservice.application.port.in.role.usecase;
 
 import com.onetwo.userservice.application.port.in.role.command.CreateDefaultUserRoleCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +22,7 @@ class CreateUserRoleUseCaseBootTest {
     private CreateUserRoleUseCase createUserRoleUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
@@ -39,7 +39,7 @@ class CreateUserRoleUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         CreateDefaultUserRoleCommand createDefaultUserRoleCommand = new CreateDefaultUserRoleCommand(userId);
 

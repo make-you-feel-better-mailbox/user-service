@@ -2,9 +2,9 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
-import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
+import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.user.User;
@@ -26,7 +26,7 @@ class LoginUseCaseBootTest {
     private LoginUseCase loginUseCase;
 
     @Autowired
-    private CreateUserPort createUserPort;
+    private RegisterUserPort registerUserPort;
 
     @Autowired
     private UpdateUserPort updateUserPort;
@@ -51,7 +51,7 @@ class LoginUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         //when
         TokenResponseDto result = loginUseCase.loginUser(loginUserCommand);
@@ -81,7 +81,7 @@ class LoginUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
-        User savedUser = createUserPort.registerNewUser(user);
+        User savedUser = registerUserPort.registerNewUser(user);
         savedUser.userWithdraw();
         updateUserPort.updateUser(savedUser);
 
@@ -99,7 +99,7 @@ class LoginUseCaseBootTest {
         RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
-        createUserPort.registerNewUser(user);
+        registerUserPort.registerNewUser(user);
 
         //when then
         Assertions.assertThrows(BadRequestException.class, () -> loginUseCase.loginUser(loginUserCommand));
