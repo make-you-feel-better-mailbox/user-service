@@ -12,7 +12,7 @@ class LogoutUserCommandValidationTest {
     @Test
     @DisplayName("[단위][Command Validation] Logout User Command Validation test - 성공 테스트")
     void logoutUserCommandValidationSuccessTest() {
-        //given when then
+        //given
         final String userId = "12OneTwo12";
 
         //when then

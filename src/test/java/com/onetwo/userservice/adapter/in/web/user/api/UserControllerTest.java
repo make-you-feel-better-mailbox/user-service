@@ -4,19 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.mapper.UserDtoMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.RegisterUserRequest;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.UpdateUserUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.WithdrawUserUseCase;
-import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
-import com.onetwo.userservice.application.port.in.user.response.UserRegisterResponseDto;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.common.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 })
         }
 )
-@AutoConfigureRestDocs
 class UserControllerTest {
 
     @Autowired

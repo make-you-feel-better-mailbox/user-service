@@ -7,8 +7,8 @@ import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublis
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
-import com.onetwo.userservice.application.port.out.user.CreateUserPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
@@ -35,7 +35,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     private final DeleteRefreshTokenPort deleteRefreshTokenPort;
     private final ReadRefreshTokenPort readRefreshTokenPort;
     private final ReadUserPort readUserPort;
-    private final CreateUserPort createUserPort;
+    private final RegisterUserPort registerUserPort;
     private final UpdateUserPort updateUserPort;
     private final UserUseCaseConverter userUseCaseConverter;
     private final TokenUseCaseConverter tokenUseCaseConverter;
@@ -185,11 +185,11 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         User newUser = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(registerUserCommand.getPassword()));
 
-        User savedUser = createUserPort.registerNewUser(newUser);
+        User registeredUser = registerUserPort.registerNewUser(newUser);
 
-        userRegisterEventPublisherPort.publishEvent(savedUser);
+        userRegisterEventPublisherPort.publishRegisterUserEvent(registeredUser);
 
-        return userUseCaseConverter.userToUserRegisterResponseDto(savedUser);
+        return userUseCaseConverter.userToUserRegisterResponseDto(registeredUser);
     }
 
     /**

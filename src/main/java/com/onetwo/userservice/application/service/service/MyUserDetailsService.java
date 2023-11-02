@@ -36,14 +36,14 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(com.onetwo.userservice.domain.user.User user) {
-        if (Boolean.TRUE.equals(user.getState()))
+        if (user.isUserWithdraw())
             throw new BadRequestException(user.getUserId() + " -> 탈퇴처리된 회원입니다.");
 
         Set<GrantedAuthority> authorities = getGrantedAuthoritiesByUser(user);
 
         return new MyUserDetail(user.getUserId(),
                 user.getPassword(),
-                user.getState(),
+                user.isState(),
                 authorities);
     }
 
