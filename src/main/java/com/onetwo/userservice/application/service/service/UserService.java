@@ -121,7 +121,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         checkUserWithdraw(user);
 
-        user.updateUserInfo(updateUserCommand);
+        user.updateUser(updateUserCommand);
 
         updateUserPort.updateUser(user);
 

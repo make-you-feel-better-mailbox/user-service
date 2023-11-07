@@ -86,11 +86,13 @@ public class User extends BaseDomain {
         this.state = true;
     }
 
-    public void updateUserInfo(UpdateUserCommand updateUserCommand) {
+    public void updateUser(UpdateUserCommand updateUserCommand) {
         this.birth = updateUserCommand.getBirth();
         this.nickname = updateUserCommand.getNickname();
         this.name = updateUserCommand.getName();
         this.email = updateUserCommand.getEmail();
         this.phoneNumber = updateUserCommand.getPhoneNumber();
+        setUpdatedAt(Instant.now());
+        setUpdateUser(updateUserCommand.getUserId());
     }
 }
