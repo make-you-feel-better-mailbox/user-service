@@ -84,6 +84,8 @@ public class User extends BaseDomain {
 
     public void userWithdraw() {
         this.state = true;
+        setUpdatedAt(Instant.now());
+        setUpdateUser(this.userId);
     }
 
     public void updateUser(UpdateUserCommand updateUserCommand) {
