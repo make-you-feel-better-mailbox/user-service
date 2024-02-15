@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 @SpringBootTest
 @Transactional
 class CreateUserRoleUseCaseBootTest {
@@ -26,9 +24,7 @@ class CreateUserRoleUseCaseBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -36,7 +32,7 @@ class CreateUserRoleUseCaseBootTest {
     @DisplayName("[통합][Use case] Create default user role - 성공 테스트")
     void createDefaultUserRoleUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         registerUserPort.registerNewUser(user);

@@ -1,10 +1,10 @@
 package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.user.ReadUserPort;
-import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
 import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.out.user.ReadUserPort;
+import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,9 +35,7 @@ class ReadUserUseCaseTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -62,12 +59,12 @@ class ReadUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 상세정보 - 성공 테스트 ")
     void getUserDetailInfoUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         boolean userState = false;
 
-        UserDetailResponseDto userDetailResponseDto = new UserDetailResponseDto(userId, birth, nickname, name, email, phoneNumber, userState);
+        UserDetailResponseDto userDetailResponseDto = new UserDetailResponseDto(userId, nickname, email, phoneNumber, userState);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
         given(userUseCaseConverter.userToUserDetailResponseDto(any(User.class))).willReturn(userDetailResponseDto);

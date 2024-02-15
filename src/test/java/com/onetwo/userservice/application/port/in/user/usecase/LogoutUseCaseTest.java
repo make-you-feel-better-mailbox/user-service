@@ -2,11 +2,11 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.application.port.in.user.command.LogoutUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.LogoutResponseDto;
 import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.port.in.user.response.LogoutResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.domain.token.RefreshToken;
@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -46,9 +45,7 @@ class LogoutUseCaseTest {
     private final Long uuid = 1L;
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -57,7 +54,7 @@ class LogoutUseCaseTest {
     void logoutUserUseCaseSuccessTest() {
         //given
         LogoutUserCommand logoutUserCommand = new LogoutUserCommand(userId);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         RefreshToken refreshToken = RefreshToken.createRefreshToken(uuid, "access-token", "refresh-token");

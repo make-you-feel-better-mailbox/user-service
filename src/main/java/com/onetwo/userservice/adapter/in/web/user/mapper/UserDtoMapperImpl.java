@@ -13,9 +13,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     public RegisterUserCommand registerRequestToCommand(RegisterUserRequest registerUserRequest) {
         return new RegisterUserCommand(registerUserRequest.userId(),
                 registerUserRequest.password(),
-                registerUserRequest.birth(),
                 registerUserRequest.nickname(),
-                registerUserRequest.name(),
                 registerUserRequest.email(),
                 registerUserRequest.phoneNumber());
     }
@@ -33,9 +31,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     @Override
     public UserDetailResponse dtoToUserDetailResponse(UserDetailResponseDto userDetailResponseDto) {
         return new UserDetailResponse(userDetailResponseDto.userId(),
-                userDetailResponseDto.birth(),
                 userDetailResponseDto.nickname(),
-                userDetailResponseDto.name(),
                 userDetailResponseDto.email(),
                 userDetailResponseDto.phoneNumber(),
                 userDetailResponseDto.state());
@@ -54,9 +50,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     @Override
     public UpdateUserCommand updateRequestToCommand(String userId, UpdateUserRequest updateUserRequest) {
         return new UpdateUserCommand(userId,
-                updateUserRequest.birth(),
                 updateUserRequest.nickname(),
-                updateUserRequest.name(),
                 updateUserRequest.email(),
                 updateUserRequest.phoneNumber());
     }
@@ -64,9 +58,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
     @Override
     public UpdateUserResponse dtoToUpdateResponse(UserUpdateResponseDto userResponseDto) {
         return new UpdateUserResponse(userResponseDto.userId(),
-                userResponseDto.birth(),
                 userResponseDto.nickname(),
-                userResponseDto.name(),
                 userResponseDto.email(),
                 userResponseDto.phoneNumber(),
                 userResponseDto.state());

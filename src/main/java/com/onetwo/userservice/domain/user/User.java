@@ -20,11 +20,7 @@ public class User extends BaseDomain {
 
     private String password;
 
-    private Instant birth;
-
     private String nickname;
-
-    private String name;
 
     private String email;
 
@@ -37,9 +33,7 @@ public class User extends BaseDomain {
                 null,
                 registerUserCommand.getUserId(),
                 encoredPassword,
-                registerUserCommand.getBirth(),
                 registerUserCommand.getNickname(),
-                registerUserCommand.getName(),
                 registerUserCommand.getEmail(),
                 registerUserCommand.getPhoneNumber(),
                 false
@@ -55,9 +49,7 @@ public class User extends BaseDomain {
                 userEntity.getUuid(),
                 userEntity.getUserId(),
                 userEntity.getPassword(),
-                userEntity.getBirth(),
                 userEntity.getNickname(),
-                userEntity.getName(),
                 userEntity.getEmail(),
                 userEntity.getPhoneNumber(),
                 userEntity.getState()
@@ -89,9 +81,7 @@ public class User extends BaseDomain {
     }
 
     public void updateUser(UpdateUserCommand updateUserCommand) {
-        this.birth = updateUserCommand.getBirth();
         this.nickname = updateUserCommand.getNickname();
-        this.name = updateUserCommand.getName();
         this.email = updateUserCommand.getEmail();
         this.phoneNumber = updateUserCommand.getPhoneNumber();
         setUpdatedAt(Instant.now());

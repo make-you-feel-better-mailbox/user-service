@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.HashSet;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -49,9 +47,7 @@ class UserControllerValidationBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
@@ -65,52 +61,12 @@ class UserControllerValidationBootTest {
     }
 
     @ParameterizedTest
-    @NullSource
-    @WithMockUser(username = userId)
-    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 birth - 실패 테스트")
-    void updateUserValidationBirthFailTest(Instant birth) throws Exception {
-        //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                put(GlobalUrl.USER_ROOT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .headers(httpHeaders)
-                        .content(objectMapper.writeValueAsString(updateUserRequest))
-                        .accept(MediaType.APPLICATION_JSON));
-        //then
-        resultActions.andExpect(status().isBadRequest())
-                .andDo(print());
-    }
-
-    @ParameterizedTest
     @NullAndEmptySource
     @WithMockUser(username = userId)
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 nickname - 실패 테스트")
     void updateUserValidationNicknameFailTest(String nickname) throws Exception {
         //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                put(GlobalUrl.USER_ROOT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .headers(httpHeaders)
-                        .content(objectMapper.writeValueAsString(updateUserRequest))
-                        .accept(MediaType.APPLICATION_JSON));
-        //then
-        resultActions.andExpect(status().isBadRequest())
-                .andDo(print());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @WithMockUser(username = userId)
-    @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 name - 실패 테스트")
-    void updateUserValidationNameFailTest(String name) throws Exception {
-        //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -130,7 +86,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 email - 실패 테스트")
     void updateUserValidationEmailFailTest(String email) throws Exception {
         //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
         //when
         ResultActions resultActions = mockMvc.perform(
                 put(GlobalUrl.USER_ROOT)
@@ -150,8 +106,8 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 비밀번호 수정 유효성검사 phoneNumber null - 실패 테스트")
     void updateUserValidationPhoneNumberNullSuccessTest(String phoneNumber) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, this.phoneNumber));
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(birth, nickname, name, email, phoneNumber);
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
         Authentication authentication = new UsernamePasswordAuthenticationToken(myUserDetail, password, myUserDetail.getAuthorities());
@@ -176,7 +132,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 current password - 실패 테스트")
     void updateUserPasswordValidationCurrentPasswordPasswordFailTest(String testPassword) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(testPassword, newPassword, newPassword);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
@@ -202,7 +158,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 new password - 실패 테스트")
     void updateUserPasswordValidationNewPasswordFailTest(String testNewPassword) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, testNewPassword, newPassword);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
@@ -228,7 +184,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 new password check - 실패 테스트")
     void updateUserPasswordValidationNewPasswordCheckFailTest(String testNewPasswordCheck) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, newPassword, testNewPasswordCheck);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
