@@ -26,8 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.time.Instant;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -74,9 +72,7 @@ class UserControllerTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -84,7 +80,7 @@ class UserControllerTest {
     @DisplayName("[단위][Web Adapter] 회원 회원가입 - 성공 테스트")
     void registerUserSuccessTest() throws Exception {
         //given
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, nickname, email, phoneNumber);
 
         UserRegisterResponseDto savedUser = new UserRegisterResponseDto(userId);
 

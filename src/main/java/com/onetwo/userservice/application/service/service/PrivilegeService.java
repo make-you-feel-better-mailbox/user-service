@@ -49,6 +49,7 @@ public class PrivilegeService implements CreatePrivilegeUseCase, ReadPrivilegeUs
      * @return List of privilege
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Privilege> getPrivilegeByRole(Role role) {
         List<RolePrivilege> rolePrivileges = readPrivilegePort.findRolePrivilegeByRole(role);
 

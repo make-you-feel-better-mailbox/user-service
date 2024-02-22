@@ -15,8 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 @SpringBootTest
 @Transactional
 class LogoutUseCaseBootTest {
@@ -35,9 +33,7 @@ class LogoutUseCaseBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -46,7 +42,7 @@ class LogoutUseCaseBootTest {
     void logoutUserUseCaseSuccessTest() {
         //given
         LogoutUserCommand logoutUserCommand = new LogoutUserCommand(userId);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);

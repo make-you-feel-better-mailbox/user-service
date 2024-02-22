@@ -17,8 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 @SpringBootTest
 class UserRegisterEventListenerTest {
 
@@ -39,9 +37,7 @@ class UserRegisterEventListenerTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -49,7 +45,7 @@ class UserRegisterEventListenerTest {
     @Transactional
     @DisplayName("[통합][Event Adapter] Create default user role when register user - 성공 테스트")
     void createDefaultUserRoleSuccessTest() {
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
 
         registerUserUseCase.registerUser(registerUserCommand);
 

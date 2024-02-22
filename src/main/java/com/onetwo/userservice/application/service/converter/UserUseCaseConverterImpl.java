@@ -10,9 +10,7 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserDetailResponseDto userToUserDetailResponseDto(User user) {
         return new UserDetailResponseDto(
                 user.getUserId(),
-                user.getBirth(),
                 user.getNickname(),
-                user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.isState()
@@ -28,9 +26,7 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserUpdateResponseDto userToUserUpdateResponseDto(User user) {
         return new UserUpdateResponseDto(
                 user.getUserId(),
-                user.getBirth(),
                 user.getNickname(),
-                user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.isState()

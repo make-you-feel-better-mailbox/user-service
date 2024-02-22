@@ -1,5 +1,7 @@
 package com.onetwo.userservice.common.exceptions;
 
+import com.onetwo.userservice.common.GlobalStatus;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +30,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TokenValidationException.class)
-    public ResponseEntity<String> tokenValidationException(TokenValidationException e) {
+    public ResponseEntity<String> tokenValidationException(TokenValidationException e, HttpServletResponse response) {
         log.debug("TokenValidationException", e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        response.setHeader(GlobalStatus.TOKEN_VALIDATION_HEADER, e.getJwtCode().getValue());
+        return ResponseEntity.badRequest().body(e.getJwtCode().getValue());
     }
 
     @ExceptionHandler(NotFoundResourceException.class)

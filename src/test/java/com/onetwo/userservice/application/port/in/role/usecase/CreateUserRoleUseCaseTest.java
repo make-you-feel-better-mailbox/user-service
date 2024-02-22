@@ -22,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -49,9 +48,7 @@ class CreateUserRoleUseCaseTest {
     private final Long uuid = 1L;
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final Long roleId = 1L;
@@ -62,7 +59,7 @@ class CreateUserRoleUseCaseTest {
         //given
         CreateDefaultUserRoleCommand createDefaultUserRoleCommand = new CreateDefaultUserRoleCommand(userId);
 
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         RoleEntity roleEntity = new RoleEntity(roleId, RoleNames.ROLE_USER);

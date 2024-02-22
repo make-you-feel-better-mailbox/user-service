@@ -1,6 +1,7 @@
 package com.onetwo.userservice.common.jwt;
 
 import com.onetwo.userservice.common.GlobalStatus;
+import com.onetwo.userservice.common.exceptions.TokenValidationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String accessToken = resolveToken(request, GlobalStatus.ACCESS_TOKEN);
 
         if (StringUtils.hasText(accessToken)) {
-            if (tokenProvider.validateToken(accessToken)) {
+            boolean validationToken = false;
+
+            try {
+                validationToken = tokenProvider.validateToken(accessToken);
+            } catch (TokenValidationException e) {
+                request.setAttribute("exception", e);
+                log.info("TokenValidationException : {}", e.getMessage());
+            }
+
+            if (validationToken) {
                 Authentication authentication = tokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("set Authentication to security context for '{}', uri: {}", authentication.getName(), request.getRequestURI());

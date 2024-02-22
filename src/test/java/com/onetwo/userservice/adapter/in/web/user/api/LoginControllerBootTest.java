@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.LoginUserRequest;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
-import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,8 +23,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -54,9 +52,7 @@ class LoginControllerBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
 
@@ -75,7 +71,7 @@ class LoginControllerBootTest {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -112,7 +108,7 @@ class LoginControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
