@@ -5,11 +5,13 @@ import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.common.GlobalStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class UserRoleEntity extends BaseEntity {
 
     @Id
