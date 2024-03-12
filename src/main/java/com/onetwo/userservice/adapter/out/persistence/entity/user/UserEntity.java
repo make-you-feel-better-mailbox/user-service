@@ -37,15 +37,25 @@ public class UserEntity extends BaseEntity {
 
     @Column(nullable = false, length = 1)
     @Convert(converter = BooleanNumberConverter.class)
+    private Boolean oauth;
+
+    @Column(length = 20)
+    private String registrationId;
+
+
+    @Column(nullable = false, length = 1)
+    @Convert(converter = BooleanNumberConverter.class)
     private Boolean state;
 
-    public UserEntity(Long uuid, String userId, String password, String nickname, String email, String phoneNumber, Boolean state) {
+    public UserEntity(Long uuid, String userId, String password, String nickname, String email, String phoneNumber, Boolean oauth, String registrationId, Boolean state) {
         this.uuid = uuid;
         this.userId = userId;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.oauth = oauth;
+        this.registrationId = registrationId;
         this.state = state;
     }
 
@@ -57,6 +67,8 @@ public class UserEntity extends BaseEntity {
                 user.getNickname(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.isOauth(),
+                user.getRegistrationId(),
                 user.isState()
         );
 

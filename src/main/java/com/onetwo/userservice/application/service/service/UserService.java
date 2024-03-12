@@ -3,10 +3,13 @@ package com.onetwo.userservice.application.service.service;
 import com.onetwo.userservice.application.port.in.user.command.*;
 import com.onetwo.userservice.application.port.in.user.response.*;
 import com.onetwo.userservice.application.port.in.user.usecase.*;
+import com.onetwo.userservice.application.port.out.dto.OAuthResponseDto;
+import com.onetwo.userservice.application.port.out.dto.OAuthTokenResponseDto;
 import com.onetwo.userservice.application.port.out.event.UserRegisterEventPublisherPort;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.DeleteRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
+import com.onetwo.userservice.application.port.out.user.ReadOAuthPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
@@ -27,7 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserUseCase, UpdateUserUseCase, WithdrawUserUseCase, LogoutUseCase {
+public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserUseCase, UpdateUserUseCase, WithdrawUserUseCase, LogoutUseCase, LoginOAuthUseCase {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -39,6 +42,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     private final UpdateUserPort updateUserPort;
     private final UserUseCaseConverter userUseCaseConverter;
     private final TokenUseCaseConverter tokenUseCaseConverter;
+    private final ReadOAuthPort readOAuthPort;
     private final UserRegisterEventPublisherPort userRegisterEventPublisherPort;
 
 
@@ -221,15 +225,7 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
 
         checkUserPasswordMatched(loginUserCommand.getPassword(), user);
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
-
-        // refresh token 발급 및 저장
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUuid());
-        RefreshToken token = RefreshToken.createRefreshToken(user.getUuid(), accessToken, refreshToken);
-
-        createRefreshTokenPort.saveRefreshToken(token);
-
-        return tokenUseCaseConverter.tokenToTokenResponseDto(token);
+        return getAccessTokenAndRefreshTokenByUser(user);
     }
 
     /**
@@ -295,5 +291,73 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
      */
     private User checkUserExistAndGetUserByUserId(String userId) {
         return readUserPort.findByUserId(userId).orElseThrow(() -> new NotFoundResourceException("user-id does not exist"));
+    }
+
+    /**
+     * OAuth User login use case,
+     * Check user exist and state
+     * if OAuth user does not exist sign up and return Refresh token and Access token
+     *
+     * @param oAuthLoginCommand information about oAuth user code
+     * @return Refresh Token And Access Token
+     */
+    @Override
+    @Transactional
+    public TokenResponseDto loginOAuth(OAuthLoginCommand oAuthLoginCommand) {
+        String registrationId = oAuthLoginCommand.getRegistrationId();
+
+        OAuthTokenResponseDto tokenResponseDto = readOAuthPort.getToken(oAuthLoginCommand.getCode(), registrationId);
+
+        OAuthResponseDto oAuthResponseDto = readOAuthPort.getUserResource(tokenResponseDto.accessToken(), registrationId);
+
+        String oAuthUserId = getOAuthUserId(oAuthResponseDto, registrationId);
+
+        Optional<User> optionalUser = readUserPort.findByUserIdAndOAuth(oAuthUserId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (user.isUserWithdraw()) user.rejoin();
+
+            return getAccessTokenAndRefreshTokenByUser(user);
+        } else {
+            User newUser = User.createNewUserByOAuth(oAuthUserId, oAuthResponseDto, registrationId);
+
+            User registeredUser = registerUserPort.registerNewUser(newUser);
+
+            userRegisterEventPublisherPort.publishRegisterUserEvent(registeredUser);
+
+            return getAccessTokenAndRefreshTokenByUser(registeredUser);
+        }
+    }
+
+    private String getOAuthUserId(OAuthResponseDto oAuthResponseDto, String registrationId) {
+        return oAuthResponseDto.id() + "_" + registrationId;
+    }
+
+    private TokenResponseDto getAccessTokenAndRefreshTokenByUser(User user) {
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
+
+        // refresh token 발급 및 저장
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUuid());
+        RefreshToken token = RefreshToken.createRefreshToken(user.getUuid(), accessToken, refreshToken);
+
+        createRefreshTokenPort.saveRefreshToken(token);
+
+        return tokenUseCaseConverter.tokenToTokenResponseDto(token);
+    }
+
+    /**
+     * Get OAuth Authorized use case
+     *
+     * @param registrationId registration id
+     * @return Authorized Request URI
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public AuthorizedURIResponseDto getAuthorizedURI(String registrationId) {
+        String authorizedURI = readOAuthPort.getAuthorizedURI(registrationId);
+
+        return tokenUseCaseConverter.uriToAuthorizedURIResponseDto(authorizedURI);
     }
 }

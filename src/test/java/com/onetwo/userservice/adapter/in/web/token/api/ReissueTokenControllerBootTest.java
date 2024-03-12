@@ -58,6 +58,8 @@ class ReissueTokenControllerBootTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -72,7 +74,7 @@ class ReissueTokenControllerBootTest {
     @DisplayName("[통합][Web Adapter] Access Token 재발급 - 성공 테스트")
     void reissueAccessTokenByRefreshTokenSuccessTest() throws Exception {
         //given
-        userService.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        userService.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 

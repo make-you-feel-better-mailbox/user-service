@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long>, QUserRepository {
     Optional<UserEntity> findByUserId(String id);
+
+    Optional<UserEntity> findByUserIdAndOauthAndState(String oAuthUserId, Boolean persistenceUserIsOauth, Boolean persistenceNotDeleted);
 }

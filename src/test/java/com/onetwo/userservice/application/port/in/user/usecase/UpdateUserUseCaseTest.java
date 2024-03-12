@@ -52,12 +52,16 @@ class UpdateUserUseCaseTest {
     private final String newPassword = "newPassword";
     private final String incorrectPassword = "incorrectPassword";
 
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
+
     @Test
     @DisplayName("[단위][Use Case] 회원 수정 - 성공 테스트")
     void updateUserUseCaseSuccessTest() {
         //given
         UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         String encodedPassword = "encoded-password";
         User user = User.createNewUserByCommand(registerUserCommand, encodedPassword);
         UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto(userId, password, email, phoneNumber, false);
@@ -89,7 +93,6 @@ class UpdateUserUseCaseTest {
     void updateUserUseCaseUserWithdrewFailTest() {
         //given
         UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         String encodedPassword = "encoded-password";
         User user = User.createNewUserByCommand(registerUserCommand, encodedPassword);
         user.userWithdraw();
@@ -105,7 +108,6 @@ class UpdateUserUseCaseTest {
     void updateUserPasswordUseCaseSuccessTest() {
         //given
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand(userId, password, newPassword, newPassword);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
         UserUpdatePasswordResponseDto userUpdatePasswordResponseDto = new UserUpdatePasswordResponseDto(true);
 
@@ -139,7 +141,6 @@ class UpdateUserUseCaseTest {
     void updateUserPasswordUseCaseUserAlreadyWithdrawFailTest() {
         //given
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand(userId, incorrectPassword, newPassword, newPassword);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         user.userWithdraw();
@@ -155,7 +156,6 @@ class UpdateUserUseCaseTest {
     void updateUserPasswordUseCaseIncorrectPasswordFailTest() {
         //given
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand(userId, incorrectPassword, newPassword, newPassword);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
@@ -170,7 +170,6 @@ class UpdateUserUseCaseTest {
     void updateUserPasswordUseCaseNotMatchedNewPasswordAndPasswordCheckFailTest() {
         //given
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand(userId, password, newPassword, incorrectPassword);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
@@ -185,7 +184,6 @@ class UpdateUserUseCaseTest {
     void updateUserPasswordUseCaseIncorrectNewPasswordFailTest() {
         //given
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand(userId, password, password, password);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));

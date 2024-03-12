@@ -70,6 +70,8 @@ class UserControllerBootTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -151,7 +153,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -194,7 +196,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -240,7 +242,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -291,7 +293,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -340,7 +342,7 @@ class UserControllerBootTest {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         User user = readUserPort.findByUserId(userId).get();
 

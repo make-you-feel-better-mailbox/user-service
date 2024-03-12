@@ -53,6 +53,10 @@ class LoginUseCaseTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 로그인 - 성공 테스트")
@@ -60,7 +64,6 @@ class LoginUseCaseTest {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         TokenResponseDto tokenResponseDto = new TokenResponseDto("created-access-token", "created-refresh-token");
@@ -97,7 +100,6 @@ class LoginUseCaseTest {
     void loginUserUseCaseUserAlreadyWithdrewFailTest() {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, true);
         User user = User.entityToDomain(userEntity);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
@@ -111,7 +113,6 @@ class LoginUseCaseTest {
     void loginUserUseCasePasswordNotMatchedFailTest() {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));

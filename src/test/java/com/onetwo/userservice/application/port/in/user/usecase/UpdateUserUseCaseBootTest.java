@@ -41,12 +41,15 @@ class UpdateUserUseCaseBootTest {
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
     private final String incorrectPassword = "incorrectPassword";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[통합][Use Case] 회원 수정 - 성공 테스트")
     void updateUserUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -74,7 +77,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 수정 user withdrew - 실패 테스트")
     void updateUserUseCaseUserWithdrewFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         User savedUser = registerUserPort.registerNewUser(user);
@@ -92,7 +94,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 - 성공 테스트")
     void updateUserPasswordUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -120,7 +121,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 user already withdraw - 실패 테스트")
     void updateUserPasswordUseCaseUserAlreadyWithdrawFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         User savedUser = registerUserPort.registerNewUser(user);
@@ -137,7 +137,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 Incorrect password - 실패 테스트")
     void updateUserPasswordUseCaseIncorrectPasswordFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -152,7 +151,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 not matched new password and new password check - 실패 테스트")
     void updateUserPasswordUseCaseNotMatchedNewPasswordAndPasswordCheckFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -167,7 +165,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 Current password and new password same - 실패 테스트")
     void updateUserPasswordUseCaseIncorrectNewPasswordFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);

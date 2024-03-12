@@ -46,12 +46,14 @@ class ReissueAccessTokenUseCaseBootTest {
     private final String phoneNumber = "01098006069";
     private final String accessToken = "access-token";
     private final String refreshToken = "refresh-token";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @DisplayName("[통합][Use Case] Access Token 재발급 - 성공 테스트")
     void reissueAccessTokenByRefreshTokenUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);

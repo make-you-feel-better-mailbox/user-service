@@ -40,12 +40,14 @@ class UserRegisterEventListenerTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @Transactional
     @DisplayName("[통합][Event Adapter] Create default user role when register user - 성공 테스트")
     void createDefaultUserRoleSuccessTest() {
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
         registerUserUseCase.registerUser(registerUserCommand);
 
