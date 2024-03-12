@@ -56,6 +56,8 @@ class ReissueAccessTokenUseCaseTest {
     private final String phoneNumber = "01098006069";
     private final String accessToken = "access-token";
     private final String refreshToken = "refresh-token";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @DisplayName("[단위][Use Case] Access Token 재발급 - 성공 테스트")
@@ -63,7 +65,7 @@ class ReissueAccessTokenUseCaseTest {
         //given
         ReissueTokenCommand reissueTokenCommand = new ReissueTokenCommand(accessToken, refreshToken);
         RefreshToken refreshTokenDomain = RefreshToken.createRefreshToken(uuid, accessToken, refreshToken);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
         User user = User.entityToDomain(userEntity);
         ReissuedTokenResponseDto reissuedTokenResponseDto = new ReissuedTokenResponseDto(accessToken);
 

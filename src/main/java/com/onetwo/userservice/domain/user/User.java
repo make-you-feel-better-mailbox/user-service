@@ -3,6 +3,7 @@ package com.onetwo.userservice.domain.user;
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.out.dto.OAuthResponseDto;
 import com.onetwo.userservice.domain.BaseDomain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,10 @@ public class User extends BaseDomain {
 
     private String phoneNumber;
 
+    private boolean oauth;
+
+    private String registrationId;
+
     private boolean state;
 
     public static User createNewUserByCommand(RegisterUserCommand registerUserCommand, String encoredPassword) {
@@ -36,6 +41,8 @@ public class User extends BaseDomain {
                 registerUserCommand.getNickname(),
                 registerUserCommand.getEmail(),
                 registerUserCommand.getPhoneNumber(),
+                registerUserCommand.getOauth(),
+                registerUserCommand.getRegistrationId(),
                 false
         );
 
@@ -52,12 +59,32 @@ public class User extends BaseDomain {
                 userEntity.getNickname(),
                 userEntity.getEmail(),
                 userEntity.getPhoneNumber(),
+                userEntity.getOauth(),
+                userEntity.getRegistrationId(),
                 userEntity.getState()
         );
 
         user.setMetaDataByEntity(userEntity);
 
         return user;
+    }
+
+    public static User createNewUserByOAuth(String oAuthUserId, OAuthResponseDto oAuthResponseDto, String registrationId) {
+        User newUser = new User(
+                null,
+                oAuthUserId,
+                "",
+                oAuthResponseDto.name(),
+                oAuthResponseDto.email(),
+                null,
+                true,
+                registrationId,
+                false
+        );
+
+        newUser.setDefaultState();
+
+        return newUser;
     }
 
     private void setDefaultState() {
@@ -86,5 +113,9 @@ public class User extends BaseDomain {
         this.phoneNumber = updateUserCommand.getPhoneNumber();
         setUpdatedAt(Instant.now());
         setUpdateUser(updateUserCommand.getUserId());
+    }
+
+    public void rejoin() {
+        this.state = false;
     }
 }

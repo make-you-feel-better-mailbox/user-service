@@ -8,4 +8,6 @@ public interface ReadUserPort {
     Optional<User> findByUserId(String userId);
 
     Optional<User> findById(Long uuid);
+
+    Optional<User> findByUserIdAndOAuth(String oAuthUserId);
 }

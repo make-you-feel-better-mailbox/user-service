@@ -53,6 +53,8 @@ class LoginControllerBootFailTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -86,7 +88,7 @@ class LoginControllerBootFailTest {
     @DisplayName("[통합][Web Adapter] 회원 로그인 Password Not Matched - 실패 테스트")
     void loginPasswordNotMatchedFailTest() throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         String notMatchedPassword = "notMatchedPassword";
 
@@ -109,7 +111,7 @@ class LoginControllerBootFailTest {
     @DisplayName("[통합][Web Adapter] 회원 로그인 User Withdraw - 실패 테스트")
     void loginUserWithdrawFailTest() throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         UserEntity userEntity = userRepository.findByUserId(userId).get();
 

@@ -50,12 +50,15 @@ class RegisterUserUseCaseTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 회원가입 - 성공 테스트")
     void registerUserUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         String encodedPassword = "encoded-password";
         User savedUser = User.createNewUserByCommand(registerUserCommand, encodedPassword);
         UserRegisterResponseDto userRegisterResponseDto = new UserRegisterResponseDto(userId);
@@ -76,7 +79,6 @@ class RegisterUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 회원가입 User id already exist - 실패 테스트")
     void registerUserUseCaseUserIdExistFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         String encodedPassword = "encoded-password";
         User user = User.createNewUserByCommand(registerUserCommand, encodedPassword);
 

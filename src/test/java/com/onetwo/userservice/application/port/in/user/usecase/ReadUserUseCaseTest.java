@@ -38,6 +38,10 @@ class ReadUserUseCaseTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 ID 존재여부 확인 - 성공 테스트")
@@ -59,7 +63,6 @@ class ReadUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 상세정보 - 성공 테스트 ")
     void getUserDetailInfoUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         boolean userState = false;

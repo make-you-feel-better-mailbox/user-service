@@ -37,12 +37,15 @@ class WithdrawUserUseCaseBootTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[통합][Use Case] 회원 탈퇴 - 성공 테스트")
     void withdrawUserUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -83,7 +86,6 @@ class WithdrawUserUseCaseBootTest {
         //given
         String incorrectPassword = "incorrectPassword";
 
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(incorrectPassword));
 
         registerUserPort.registerNewUser(user);
@@ -98,7 +100,6 @@ class WithdrawUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 탈퇴 User already withdrew - 실패 테스트")
     void withdrawUserUseCaseAlreadyWithdrewFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         User savedUser = registerUserPort.registerNewUser(user);

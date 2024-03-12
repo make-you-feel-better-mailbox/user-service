@@ -53,6 +53,8 @@ class UserControllerBootFailTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -67,7 +69,7 @@ class UserControllerBootFailTest {
     @DisplayName("[통합][Web Adapter] 회원 회원가입 User Id Already Exist - 실패 테스트")
     void registerUserAlreadyExistFailTest() throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, nickname, email, phoneNumber);
 
@@ -90,8 +92,8 @@ class UserControllerBootFailTest {
         //given
         String otherUserId = "otherUserId";
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
-        registerUserUseCase.registerUser(new RegisterUserCommand(otherUserId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
+        registerUserUseCase.registerUser(new RegisterUserCommand(otherUserId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         LoginUserCommand loginUserRequest = new LoginUserCommand(otherUserId, password);
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
@@ -123,7 +125,7 @@ class UserControllerBootFailTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -156,7 +158,7 @@ class UserControllerBootFailTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 

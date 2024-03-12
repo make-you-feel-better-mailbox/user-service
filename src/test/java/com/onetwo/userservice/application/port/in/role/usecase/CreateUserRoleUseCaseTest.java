@@ -52,6 +52,8 @@ class CreateUserRoleUseCaseTest {
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final Long roleId = 1L;
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @DisplayName("[단위][Use case] Create default user role - 성공 테스트")
@@ -59,7 +61,7 @@ class CreateUserRoleUseCaseTest {
         //given
         CreateDefaultUserRoleCommand createDefaultUserRoleCommand = new CreateDefaultUserRoleCommand(userId);
 
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
         User user = User.entityToDomain(userEntity);
 
         RoleEntity roleEntity = new RoleEntity(roleId, RoleNames.ROLE_USER);

@@ -52,6 +52,9 @@ class UserControllerValidationBootTest {
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
 
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
     @BeforeAll
@@ -106,7 +109,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 비밀번호 수정 유효성검사 phoneNumber null - 실패 테스트")
     void updateUserValidationPhoneNumberNullSuccessTest(String phoneNumber) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber, oauth, registrationId));
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
@@ -132,7 +135,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 current password - 실패 테스트")
     void updateUserPasswordValidationCurrentPasswordPasswordFailTest(String testPassword) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber, oauth, registrationId));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(testPassword, newPassword, newPassword);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
@@ -158,7 +161,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 new password - 실패 테스트")
     void updateUserPasswordValidationNewPasswordFailTest(String testNewPassword) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber, oauth, registrationId));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, testNewPassword, newPassword);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
@@ -184,7 +187,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 new password check - 실패 테스트")
     void updateUserPasswordValidationNewPasswordCheckFailTest(String testNewPasswordCheck) throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber, oauth, registrationId));
         UpdateUserPasswordRequest updateUserPasswordRequest = new UpdateUserPasswordRequest(password, newPassword, testNewPasswordCheck);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());

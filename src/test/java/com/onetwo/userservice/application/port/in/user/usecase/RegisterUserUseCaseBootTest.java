@@ -27,14 +27,15 @@ class RegisterUserUseCaseBootTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[통합][Use Case] 회원 회원가입 - 성공 테스트")
     void registerUserUseCaseSuccessTest() {
-        //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
-
-        //when
+        //given when
         UserRegisterResponseDto result = registerUserUseCase.registerUser(registerUserCommand);
 
         //then
@@ -45,8 +46,6 @@ class RegisterUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 회원가입 User id already exist - 실패 테스트")
     void registerUserUseCaseUserIdExistFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
-
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         registerUserPort.registerNewUser(user);

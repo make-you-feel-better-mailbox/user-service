@@ -77,9 +77,9 @@ public class SecurityConfig {
         List<MvcRequestMatcher> mvcRequestMatcherList = Stream.of(WHITE_LIST).map(mvc::pattern).collect(Collectors.toList());
 
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.USER_ID + GlobalUrl.UNDER_ROUTE));
-
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.USER_ROOT));
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.TOKEN_REFRESH));
+        mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.OAUTH_ROOT));
 
         return mvcRequestMatcherList.toArray(MvcRequestMatcher[]::new);
     }

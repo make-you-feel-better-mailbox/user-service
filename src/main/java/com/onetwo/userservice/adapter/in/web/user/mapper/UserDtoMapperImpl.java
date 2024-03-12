@@ -15,7 +15,9 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 registerUserRequest.password(),
                 registerUserRequest.nickname(),
                 registerUserRequest.email(),
-                registerUserRequest.phoneNumber());
+                registerUserRequest.phoneNumber(),
+                false,
+                null);
     }
 
     @Override

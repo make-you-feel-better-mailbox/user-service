@@ -27,12 +27,14 @@ class CreateUserRoleUseCaseBootTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @DisplayName("[통합][Use case] Create default user role - 성공 테스트")
     void createDefaultUserRoleUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber);
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         registerUserPort.registerNewUser(user);

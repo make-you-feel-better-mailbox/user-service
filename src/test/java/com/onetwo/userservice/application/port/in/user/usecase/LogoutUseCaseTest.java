@@ -48,13 +48,16 @@ class LogoutUseCaseTest {
     private final String nickname = "newNickname";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 로그아웃 - 성공 테스트")
     void logoutUserUseCaseSuccessTest() {
         //given
         LogoutUserCommand logoutUserCommand = new LogoutUserCommand(userId);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         RefreshToken refreshToken = RefreshToken.createRefreshToken(uuid, "access-token", "refresh-token");
