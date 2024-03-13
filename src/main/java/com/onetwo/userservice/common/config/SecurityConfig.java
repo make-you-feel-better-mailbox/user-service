@@ -81,6 +81,7 @@ public class SecurityConfig {
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.TOKEN_REFRESH));
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.OAUTH_ROOT));
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.OAUTH_ROOT + GlobalUrl.UNDER_ROUTE));
+        mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.USER_ROOT + GlobalUrl.UNDER_ROUTE));
 
         return mvcRequestMatcherList.toArray(MvcRequestMatcher[]::new);
     }

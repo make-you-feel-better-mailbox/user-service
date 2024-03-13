@@ -3,6 +3,7 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
 import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.in.user.response.UserInfoResponseDto;
 import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.domain.user.User;
 import org.junit.jupiter.api.Assertions;
@@ -58,5 +59,21 @@ class ReadUserUseCaseBootTest {
         //then
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.state());
+    }
+
+    @Test
+    @DisplayName("[통합][Use Case] 회원 정보 조회 - 성공 테스트 ")
+    void getUserInfoUseCaseSuccessTest() {
+        //given
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
+        User user = User.createNewUserByCommand(registerUserCommand, password);
+
+        registerUserPort.registerNewUser(user);
+
+        //when
+        UserInfoResponseDto result = readUserUseCase.getUserInfo(userId);
+
+        //then
+        Assertions.assertNotNull(result);
     }
 }

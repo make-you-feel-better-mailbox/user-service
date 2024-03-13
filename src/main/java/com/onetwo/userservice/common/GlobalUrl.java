@@ -14,4 +14,7 @@ public class GlobalUrl {
     public static final String TOKEN_REFRESH = TOKEN + "/refresh";
 
     public static final String OAUTH_ROOT = USER_LOGIN + "/oauth";
+
+    public static final String PATH_VARIABLE_USER_ID = "user-id";
+    public static final String PATH_VARIABLE_WITH_USER_ID = "/{" + PATH_VARIABLE_USER_ID + "}";
 }

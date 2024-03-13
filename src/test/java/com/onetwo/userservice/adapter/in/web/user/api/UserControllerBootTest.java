@@ -125,7 +125,7 @@ class UserControllerBootTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                get(GlobalUrl.USER_ID + "/{user-id}", userId)
+                get(GlobalUrl.USER_ID + GlobalUrl.PATH_VARIABLE_WITH_USER_ID, userId)
                         .headers(httpHeaders)
                         .accept(MediaType.APPLICATION_JSON));
         //then
@@ -186,6 +186,47 @@ class UserControllerBootTest {
                                         fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
                                         fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("[통합][Web Adapter] 회원 정보 조회 - 성공 테스트")
+    void getUserInfoSuccessTest() throws Exception {
+        //given
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
+
+        HttpHeaders userDetailInfoHttpHeaders = new HttpHeaders();
+        userDetailInfoHttpHeaders.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        userDetailInfoHttpHeaders.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get(GlobalUrl.USER_ROOT + GlobalUrl.PATH_VARIABLE_WITH_USER_ID, userId)
+                        .headers(userDetailInfoHttpHeaders)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user-info",
+                                requestHeaders(
+                                        headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
+                                        headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key")
+                                ),
+                                pathParameters(
+                                        parameterWithName("user-id").description("조회할 유저 id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("userId").type(JsonFieldType.STRING).description("유저의 ID"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
+                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
+                                        fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분")
                                 )
                         )
                 );

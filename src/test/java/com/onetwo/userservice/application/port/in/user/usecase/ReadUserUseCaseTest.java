@@ -3,6 +3,7 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
 import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.in.user.response.UserInfoResponseDto;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
 import com.onetwo.userservice.application.service.service.UserService;
@@ -78,5 +79,23 @@ class ReadUserUseCaseTest {
         //then
         Assertions.assertNotNull(result);
         Assertions.assertSame(userState, result.state());
+    }
+
+    @Test
+    @DisplayName("[단위][Use Case] 회원 정보 조회 - 성공 테스트 ")
+    void getUserInfoUseCaseSuccessTest() {
+        //given
+        User user = User.createNewUserByCommand(registerUserCommand, password);
+
+        UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(userId, nickname, email, phoneNumber, oauth, registrationId);
+
+        given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
+        given(userUseCaseConverter.userToUserInfoResponseDto(any(User.class))).willReturn(userInfoResponseDto);
+
+        //when
+        UserInfoResponseDto result = readUserUseCase.getUserInfo(userId);
+
+        //then
+        Assertions.assertNotNull(result);
     }
 }

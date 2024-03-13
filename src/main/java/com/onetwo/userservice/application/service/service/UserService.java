@@ -74,6 +74,22 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     }
 
     /**
+     * Get about user information use case
+     *
+     * @param userId userId
+     * @return Information about User
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserInfoResponseDto getUserInfo(String userId) {
+        User user = checkUserExistAndGetUserByUserId(userId);
+
+        if (user.isUserWithdraw()) throw new BadRequestException("user already withdraw");
+
+        return userUseCaseConverter.userToUserInfoResponseDto(user);
+    }
+
+    /**
      * Withdraw user use case,
      * Check user exist and request user is same with withdraw user,
      * user can withdraw only him self
