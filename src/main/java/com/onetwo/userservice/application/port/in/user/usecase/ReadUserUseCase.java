@@ -2,6 +2,7 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.response.UserDetailResponseDto;
 import com.onetwo.userservice.application.port.in.user.response.UserIdExistCheckDto;
+import com.onetwo.userservice.application.port.in.user.response.UserInfoResponseDto;
 
 public interface ReadUserUseCase {
 
@@ -21,4 +22,12 @@ public interface ReadUserUseCase {
      * @return Detail Information about User
      */
     UserDetailResponseDto getUserDetailInfo(String userId);
+
+    /**
+     * Get about user information use case
+     *
+     * @param userId userId
+     * @return Information about User
+     */
+    UserInfoResponseDto getUserInfo(String userId);
 }

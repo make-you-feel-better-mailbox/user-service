@@ -15,4 +15,6 @@ public interface UserUseCaseConverter {
     UserIdExistCheckDto toUserIdExistCheckDto(Boolean isUserIdExist);
 
     UserUpdatePasswordResponseDto toUserUpdatePasswordResponseDto(boolean userPasswordUpdated);
+
+    UserInfoResponseDto userToUserInfoResponseDto(User user);
 }

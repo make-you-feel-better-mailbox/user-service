@@ -49,4 +49,9 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserUpdatePasswordResponseDto toUserUpdatePasswordResponseDto(boolean userPasswordUpdated) {
         return new UserUpdatePasswordResponseDto(userPasswordUpdated);
     }
+
+    @Override
+    public UserInfoResponseDto userToUserInfoResponseDto(User user) {
+        return new UserInfoResponseDto(user.getUserId(), user.getNickname(), user.getEmail(), user.getPhoneNumber(), user.isOauth(), user.getRegistrationId());
+    }
 }

@@ -91,4 +91,16 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 updateUserPasswordRequest.newPasswordCheck());
     }
 
+    @Override
+    public UserInfoResponse dtoToUserInfoResponse(UserInfoResponseDto userInfoResponseDto) {
+        return new UserInfoResponse(
+                userInfoResponseDto.userId(),
+                userInfoResponseDto.nickname(),
+                userInfoResponseDto.email(),
+                userInfoResponseDto.phoneNumber(),
+                userInfoResponseDto.oauth(),
+                userInfoResponseDto.registrationId()
+        );
+    }
+
 }
