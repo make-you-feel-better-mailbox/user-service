@@ -71,7 +71,7 @@ class UserControllerBootTest {
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final boolean oauth = false;
-    private final String registrationId = null;
+    private final String registrationId = "";
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -183,6 +183,8 @@ class UserControllerBootTest {
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
+                                        fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
                                 )
                         )

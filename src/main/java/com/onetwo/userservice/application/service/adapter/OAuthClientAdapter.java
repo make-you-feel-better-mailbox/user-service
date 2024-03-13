@@ -107,9 +107,9 @@ public class OAuthClientAdapter implements ReadOAuthPort {
     public String getAuthorizedURI(String registrationId) {
         OAuthClientInfo oAuthClientInfo = getOAuthClientInfo(registrationId);
 
-        String authorizedURI = oAuthClientInfo.getAfterUri()
+        String authorizedURI = oAuthClientInfo.getBeforeUri()
                 + "client_id=" + oAuthClientInfo.getClientId()
-                + "&redirect_uri" + oAuthClientInfo.getRedirectUri()
+                + "&redirect_uri=" + oAuthClientInfo.getRedirectUri()
                 + "&" + oAuthClientInfo.getAfterUri();
 
         return authorizedURI;

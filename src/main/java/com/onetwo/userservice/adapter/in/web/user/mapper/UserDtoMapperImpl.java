@@ -36,6 +36,8 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 userDetailResponseDto.nickname(),
                 userDetailResponseDto.email(),
                 userDetailResponseDto.phoneNumber(),
+                userDetailResponseDto.oauth(),
+                userDetailResponseDto.registrationId(),
                 userDetailResponseDto.state());
     }
 
