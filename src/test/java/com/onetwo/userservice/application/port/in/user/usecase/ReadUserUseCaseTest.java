@@ -67,7 +67,7 @@ class ReadUserUseCaseTest {
 
         boolean userState = false;
 
-        UserDetailResponseDto userDetailResponseDto = new UserDetailResponseDto(userId, nickname, email, phoneNumber, userState);
+        UserDetailResponseDto userDetailResponseDto = new UserDetailResponseDto(userId, nickname, email, phoneNumber, oauth, registrationId, userState);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
         given(userUseCaseConverter.userToUserDetailResponseDto(any(User.class))).willReturn(userDetailResponseDto);

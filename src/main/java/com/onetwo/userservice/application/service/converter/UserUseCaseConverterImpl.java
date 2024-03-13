@@ -13,6 +13,8 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
                 user.getNickname(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.isOauth(),
+                user.getRegistrationId(),
                 user.isState()
         );
     }
