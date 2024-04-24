@@ -1,7 +1,12 @@
 spring:
   profiles:
     active: local
-
+  config:
+    import: "optional:configserver:http://127.0.0.1:8888"
+  cloud:
+    config:
+      name: user-service
+      profile: local
   application:
     name: user-service
   h2:
@@ -64,9 +69,9 @@ management:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
     import: configserver:http://127.0.0.1:8888
   cloud:
     config:
       name: user-service
-      profile: local
+      profile: dev
