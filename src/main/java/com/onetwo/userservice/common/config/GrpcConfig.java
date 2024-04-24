@@ -2,7 +2,9 @@ package com.onetwo.userservice.common.config;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+@Profile({"local", "dev", "main"})
 @Configuration
 @ImportAutoConfiguration({
         net.devh.boot.grpc.common.autoconfigure.GrpcCommonCodecAutoConfiguration.class,
