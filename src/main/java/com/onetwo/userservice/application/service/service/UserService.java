@@ -90,6 +90,21 @@ public class UserService implements RegisterUserUseCase, LoginUseCase, ReadUserU
     }
 
     /**
+     * Get user nickname use case
+     *
+     * @param userId userId
+     * @return user nickname
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public String getUserNickName(String userId) {
+        User user = readUserPort.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundResourceException("user does not exist"));
+
+        return user.getNickname();
+    }
+
+    /**
      * Withdraw user use case,
      * Check user exist and request user is same with withdraw user,
      * user can withdraw only him self

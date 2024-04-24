@@ -30,4 +30,12 @@ public interface ReadUserUseCase {
      * @return Information about User
      */
     UserInfoResponseDto getUserInfo(String userId);
+
+    /**
+     * Get user nickname use case
+     *
+     * @param userId userId
+     * @return user nickname
+     */
+    String getUserNickName(String userId);
 }
