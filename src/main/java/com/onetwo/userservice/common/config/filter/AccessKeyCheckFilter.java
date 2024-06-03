@@ -1,6 +1,7 @@
 package com.onetwo.userservice.common.config.filter;
 
 import com.onetwo.userservice.common.GlobalStatus;
+import com.onetwo.userservice.common.config.SecurityConfig;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -28,7 +30,9 @@ public class AccessKeyCheckFilter extends OncePerRequestFilter {
         String requestAccessId = request.getHeader(GlobalStatus.ACCESS_ID);
         String requestAccessKey = request.getHeader(GlobalStatus.ACCESS_KEY);
 
-        if (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey))
+        boolean hasWhiteList = Arrays.stream(SecurityConfig.WHITE_LIST).anyMatch(e -> request.getRequestURI().contains(e));
+        
+        if (!hasWhiteList && (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey)))
             throw new BadRequestException("access-id or access-key does not matches");
 
         log.info("Server Access-id and Access-Key check passed");

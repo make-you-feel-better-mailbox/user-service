@@ -33,8 +33,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final FilterConfigure filterConfigure;
 
-    private static final String[] WHITE_LIST = {
-            "/favicon.ico", "/docs/**", GlobalUrl.USER_LOGIN
+    public static final String[] WHITE_LIST = {
+            "/favicon.ico", "/docs/**", "/h2-console", "/h2-console/**", GlobalUrl.USER_LOGIN
     };
 
     @Bean
