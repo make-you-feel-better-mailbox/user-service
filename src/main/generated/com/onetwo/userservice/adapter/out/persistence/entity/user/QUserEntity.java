@@ -37,6 +37,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath phoneNumber = createString("phoneNumber");
 
+    public final StringPath profileImageEndPoint = createString("profileImageEndPoint");
+
     public final StringPath registrationId = createString("registrationId");
 
     public final BooleanPath state = createBoolean("state");

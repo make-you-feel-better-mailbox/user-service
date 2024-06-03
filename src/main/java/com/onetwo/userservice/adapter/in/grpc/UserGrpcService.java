@@ -2,7 +2,8 @@ package com.onetwo.userservice.adapter.in.grpc;
 
 import com.onetwo.rpc.user.UserGrpc;
 import com.onetwo.rpc.user.UserId;
-import com.onetwo.rpc.user.UserNickname;
+import com.onetwo.rpc.user.UserInfo;
+import com.onetwo.userservice.application.port.in.user.response.UserInfoResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.ReadUserUseCase;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,16 @@ public class UserGrpcService extends UserGrpc.UserImplBase {
      * @param responseObserver user nickname
      */
     @Override
-    public void getUserNickname(UserId userId, StreamObserver<UserNickname> responseObserver) {
-        String userNickname = readUserUseCase.getUserNickName(userId.getUserId());
-        UserNickname userNicknameObj = UserNickname.newBuilder().setUserNickname(userNickname).build();
+    public void getUserInfo(UserId userId, StreamObserver<UserInfo> responseObserver) {
+        UserInfoResponseDto userInfo = readUserUseCase.getUserInfo(userId.getUserId());
+        UserInfo userInfoObj = UserInfo.newBuilder()
+                .setUserNickname(userInfo.nickname())
+                .setProfileImageEndPoint(userInfo.profileImageEndPoint())
+                .build();
 
-        log.info("grpc server get user nick name - request user id = {}, response user nickname = {}", userId.getUserId(), userNicknameObj.getUserNickname());
+        log.info("grpc server get user nick name - request user id = {}, response user info = {}", userId.getUserId(), userInfoObj);
 
-        responseObserver.onNext(userNicknameObj);
+        responseObserver.onNext(userInfoObj);
         responseObserver.onCompleted();
     }
 }

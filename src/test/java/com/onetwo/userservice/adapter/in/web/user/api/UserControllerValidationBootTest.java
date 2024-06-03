@@ -51,6 +51,7 @@ class UserControllerValidationBootTest {
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
 
     private final boolean oauth = false;
     private final String registrationId = null;
@@ -69,7 +70,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 nickname - 실패 테스트")
     void updateUserValidationNicknameFailTest(String nickname) throws Exception {
         //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber, profileImageEndPoint);
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -89,7 +90,7 @@ class UserControllerValidationBootTest {
     @DisplayName("[통합][Web Adapter] 회원 수정 유효성검사 email - 실패 테스트")
     void updateUserValidationEmailFailTest(String email) throws Exception {
         //given
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber, profileImageEndPoint);
         //when
         ResultActions resultActions = mockMvc.perform(
                 put(GlobalUrl.USER_ROOT)
@@ -110,7 +111,7 @@ class UserControllerValidationBootTest {
     void updateUserValidationPhoneNumberNullSuccessTest(String phoneNumber) throws Exception {
         //given
         registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, this.phoneNumber, oauth, registrationId));
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber);
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest(nickname, email, phoneNumber, profileImageEndPoint);
 
         MyUserDetail myUserDetail = new MyUserDetail(userId, password, false, new HashSet<>());
         Authentication authentication = new UsernamePasswordAuthenticationToken(myUserDetail, password, myUserDetail.getAuthorities());

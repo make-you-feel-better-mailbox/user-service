@@ -43,6 +43,7 @@ class UpdateUserUseCaseBootTest {
     private final String incorrectPassword = "incorrectPassword";
     private final boolean oauth = false;
     private final String registrationId = null;
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
 
     private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
@@ -54,7 +55,7 @@ class UpdateUserUseCaseBootTest {
 
         registerUserPort.registerNewUser(user);
 
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when
         UserUpdateResponseDto result = updateUserUseCase.updateUser(updateUserCommand);
@@ -67,7 +68,7 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 수정 user does not exist - 실패 테스트")
     void updateUserUseCaseUserDoesNotExistFailTest() {
         //given
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when then
         Assertions.assertThrows(NotFoundResourceException.class, () -> updateUserUseCase.updateUser(updateUserCommand));
@@ -83,7 +84,7 @@ class UpdateUserUseCaseBootTest {
         savedUser.userWithdraw();
         updateUserPort.updateUser(savedUser);
 
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when then
         Assertions.assertThrows(BadRequestException.class, () -> updateUserUseCase.updateUser(updateUserCommand));

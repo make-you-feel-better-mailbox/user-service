@@ -55,8 +55,9 @@ class LoginUseCaseTest {
     private final String phoneNumber = "01098006069";
     private final boolean oauth = false;
     private final String registrationId = null;
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
 
-    private final UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
+    private final UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, profileImageEndPoint, oauth, registrationId, false);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 로그인 - 성공 테스트")

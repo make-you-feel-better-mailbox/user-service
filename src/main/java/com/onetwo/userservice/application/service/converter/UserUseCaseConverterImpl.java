@@ -13,6 +13,7 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
                 user.getNickname(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getProfileImageEndPoint(),
                 user.isOauth(),
                 user.getRegistrationId(),
                 user.isState()
@@ -31,6 +32,7 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
                 user.getNickname(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getProfileImageEndPoint(),
                 user.isState()
         );
     }
@@ -52,6 +54,6 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
 
     @Override
     public UserInfoResponseDto userToUserInfoResponseDto(User user) {
-        return new UserInfoResponseDto(user.getUserId(), user.getNickname(), user.getEmail(), user.getPhoneNumber(), user.isOauth(), user.getRegistrationId());
+        return new UserInfoResponseDto(user.getUserId(), user.getNickname(), user.getEmail(), user.getPhoneNumber(), user.getProfileImageEndPoint(), user.isOauth(), user.getRegistrationId());
     }
 }

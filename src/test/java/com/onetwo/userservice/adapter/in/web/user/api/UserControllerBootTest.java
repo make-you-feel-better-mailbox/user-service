@@ -183,6 +183,7 @@ class UserControllerBootTest {
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.NULL).description("유저의 프로필 사진 end point"),
                                         fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
                                         fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
@@ -225,6 +226,7 @@ class UserControllerBootTest {
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.NULL).description("유저의 프로필 사진 end point"),
                                         fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
                                         fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분")
                                 )
@@ -289,7 +291,7 @@ class UserControllerBootTest {
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest("updateNickname", "updateEmail@onetwo.com", "");
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest("updateNickname", "updateEmail@onetwo.com", "https://avatars.githubusercontent.com/u/105261146?v=4", "");
 
         HttpHeaders updateUserRequestHeader = new HttpHeaders();
         updateUserRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
@@ -316,13 +318,15 @@ class UserControllerBootTest {
                                 requestFields(
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 변경할 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 변경할 email"),
-                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 변경할 휴대폰 번호")
+                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 변경할 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.STRING).description("유저의 변경할 프로필 사진 end point")
                                 ),
                                 responseFields(
                                         fieldWithPath("userId").type(JsonFieldType.STRING).description("변경한 유저의 Id"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("변경된 유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("변경된 유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("변경된 유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.STRING).description("변경된 유저의 프로필 사진 end point"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
                                 )
                         )

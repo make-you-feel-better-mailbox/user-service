@@ -65,7 +65,7 @@ class ReissueAccessTokenUseCaseTest {
         //given
         ReissueTokenCommand reissueTokenCommand = new ReissueTokenCommand(accessToken, refreshToken);
         RefreshToken refreshTokenDomain = RefreshToken.createRefreshToken(uuid, accessToken, refreshToken);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, oauth, registrationId, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, null, oauth, registrationId, false);
         User user = User.entityToDomain(userEntity);
         ReissuedTokenResponseDto reissuedTokenResponseDto = new ReissuedTokenResponseDto(accessToken);
 

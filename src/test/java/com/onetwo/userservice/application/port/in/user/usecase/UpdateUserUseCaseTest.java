@@ -51,6 +51,7 @@ class UpdateUserUseCaseTest {
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
     private final String incorrectPassword = "incorrectPassword";
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
 
     private final boolean oauth = false;
     private final String registrationId = null;
@@ -61,10 +62,10 @@ class UpdateUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 수정 - 성공 테스트")
     void updateUserUseCaseSuccessTest() {
         //given
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
         String encodedPassword = "encoded-password";
         User user = User.createNewUserByCommand(registerUserCommand, encodedPassword);
-        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto(userId, password, email, phoneNumber, false);
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto(userId, password, email, phoneNumber, profileImageEndPoint, false);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
         given(userUseCaseConverter.userToUserUpdateResponseDto(any(User.class))).willReturn(userUpdateResponseDto);
@@ -80,7 +81,7 @@ class UpdateUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 수정 user does not exist - 실패 테스트")
     void updateUserUseCaseUserDoesNotExistFailTest() {
         //given
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.empty());
 
@@ -92,7 +93,7 @@ class UpdateUserUseCaseTest {
     @DisplayName("[단위][Use Case] 회원 수정 user withdrew - 실패 테스트")
     void updateUserUseCaseUserWithdrewFailTest() {
         //given
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
         String encodedPassword = "encoded-password";
         User user = User.createNewUserByCommand(registerUserCommand, encodedPassword);
         user.userWithdraw();

@@ -27,6 +27,8 @@ public class User extends BaseDomain {
 
     private String phoneNumber;
 
+    private String profileImageEndPoint;
+
     private boolean oauth;
 
     private String registrationId;
@@ -41,6 +43,7 @@ public class User extends BaseDomain {
                 registerUserCommand.getNickname(),
                 registerUserCommand.getEmail(),
                 registerUserCommand.getPhoneNumber(),
+                null,
                 registerUserCommand.getOauth(),
                 registerUserCommand.getRegistrationId(),
                 false
@@ -59,6 +62,7 @@ public class User extends BaseDomain {
                 userEntity.getNickname(),
                 userEntity.getEmail(),
                 userEntity.getPhoneNumber(),
+                userEntity.getProfileImageEndPoint(),
                 userEntity.getOauth(),
                 userEntity.getRegistrationId(),
                 userEntity.getState()
@@ -76,6 +80,7 @@ public class User extends BaseDomain {
                 "",
                 oAuthResponseDto.name(),
                 oAuthResponseDto.email(),
+                null,
                 null,
                 true,
                 registrationId,
@@ -111,6 +116,7 @@ public class User extends BaseDomain {
         this.nickname = updateUserCommand.getNickname();
         this.email = updateUserCommand.getEmail();
         this.phoneNumber = updateUserCommand.getPhoneNumber();
+        this.profileImageEndPoint = updateUserCommand.getProfileImageEndPoint();
         setUpdatedAt(Instant.now());
         setUpdateUser(updateUserCommand.getUserId());
     }

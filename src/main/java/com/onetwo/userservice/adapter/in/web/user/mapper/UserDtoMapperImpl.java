@@ -36,6 +36,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 userDetailResponseDto.nickname(),
                 userDetailResponseDto.email(),
                 userDetailResponseDto.phoneNumber(),
+                userDetailResponseDto.profileImageEndPoint(),
                 userDetailResponseDto.oauth(),
                 userDetailResponseDto.registrationId(),
                 userDetailResponseDto.state());
@@ -56,7 +57,8 @@ public class UserDtoMapperImpl implements UserDtoMapper {
         return new UpdateUserCommand(userId,
                 updateUserRequest.nickname(),
                 updateUserRequest.email(),
-                updateUserRequest.phoneNumber());
+                updateUserRequest.phoneNumber(),
+                updateUserRequest.profileImageEndPoint());
     }
 
     @Override
@@ -65,6 +67,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 userResponseDto.nickname(),
                 userResponseDto.email(),
                 userResponseDto.phoneNumber(),
+                userResponseDto.profileImageEndPoint(),
                 userResponseDto.state());
     }
 
@@ -98,6 +101,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
                 userInfoResponseDto.nickname(),
                 userInfoResponseDto.email(),
                 userInfoResponseDto.phoneNumber(),
+                userInfoResponseDto.profileImageEndPoint(),
                 userInfoResponseDto.oauth(),
                 userInfoResponseDto.registrationId()
         );

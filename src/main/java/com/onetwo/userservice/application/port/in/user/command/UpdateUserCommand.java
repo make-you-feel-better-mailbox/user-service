@@ -18,11 +18,14 @@ public final class UpdateUserCommand extends SelfValidating<UpdateUserCommand> {
 
     private final String phoneNumber;
 
-    public UpdateUserCommand(String userId, String nickname, String email, String phoneNumber) {
+    private final String profileImageEndPoint;
+
+    public UpdateUserCommand(String userId, String nickname, String email, String phoneNumber, String profileImageEndPoint) {
         this.userId = userId;
         this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.profileImageEndPoint = profileImageEndPoint;
         this.validateSelf();
     }
 }
