@@ -28,7 +28,7 @@ public class UserGrpcService extends UserGrpc.UserImplBase {
         UserInfoResponseDto userInfo = readUserUseCase.getUserInfo(userId.getUserId());
         UserInfo userInfoObj = UserInfo.newBuilder()
                 .setUserNickname(userInfo.nickname())
-                .setProfileImageEndPoint(userInfo.profileImageEndPoint())
+                .setProfileImageEndPoint(userInfo.profileImageEndPoint() == null ? "" : userInfo.profileImageEndPoint())
                 .build();
 
         log.info("grpc server get user nick name - request user id = {}, response user info = {}", userId.getUserId(), userInfoObj);
