@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetwo.userservice.adapter.in.web.user.request.*;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
-import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import com.onetwo.userservice.domain.user.User;
@@ -29,8 +29,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -41,7 +39,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class UserControllerBootTest {
@@ -69,11 +67,11 @@ class UserControllerBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = "";
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -88,7 +86,7 @@ class UserControllerBootTest {
     @DisplayName("[통합][Web Adapter] 회원 회원가입 - 성공 테스트")
     void registerUserSuccessTest() throws Exception {
         //given
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, nickname, email, phoneNumber);
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -108,8 +106,6 @@ class UserControllerBootTest {
                                 requestFields(
                                         fieldWithPath("userId").type(JsonFieldType.STRING).description("생성할 유저의 ID"),
                                         fieldWithPath("password").type(JsonFieldType.STRING).description("생성할 유저의 Password"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("생성할 유저의 Name"),
-                                        fieldWithPath("birth").type(JsonFieldType.STRING).description("생성할 유저의 생년월일 (instant type)"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("생성할 유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("생성할 유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("생성할 유저의 휴대폰 번호")
@@ -129,7 +125,7 @@ class UserControllerBootTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(
-                get(GlobalUrl.USER_ID + "/{user-id}", userId)
+                get(GlobalUrl.USER_ID + GlobalUrl.PATH_VARIABLE_WITH_USER_ID, userId)
                         .headers(httpHeaders)
                         .accept(MediaType.APPLICATION_JSON));
         //then
@@ -157,7 +153,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -184,12 +180,55 @@ class UserControllerBootTest {
                                 ),
                                 responseFields(
                                         fieldWithPath("userId").type(JsonFieldType.STRING).description("유저의 ID"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저의 Name"),
-                                        fieldWithPath("birth").type(JsonFieldType.STRING).description("유저의 생년월일 (instant type)"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.NULL).description("유저의 프로필 사진 end point"),
+                                        fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
+                                        fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("[통합][Web Adapter] 회원 정보 조회 - 성공 테스트")
+    void getUserInfoSuccessTest() throws Exception {
+        //given
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
+
+        HttpHeaders userDetailInfoHttpHeaders = new HttpHeaders();
+        userDetailInfoHttpHeaders.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
+        userDetailInfoHttpHeaders.add(GlobalStatus.ACCESS_KEY, httpHeaders.getFirst(GlobalStatus.ACCESS_KEY));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get(GlobalUrl.USER_ROOT + GlobalUrl.PATH_VARIABLE_WITH_USER_ID, userId)
+                        .headers(userDetailInfoHttpHeaders)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user-info",
+                                requestHeaders(
+                                        headerWithName(GlobalStatus.ACCESS_ID).description("서버 Access id"),
+                                        headerWithName(GlobalStatus.ACCESS_KEY).description("서버 Access key")
+                                ),
+                                pathParameters(
+                                        parameterWithName("user-id").description("조회할 유저 id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("userId").type(JsonFieldType.STRING).description("유저의 ID"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 nickname"),
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 email"),
+                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.NULL).description("유저의 프로필 사진 end point"),
+                                        fieldWithPath("oauth").type(JsonFieldType.BOOLEAN).description("유저가 OAuth 유저인지 여부"),
+                                        fieldWithPath("registrationId").type(JsonFieldType.STRING).description("OAuth 일경우 registration 구분")
                                 )
                         )
                 );
@@ -202,7 +241,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -248,11 +287,11 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(Instant.now(), "updateNickname", "updateName", "updateEmail@onetwo.com", "");
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest("updateNickname", "updateEmail@onetwo.com", "https://avatars.githubusercontent.com/u/105261146?v=4", "");
 
         HttpHeaders updateUserRequestHeader = new HttpHeaders();
         updateUserRequestHeader.add(GlobalStatus.ACCESS_ID, httpHeaders.getFirst(GlobalStatus.ACCESS_ID));
@@ -277,19 +316,17 @@ class UserControllerBootTest {
                                         headerWithName(GlobalStatus.ACCESS_TOKEN).description("유저의 access-token")
                                 ),
                                 requestFields(
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저의 변경할 Name"),
-                                        fieldWithPath("birth").type(JsonFieldType.STRING).description("유저의 변경할 생년월일 (instant type)"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("유저의 변경할 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("유저의 변경할 email"),
-                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 변경할 휴대폰 번호")
+                                        fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("유저의 변경할 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.STRING).description("유저의 변경할 프로필 사진 end point")
                                 ),
                                 responseFields(
                                         fieldWithPath("userId").type(JsonFieldType.STRING).description("변경한 유저의 Id"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("변경된 유저의 Name"),
-                                        fieldWithPath("birth").type(JsonFieldType.STRING).description("변경된 유저의 생년월일 (instant type)"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("변경된 유저의 nickname"),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("변경된 유저의 email"),
                                         fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("변경된 유저의 휴대폰 번호"),
+                                        fieldWithPath("profileImageEndPoint").type(JsonFieldType.STRING).description("변경된 유저의 프로필 사진 end point"),
                                         fieldWithPath("state").type(JsonFieldType.BOOLEAN).description("유저의 상태 ( True: 탈퇴, False: 정상 )")
                                 )
                         )
@@ -303,7 +340,7 @@ class UserControllerBootTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -352,7 +389,7 @@ class UserControllerBootTest {
         //given
         LoginUserRequest loginUserRequest = new LoginUserRequest(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         User user = readUserPort.findByUserId(userId).get();
 

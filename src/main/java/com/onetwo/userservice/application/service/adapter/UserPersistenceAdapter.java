@@ -5,6 +5,7 @@ import com.onetwo.userservice.adapter.out.persistence.repository.user.UserReposi
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.RegisterUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
+import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -55,5 +56,15 @@ public class UserPersistenceAdapter implements ReadUserPort, RegisterUserPort, U
         UserEntity userEntity = UserEntity.domainToEntity(user);
 
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public Optional<User> findByUserIdAndOAuth(String oAuthUserId) {
+        Optional<UserEntity> userEntity = userRepository.findByUserIdAndOauthAndState(
+                oAuthUserId,
+                GlobalStatus.PERSISTENCE_USER_IS_OAUTH,
+                GlobalStatus.PERSISTENCE_NOT_DELETED);
+
+        return checkOptionalUserEntityAndConvertToOptionalDomain(userEntity);
     }
 }

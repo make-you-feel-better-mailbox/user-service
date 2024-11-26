@@ -7,9 +7,9 @@ import com.onetwo.userservice.adapter.in.web.user.request.WithdrawUserRequest;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.port.in.user.usecase.LoginUseCase;
 import com.onetwo.userservice.application.port.in.user.usecase.RegisterUserUseCase;
-import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,13 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 class UserControllerBootFailTest {
 
@@ -52,11 +50,11 @@ class UserControllerBootFailTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -71,9 +69,9 @@ class UserControllerBootFailTest {
     @DisplayName("[통합][Web Adapter] 회원 회원가입 User Id Already Exist - 실패 테스트")
     void registerUserAlreadyExistFailTest() throws Exception {
         //given
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, birth, nickname, name, email, phoneNumber);
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(userId, password, nickname, email, phoneNumber);
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -94,8 +92,8 @@ class UserControllerBootFailTest {
         //given
         String otherUserId = "otherUserId";
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
-        registerUserUseCase.registerUser(new RegisterUserCommand(otherUserId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
+        registerUserUseCase.registerUser(new RegisterUserCommand(otherUserId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         LoginUserCommand loginUserRequest = new LoginUserCommand(otherUserId, password);
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
@@ -127,7 +125,7 @@ class UserControllerBootFailTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 
@@ -160,7 +158,7 @@ class UserControllerBootFailTest {
         //given
         LoginUserCommand loginUserRequest = new LoginUserCommand(userId, password);
 
-        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        registerUserUseCase.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         TokenResponseDto tokenResponse = loginUseCase.loginUser(loginUserRequest);
 

@@ -2,10 +2,10 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.WithdrawUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.UserWithdrawResponseDto;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.port.out.user.UpdateUserPort;
 import com.onetwo.userservice.application.service.converter.UserUseCaseConverter;
-import com.onetwo.userservice.application.port.in.user.response.UserWithdrawResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,11 +45,13 @@ class WithdrawUserUseCaseTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 탈퇴 - 성공 테스트")
@@ -58,7 +59,6 @@ class WithdrawUserUseCaseTest {
         //given
         WithdrawUserCommand withdrawUserCommand = new WithdrawUserCommand(userId, password, userId);
 
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         UserWithdrawResponseDto withdrawResponseDto = new UserWithdrawResponseDto(true);
@@ -102,7 +102,6 @@ class WithdrawUserUseCaseTest {
     void withdrawUserUseCasePasswordNotMatchedFailTest() {
         //given
         WithdrawUserCommand withdrawUserCommand = new WithdrawUserCommand(userId, password, userId);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
@@ -117,7 +116,6 @@ class WithdrawUserUseCaseTest {
     void withdrawUserUseCaseAlreadyWithdrewFailTest() {
         //given
         WithdrawUserCommand withdrawUserCommand = new WithdrawUserCommand(userId, password, userId);
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
         user.userWithdraw();
 

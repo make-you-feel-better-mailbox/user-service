@@ -2,10 +2,10 @@ package com.onetwo.userservice.application.port.in.user.usecase;
 
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
+import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.exceptions.BadRequestException;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
@@ -21,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -51,11 +50,14 @@ class LoginUseCaseTest {
     private final Long uuid = 1L;
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
+
+    private final UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, profileImageEndPoint, oauth, registrationId, false);
 
     @Test
     @DisplayName("[단위][Use Case] 회원 로그인 - 성공 테스트")
@@ -63,7 +65,6 @@ class LoginUseCaseTest {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         TokenResponseDto tokenResponseDto = new TokenResponseDto("created-access-token", "created-refresh-token");
@@ -100,7 +101,6 @@ class LoginUseCaseTest {
     void loginUserUseCaseUserAlreadyWithdrewFailTest() {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, true);
         User user = User.entityToDomain(userEntity);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));
@@ -114,7 +114,6 @@ class LoginUseCaseTest {
     void loginUserUseCasePasswordNotMatchedFailTest() {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, false);
         User user = User.entityToDomain(userEntity);
 
         given(readUserPort.findByUserId(userId)).willReturn(Optional.of(user));

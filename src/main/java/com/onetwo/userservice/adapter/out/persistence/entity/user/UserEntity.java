@@ -8,9 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-
-import java.time.Instant;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
@@ -29,15 +26,8 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false, length = 300)
     private String password;
 
-    @Column(nullable = false)
-    @Convert(converter = Jsr310JpaConverters.InstantConverter.class)
-    private Instant birth;
-
     @Column(nullable = false, length = 15)
     private String nickname;
-
-    @Column(nullable = false, length = 200)
-    private String name;
 
     @Column(length = 123)
     private String email;
@@ -45,19 +35,30 @@ public class UserEntity extends BaseEntity {
     @Column(length = 20)
     private String phoneNumber;
 
+    @Column(length = 500)
+    private String profileImageEndPoint;
+
+    @Column(nullable = false, length = 1)
+    @Convert(converter = BooleanNumberConverter.class)
+    private Boolean oauth;
+
+    @Column(length = 20)
+    private String registrationId;
+
     @Column(nullable = false, length = 1)
     @Convert(converter = BooleanNumberConverter.class)
     private Boolean state;
 
-    public UserEntity(Long uuid, String userId, String password, Instant birth, String nickname, String name, String email, String phoneNumber, Boolean state) {
+    public UserEntity(Long uuid, String userId, String password, String nickname, String email, String phoneNumber, String profileImageEndPoint, Boolean oauth, String registrationId, Boolean state) {
         this.uuid = uuid;
         this.userId = userId;
         this.password = password;
-        this.birth = birth;
         this.nickname = nickname;
-        this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.profileImageEndPoint = profileImageEndPoint;
+        this.oauth = oauth;
+        this.registrationId = registrationId;
         this.state = state;
     }
 
@@ -66,11 +67,12 @@ public class UserEntity extends BaseEntity {
                 user.getUuid(),
                 user.getUserId(),
                 user.getPassword(),
-                user.getBirth(),
                 user.getNickname(),
-                user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getProfileImageEndPoint(),
+                user.isOauth(),
+                user.getRegistrationId(),
                 user.isState()
         );
 

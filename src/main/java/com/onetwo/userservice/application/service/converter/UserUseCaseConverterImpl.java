@@ -10,11 +10,12 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserDetailResponseDto userToUserDetailResponseDto(User user) {
         return new UserDetailResponseDto(
                 user.getUserId(),
-                user.getBirth(),
                 user.getNickname(),
-                user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getProfileImageEndPoint(),
+                user.isOauth(),
+                user.getRegistrationId(),
                 user.isState()
         );
     }
@@ -28,11 +29,10 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     public UserUpdateResponseDto userToUserUpdateResponseDto(User user) {
         return new UserUpdateResponseDto(
                 user.getUserId(),
-                user.getBirth(),
                 user.getNickname(),
-                user.getName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getProfileImageEndPoint(),
                 user.isState()
         );
     }
@@ -50,5 +50,10 @@ public class UserUseCaseConverterImpl implements UserUseCaseConverter {
     @Override
     public UserUpdatePasswordResponseDto toUserUpdatePasswordResponseDto(boolean userPasswordUpdated) {
         return new UserUpdatePasswordResponseDto(userPasswordUpdated);
+    }
+
+    @Override
+    public UserInfoResponseDto userToUserInfoResponseDto(User user) {
+        return new UserInfoResponseDto(user.getUserId(), user.getNickname(), user.getEmail(), user.getPhoneNumber(), user.getProfileImageEndPoint(), user.isOauth(), user.getRegistrationId());
     }
 }

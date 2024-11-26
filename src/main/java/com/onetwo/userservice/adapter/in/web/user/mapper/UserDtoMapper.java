@@ -30,4 +30,6 @@ public interface UserDtoMapper {
     UpdateUserPasswordResponse dtoToUpdatePasswordResponse(UserUpdatePasswordResponseDto userUpdatePasswordResponseDto);
 
     UpdateUserPasswordCommand updatePasswordRequestToCommand(String userId, UpdateUserPasswordRequest updateUserPasswordRequest);
+
+    UserInfoResponse dtoToUserInfoResponse(UserInfoResponseDto userInfoResponseDto);
 }

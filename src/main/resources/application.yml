@@ -1,7 +1,12 @@
-server:
-  port: 0
-
 spring:
+  profiles:
+    active: local
+  config:
+    import: "optional:configserver:http://127.0.0.1:8888"
+  cloud:
+    config:
+      name: user-service
+      profile: local
   application:
     name: user-service
   h2:
@@ -10,6 +15,11 @@ spring:
       settings:
         web-allow-others: true
       path: /h2-console
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,6 +31,7 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -34,3 +45,39 @@ jwt:
 
 access-id: server-access-id
 access-key: server-access-key
+
+oauth2:
+  google:
+    client-id: 1076681160501-cei4ju9207edhjti9oupraqvvg7f0d84.apps.googleusercontent.com
+    client-secret: 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
+    redirect-uri: http://localhost:8080/login/oauth2/code/google
+    token-uri: https://oauth2.googleapis.com/token
+    resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+    before-uri: https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?
+    after-uri: response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=1&theme=glif&flowName=GeneralOAuthFlow
+
+server:
+  port: 0
+
+grpc:
+  server:
+    port: 9090
+    enable-keep-alive: false
+    in-process-name: "user-grpc"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: configserver:http://127.0.0.1:8888
+  cloud:
+    config:
+      name: user-service
+      profile: dev

@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @Transactional
 class RegisterUserUseCaseBootTest {
 
@@ -26,19 +24,18 @@ class RegisterUserUseCaseBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[통합][Use Case] 회원 회원가입 - 성공 테스트")
     void registerUserUseCaseSuccessTest() {
-        //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
-
-        //when
+        //given when
         UserRegisterResponseDto result = registerUserUseCase.registerUser(registerUserCommand);
 
         //then
@@ -49,8 +46,6 @@ class RegisterUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 회원가입 User id already exist - 실패 테스트")
     void registerUserUseCaseUserIdExistFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
-
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         registerUserPort.registerNewUser(user);

@@ -16,9 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @Transactional
 class LoginUseCaseBootTest {
 
@@ -36,11 +34,14 @@ class LoginUseCaseBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
+
 
     @Test
     @DisplayName("[통합][Use Case] 회원 로그인 - 성공 테스트")
@@ -48,7 +49,6 @@ class LoginUseCaseBootTest {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -78,7 +78,6 @@ class LoginUseCaseBootTest {
         //given
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         User savedUser = registerUserPort.registerNewUser(user);
@@ -96,7 +95,6 @@ class LoginUseCaseBootTest {
         String incorrectPassword = "incorrectPassword";
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, incorrectPassword);
 
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, password);
 
         registerUserPort.registerNewUser(user);

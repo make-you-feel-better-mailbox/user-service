@@ -1,12 +1,11 @@
 package com.onetwo.userservice.adapter.in.web.user.response;
 
-import java.time.Instant;
-
 public record UserDetailResponse(String userId,
-                                 Instant birth,
                                  String nickname,
-                                 String name,
                                  String email,
                                  String phoneNumber,
+                                 String profileImageEndPoint,
+                                 boolean oauth,
+                                 String registrationId,
                                  boolean state) {
 }

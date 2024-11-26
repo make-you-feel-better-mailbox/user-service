@@ -18,9 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @Transactional
 class UpdateUserUseCaseBootTest {
 
@@ -38,24 +36,26 @@ class UpdateUserUseCaseBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final String newPassword = "newPassword";
     private final String incorrectPassword = "incorrectPassword";
+    private final boolean oauth = false;
+    private final String registrationId = null;
+    private final String profileImageEndPoint = "/assets/images/avatars/avatar-2.jpg";
+
+    private final RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId);
 
     @Test
     @DisplayName("[통합][Use Case] 회원 수정 - 성공 테스트")
     void updateUserUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
 
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, birth, nickname, name, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when
         UserUpdateResponseDto result = updateUserUseCase.updateUser(updateUserCommand);
@@ -68,7 +68,7 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 수정 user does not exist - 실패 테스트")
     void updateUserUseCaseUserDoesNotExistFailTest() {
         //given
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, birth, nickname, name, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when then
         Assertions.assertThrows(NotFoundResourceException.class, () -> updateUserUseCase.updateUser(updateUserCommand));
@@ -78,14 +78,13 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 수정 user withdrew - 실패 테스트")
     void updateUserUseCaseUserWithdrewFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         User savedUser = registerUserPort.registerNewUser(user);
         savedUser.userWithdraw();
         updateUserPort.updateUser(savedUser);
 
-        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, birth, nickname, name, email, phoneNumber);
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(userId, nickname, email, phoneNumber, profileImageEndPoint);
 
         //when then
         Assertions.assertThrows(BadRequestException.class, () -> updateUserUseCase.updateUser(updateUserCommand));
@@ -96,7 +95,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 - 성공 테스트")
     void updateUserPasswordUseCaseSuccessTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -124,7 +122,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 user already withdraw - 실패 테스트")
     void updateUserPasswordUseCaseUserAlreadyWithdrawFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         User savedUser = registerUserPort.registerNewUser(user);
@@ -141,7 +138,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 Incorrect password - 실패 테스트")
     void updateUserPasswordUseCaseIncorrectPasswordFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -156,7 +152,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 not matched new password and new password check - 실패 테스트")
     void updateUserPasswordUseCaseNotMatchedNewPasswordAndPasswordCheckFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);
@@ -171,7 +166,6 @@ class UpdateUserUseCaseBootTest {
     @DisplayName("[통합][Use Case] 회원 비밀번호 수정 Current password and new password same - 실패 테스트")
     void updateUserPasswordUseCaseIncorrectNewPasswordFailTest() {
         //given
-        RegisterUserCommand registerUserCommand = new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber);
         User user = User.createNewUserByCommand(registerUserCommand, passwordEncoder.encode(password));
 
         registerUserPort.registerNewUser(user);

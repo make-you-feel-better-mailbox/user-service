@@ -33,8 +33,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final FilterConfigure filterConfigure;
 
-    private static final String[] WHITE_LIST = {
-            "/favicon.ico", "/docs/**", GlobalUrl.USER_LOGIN
+    public static final String[] WHITE_LIST = {
+            "/favicon.ico", "/docs/**", "/h2-console", "/h2-console/**", GlobalUrl.USER_LOGIN
     };
 
     @Bean
@@ -77,9 +77,11 @@ public class SecurityConfig {
         List<MvcRequestMatcher> mvcRequestMatcherList = Stream.of(WHITE_LIST).map(mvc::pattern).collect(Collectors.toList());
 
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.USER_ID + GlobalUrl.UNDER_ROUTE));
-
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.USER_ROOT));
         mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.TOKEN_REFRESH));
+        mvcRequestMatcherList.add(mvc.pattern(HttpMethod.POST, GlobalUrl.OAUTH_ROOT));
+        mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.OAUTH_ROOT + GlobalUrl.UNDER_ROUTE));
+        mvcRequestMatcherList.add(mvc.pattern(HttpMethod.GET, GlobalUrl.USER_ROOT + GlobalUrl.UNDER_ROUTE));
 
         return mvcRequestMatcherList.toArray(MvcRequestMatcher[]::new);
     }

@@ -3,6 +3,7 @@ package com.onetwo.userservice.domain.user;
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.UpdateUserCommand;
+import com.onetwo.userservice.application.port.out.dto.OAuthResponseDto;
 import com.onetwo.userservice.domain.BaseDomain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,15 +21,17 @@ public class User extends BaseDomain {
 
     private String password;
 
-    private Instant birth;
-
     private String nickname;
-
-    private String name;
 
     private String email;
 
     private String phoneNumber;
+
+    private String profileImageEndPoint;
+
+    private boolean oauth;
+
+    private String registrationId;
 
     private boolean state;
 
@@ -37,11 +40,12 @@ public class User extends BaseDomain {
                 null,
                 registerUserCommand.getUserId(),
                 encoredPassword,
-                registerUserCommand.getBirth(),
                 registerUserCommand.getNickname(),
-                registerUserCommand.getName(),
                 registerUserCommand.getEmail(),
                 registerUserCommand.getPhoneNumber(),
+                null,
+                registerUserCommand.getOauth(),
+                registerUserCommand.getRegistrationId(),
                 false
         );
 
@@ -55,17 +59,37 @@ public class User extends BaseDomain {
                 userEntity.getUuid(),
                 userEntity.getUserId(),
                 userEntity.getPassword(),
-                userEntity.getBirth(),
                 userEntity.getNickname(),
-                userEntity.getName(),
                 userEntity.getEmail(),
                 userEntity.getPhoneNumber(),
+                userEntity.getProfileImageEndPoint(),
+                userEntity.getOauth(),
+                userEntity.getRegistrationId(),
                 userEntity.getState()
         );
 
         user.setMetaDataByEntity(userEntity);
 
         return user;
+    }
+
+    public static User createNewUserByOAuth(String oAuthUserId, OAuthResponseDto oAuthResponseDto, String registrationId) {
+        User newUser = new User(
+                null,
+                oAuthUserId,
+                "",
+                oAuthResponseDto.name(),
+                oAuthResponseDto.email(),
+                null,
+                null,
+                true,
+                registrationId,
+                false
+        );
+
+        newUser.setDefaultState();
+
+        return newUser;
     }
 
     private void setDefaultState() {
@@ -84,13 +108,20 @@ public class User extends BaseDomain {
 
     public void userWithdraw() {
         this.state = true;
+        setUpdatedAt(Instant.now());
+        setUpdateUser(this.userId);
     }
 
-    public void updateUserInfo(UpdateUserCommand updateUserCommand) {
-        this.birth = updateUserCommand.getBirth();
+    public void updateUser(UpdateUserCommand updateUserCommand) {
         this.nickname = updateUserCommand.getNickname();
-        this.name = updateUserCommand.getName();
         this.email = updateUserCommand.getEmail();
         this.phoneNumber = updateUserCommand.getPhoneNumber();
+        this.profileImageEndPoint = updateUserCommand.getProfileImageEndPoint();
+        setUpdatedAt(Instant.now());
+        setUpdateUser(updateUserCommand.getUserId());
+    }
+
+    public void rejoin() {
+        this.state = false;
     }
 }

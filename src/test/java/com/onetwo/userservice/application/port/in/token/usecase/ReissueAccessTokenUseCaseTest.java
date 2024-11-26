@@ -2,11 +2,11 @@ package com.onetwo.userservice.application.port.in.token.usecase;
 
 import com.onetwo.userservice.adapter.out.persistence.entity.user.UserEntity;
 import com.onetwo.userservice.application.port.in.token.command.ReissueTokenCommand;
+import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.application.port.out.token.ReadRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.token.UpdateRefreshTokenPort;
 import com.onetwo.userservice.application.port.out.user.ReadUserPort;
 import com.onetwo.userservice.application.service.converter.TokenUseCaseConverter;
-import com.onetwo.userservice.application.port.in.token.response.ReissuedTokenResponseDto;
 import com.onetwo.userservice.application.service.service.ReissueAccessTokenService;
 import com.onetwo.userservice.common.exceptions.NotFoundResourceException;
 import com.onetwo.userservice.common.exceptions.TokenValidationException;
@@ -21,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -52,13 +51,13 @@ class ReissueAccessTokenUseCaseTest {
     private final Long uuid = 1L;
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
     private final String accessToken = "access-token";
     private final String refreshToken = "refresh-token";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     @Test
     @DisplayName("[단위][Use Case] Access Token 재발급 - 성공 테스트")
@@ -66,7 +65,7 @@ class ReissueAccessTokenUseCaseTest {
         //given
         ReissueTokenCommand reissueTokenCommand = new ReissueTokenCommand(accessToken, refreshToken);
         RefreshToken refreshTokenDomain = RefreshToken.createRefreshToken(uuid, accessToken, refreshToken);
-        UserEntity userEntity = new UserEntity(uuid, userId, password, birth, nickname, name, email, phoneNumber, false);
+        UserEntity userEntity = new UserEntity(uuid, userId, password, nickname, email, phoneNumber, null, oauth, registrationId, false);
         User user = User.entityToDomain(userEntity);
         ReissuedTokenResponseDto reissuedTokenResponseDto = new ReissuedTokenResponseDto(accessToken);
 

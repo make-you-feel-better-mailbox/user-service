@@ -5,8 +5,8 @@ import com.onetwo.userservice.adapter.in.web.token.request.ReissueTokenRequest;
 import com.onetwo.userservice.adapter.out.persistence.repository.user.UserRepository;
 import com.onetwo.userservice.application.port.in.user.command.LoginUserCommand;
 import com.onetwo.userservice.application.port.in.user.command.RegisterUserCommand;
-import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.port.in.user.response.TokenResponseDto;
+import com.onetwo.userservice.application.port.out.token.CreateRefreshTokenPort;
 import com.onetwo.userservice.application.service.service.UserService;
 import com.onetwo.userservice.common.GlobalStatus;
 import com.onetwo.userservice.common.GlobalUrl;
@@ -25,8 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -35,7 +33,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class ReissueTokenControllerBootTest {
@@ -57,11 +55,11 @@ class ReissueTokenControllerBootTest {
 
     private final String userId = "12OneTwo12";
     private final String password = "password";
-    private final Instant birth = Instant.now();
     private final String nickname = "newNickname";
-    private final String name = "tester";
     private final String email = "onetwo12@onetwo.com";
     private final String phoneNumber = "01098006069";
+    private final boolean oauth = false;
+    private final String registrationId = null;
 
     private static final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -76,7 +74,7 @@ class ReissueTokenControllerBootTest {
     @DisplayName("[통합][Web Adapter] Access Token 재발급 - 성공 테스트")
     void reissueAccessTokenByRefreshTokenSuccessTest() throws Exception {
         //given
-        userService.registerUser(new RegisterUserCommand(userId, password, birth, nickname, name, email, phoneNumber));
+        userService.registerUser(new RegisterUserCommand(userId, password, nickname, email, phoneNumber, oauth, registrationId));
 
         LoginUserCommand loginUserCommand = new LoginUserCommand(userId, password);
 

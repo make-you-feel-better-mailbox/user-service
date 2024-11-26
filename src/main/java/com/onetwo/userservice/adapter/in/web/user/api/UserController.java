@@ -40,8 +40,8 @@ public class UserController {
      * @param userId userId
      * @return Boolean about user id exist
      */
-    @GetMapping(GlobalUrl.USER_ID + "/{user-id}")
-    public ResponseEntity<UserIdExistCheckDto> userIdExistCheck(@PathVariable("user-id") String userId) {
+    @GetMapping(GlobalUrl.USER_ID + GlobalUrl.PATH_VARIABLE_WITH_USER_ID)
+    public ResponseEntity<UserIdExistCheckDto> userIdExistCheck(@PathVariable(GlobalUrl.PATH_VARIABLE_USER_ID) String userId) {
         return ResponseEntity.ok().body(readUserUseCase.userIdExistCheck(userId));
     }
 
@@ -56,6 +56,18 @@ public class UserController {
         String userId = userDetails.getUsername();
         UserDetailResponseDto userDetailResponseDto = readUserUseCase.getUserDetailInfo(userId);
         return ResponseEntity.ok().body(userDtoMapper.dtoToUserDetailResponse(userDetailResponseDto));
+    }
+
+    /**
+     * Get users information inbound adapter
+     *
+     * @param userId user id
+     * @return detail information about user
+     */
+    @GetMapping(GlobalUrl.USER_ROOT + GlobalUrl.PATH_VARIABLE_WITH_USER_ID)
+    public ResponseEntity<UserInfoResponse> getUserDetailInfo(@PathVariable(GlobalUrl.PATH_VARIABLE_USER_ID) String userId) {
+        UserInfoResponseDto userInfoResponseDto = readUserUseCase.getUserInfo(userId);
+        return ResponseEntity.ok().body(userDtoMapper.dtoToUserInfoResponse(userInfoResponseDto));
     }
 
     /**
